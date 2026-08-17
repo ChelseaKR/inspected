@@ -1,0 +1,119 @@
+[
+  {
+    "DAMAGE": "Destroyed (>50%)",
+    "HAZARDTYPE": "Fire",
+    "INCIDENTNAME": "SAMPLE ONE",
+    "INCIDENTSTARTDATE": 1593561600000,
+    "LATITUDE": 38.5,
+    "LONGITUDE": -120.8,
+    "OBJECTID": 1
+  },
+  {
+    "DAMAGE": "No Damage",
+    "HAZARDTYPE": "Fire",
+    "INCIDENTNAME": "SAMPLE ONE",
+    "INCIDENTSTARTDATE": 1593561600000,
+    "LATITUDE": 38.5,
+    "LONGITUDE": -120.7,
+    "OBJECTID": 2
+  },
+  {
+    "DAMAGE": "Destroyed (>50%)",
+    "HAZARDTYPE": "Fire",
+    "INCIDENTNAME": "SAMPLE ONE",
+    "INCIDENTSTARTDATE": 1593561600000,
+    "LATITUDE": 38.5,
+    "LONGITUDE": -120.6,
+    "OBJECTID": 3
+  },
+  {
+    "DAMAGE": "Inaccessible",
+    "HAZARDTYPE": "Fire",
+    "INCIDENTNAME": "SAMPLE TWO",
+    "INCIDENTSTARTDATE": 1625097600000,
+    "LATITUDE": 38.5,
+    "LONGITUDE": -120.999,
+    "OBJECTID": 4
+  },
+  {
+    "DAMAGE": "Destroyed (>50%)",
+    "HAZARDTYPE": "Fire",
+    "INCIDENTNAME": "SAMPLE TWO",
+    "INCIDENTSTARTDATE": 1625097600000,
+    "LATITUDE": 38.5,
+    "LONGITUDE": -120.2,
+    "OBJECTID": 5
+  },
+  {
+    "DAMAGE": "No Damage",
+    "HAZARDTYPE": "Fire",
+    "INCIDENTNAME": "SAMPLE TWO",
+    "INCIDENTSTARTDATE": 1625097600000,
+    "LATITUDE": 38.5,
+    "LONGITUDE": -120.3,
+    "OBJECTID": 6
+  },
+  {
+    "DAMAGE": "No Damage",
+    "HAZARDTYPE": "Fire",
+    "INCIDENTNAME": "SAMPLE TWO",
+    "INCIDENTSTARTDATE": 1625097600000,
+    "LATITUDE": 38.5,
+    "LONGITUDE": -120.1,
+    "OBJECTID": 7
+  },
+  {
+    "DAMAGE": "Destroyed (>50%)",
+    "HAZARDTYPE": "Fire",
+    "INCIDENTNAME": "SAMPLE THREE",
+    "INCIDENTSTARTDATE": 1656633600000,
+    "LATITUDE": 38.5,
+    "LONGITUDE": -119.8,
+    "OBJECTID": 8
+  },
+  {
+    "DAMAGE": "Destroyed (>50%)",
+    "HAZARDTYPE": "Fire",
+    "INCIDENTNAME": "SAMPLE THREE",
+    "INCIDENTSTARTDATE": 1656633600000,
+    "LATITUDE": 36.0,
+    "LONGITUDE": -117.0,
+    "OBJECTID": 9
+  },
+  {
+    "DAMAGE": "No Damage",
+    "HAZARDTYPE": "Fire",
+    "INCIDENTNAME": "SAMPLE THREE",
+    "INCIDENTSTARTDATE": 1656633600000,
+    "LATITUDE": 40.05,
+    "LONGITUDE": -122.25,
+    "OBJECTID": 10
+  },
+  {
+    "DAMAGE": "Destroyed (>50%)",
+    "HAZARDTYPE": "Fire",
+    "INCIDENTNAME": "SAMPLE FOUR",
+    "INCIDENTSTARTDATE": 1688169600000,
+    "LATITUDE": null,
+    "LONGITUDE": null,
+    "OBJECTID": 11
+  },
+  {
+    "DAMAGE": "Destroyed (>50%)",
+    "HAZARDTYPE": "Fire",
+    "INCIDENTNAME": "SAMPLE FOUR",
+    "INCIDENTSTARTDATE": 1688169600000,
+    "LATITUDE": 40.0,
+    "LONGITUDE": -100.0,
+    "OBJECTID": 12
+  },
+  {
+    "DAMAGE": "Destroyed (>50%)",
+    "HAZARDTYPE": "Flood",
+    "INCIDENTNAME": "SAMPLE FLOOD",
+    "INCIDENTSTARTDATE": 1688169600000,
+    "LATITUDE": 38.5,
+    "LONGITUDE": -120.8,
+    "OBJECTID": 13
+  }
+]

@@ -1,0 +1,312 @@
+"""The acquisition's refusals, with the socket substituted. Nothing here opens one.
+
+The point of these tests is the failure mode that produced this project's guard rails: a
+paged walk that ends normally and is short. A download nothing checked is not an
+acquisition, so every check that would catch a short, duplicated, or reordered walk is
+exercised against a walk that should fail it.
+"""
+
+from __future__ import annotations
+
+import io
+import json
+import urllib.error
+from pathlib import Path
+from typing import Any
+
+import pytest
+from perimeter.acquire import AcquisitionBlocked, AcquisitionFailed
+
+from inspected import acquire
+from inspected.acquire import (
+    IncompleteAcquisition,
+    assert_walk_is_whole,
+    fetch_feature_pages,
+    layer_record_count,
+)
+from inspected.sources import ELSE_IOU_POU
+
+
+class FakeResponse(io.BytesIO):
+    def __init__(self, body: bytes, content_type: str = "application/json") -> None:
+        super().__init__(body)
+        self.headers = {"Content-Type": content_type}
+
+    def __enter__(self) -> FakeResponse:
+        return self
+
+    def __exit__(self, *args: object) -> None:
+        self.close()
+
+
+def install(monkeypatch: pytest.MonkeyPatch, handler: Any) -> list[str]:
+    seen: list[str] = []
+
+    def fake_urlopen(request: Any, timeout: int = 0) -> Any:
+        seen.append(request.full_url)
+        return handler(request.full_url)
+
+    monkeypatch.setattr(acquire.urllib.request, "urlopen", fake_urlopen)
+    monkeypatch.setattr(acquire.time, "sleep", lambda _seconds: None)
+    return seen
+
+
+def json_response(payload: dict[str, Any]) -> FakeResponse:
+    return FakeResponse(json.dumps(payload).encode())
+
+
+def test_a_non_https_endpoint_is_refused_before_any_request() -> None:
+    with pytest.raises(AcquisitionFailed, match="non-HTTPS"):
+        layer_record_count("http://example.invalid/query")
+
+
+@pytest.mark.parametrize("code", [401, 403, 429])
+def test_an_access_control_stops_the_run_rather_than_being_worked_around(
+    monkeypatch: pytest.MonkeyPatch, code: int
+) -> None:
+    def handler(url: str) -> Any:
+        raise urllib.error.HTTPError(url, code, "no", {}, None)  # type: ignore[arg-type]
+
+    install(monkeypatch, handler)
+    with pytest.raises(
+        AcquisitionBlocked, match="does not work around access controls"
+    ):
+        layer_record_count("https://example.test/query")
+
+
+def test_a_server_error_is_a_failure_not_a_block(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def handler(url: str) -> Any:
+        raise urllib.error.HTTPError(url, 500, "no", {}, None)  # type: ignore[arg-type]
+
+    install(monkeypatch, handler)
+    with pytest.raises(AcquisitionFailed, match="answered 500"):
+        layer_record_count("https://example.test/query")
+
+
+def test_an_html_challenge_page_is_refused(monkeypatch: pytest.MonkeyPatch) -> None:
+    install(monkeypatch, lambda _url: FakeResponse(b"<html>", "text/html"))
+    with pytest.raises(AcquisitionBlocked, match="challenge page"):
+        layer_record_count("https://example.test/query")
+
+
+def test_an_error_payload_is_refused(monkeypatch: pytest.MonkeyPatch) -> None:
+    install(monkeypatch, lambda _url: json_response({"error": {"code": 400}}))
+    with pytest.raises(AcquisitionFailed, match="error payload"):
+        layer_record_count("https://example.test/query")
+
+
+def test_a_count_response_with_no_count_is_refused(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    install(monkeypatch, lambda _url: json_response({"features": []}))
+    with pytest.raises(
+        AcquisitionFailed, match="nothing checked is not an acquisition"
+    ):
+        layer_record_count("https://example.test/query")
+
+
+def test_a_boolean_is_not_accepted_as_a_count(monkeypatch: pytest.MonkeyPatch) -> None:
+    install(monkeypatch, lambda _url: json_response({"count": True}))
+    with pytest.raises(AcquisitionFailed):
+        layer_record_count("https://example.test/query")
+
+
+def test_a_good_count_is_read(monkeypatch: pytest.MonkeyPatch) -> None:
+    install(monkeypatch, lambda _url: json_response({"count": 53}))
+    assert layer_record_count("https://example.test/query") == 53
+
+
+def test_a_whole_walk_is_accepted() -> None:
+    assert assert_walk_is_whole([1, 2, 3, 4], 4, layer="x") is None
+
+
+def test_a_short_walk_is_refused_rather_than_published_as_a_smaller_dataset() -> None:
+    with pytest.raises(IncompleteAcquisition, match="hole in it"):
+        assert_walk_is_whole([1, 2, 3], 4, layer="x")
+
+
+def test_a_long_walk_is_refused() -> None:
+    with pytest.raises(IncompleteAcquisition, match="reports 3 records"):
+        assert_walk_is_whole([1, 2, 3, 4], 3, layer="x")
+
+
+def test_a_duplicated_page_is_refused_even_though_the_count_matches() -> None:
+    with pytest.raises(IncompleteAcquisition, match="duplicate identifiers"):
+        assert_walk_is_whole([1, 2, 2, 3], 4, layer="x")
+
+
+def test_a_reordered_walk_is_refused() -> None:
+    with pytest.raises(IncompleteAcquisition, match="not strictly increasing"):
+        assert_walk_is_whole([1, 3, 2, 4], 4, layer="x")
+
+
+def test_the_walk_steps_by_rows_received_not_by_the_page_it_asked_for(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """The defect this project exists downstream of, reproduced as a test.
+
+    The service is asked for 2000 rows and hands back 1200. A walk that adds the page
+    size to its offset asks next for records from 2000 and never sees 1200 to 1999.
+    """
+    pages = {
+        0: [{"properties": {"OBJECTID": i}} for i in range(1, 1201)],
+        1200: [{"properties": {"OBJECTID": i}} for i in range(1201, 1401)],
+        1400: [],
+    }
+
+    def handler(url: str) -> Any:
+        offset = int(url.split("resultOffset=")[1].split("&")[0])
+        if offset not in pages:
+            raise AssertionError(
+                f"the walk asked for offset {offset}, which means it stepped by the "
+                "page size it requested rather than by the rows it was handed"
+            )
+        return json_response({"features": pages[offset]})
+
+    install(monkeypatch, handler)
+    features = fetch_feature_pages(
+        "https://example.test/query", ("OBJECTID",), with_geometry=True
+    )
+    assert len(features) == 1400
+    identifiers = [f["properties"]["OBJECTID"] for f in features]
+    assert identifiers == list(range(1, 1401))
+    assert_walk_is_whole(identifiers, 1400, layer="x")
+
+
+def test_a_page_that_is_not_an_array_is_refused(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    install(monkeypatch, lambda _url: json_response({"features": "no"}))
+    with pytest.raises(AcquisitionFailed, match="no features array"):
+        fetch_feature_pages(
+            "https://example.test/query", ("OBJECTID",), with_geometry=False
+        )
+
+
+def _territory_handler(counts: list[int], features: list[dict[str, Any]]) -> Any:
+    calls = {"n": 0}
+
+    def handler(url: str) -> Any:
+        if "returnCountOnly=true" in url:
+            value = counts[min(calls["n"], len(counts) - 1)]
+            calls["n"] += 1
+            return json_response({"count": value})
+        offset = int(url.split("resultOffset=")[1].split("&")[0])
+        return json_response({"features": features[offset:]})
+
+    return handler
+
+
+def test_a_layer_republished_mid_walk_is_refused(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    features = [
+        {"type": "Feature", "properties": {"OBJECTID": i}, "geometry": None}
+        for i in range(1, 4)
+    ]
+    install(monkeypatch, _territory_handler([3, 4], features))
+    with pytest.raises(IncompleteAcquisition, match="republished mid-walk"):
+        acquire.acquire_territories(ELSE_IOU_POU, tmp_path)
+
+
+def test_a_clean_territory_acquisition_writes_a_hashed_file(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    features = [
+        {"type": "Feature", "properties": {"OBJECTID": i}, "geometry": None}
+        for i in range(1, 4)
+    ]
+    install(monkeypatch, _territory_handler([3, 3], features))
+    result = acquire.acquire_territories(ELSE_IOU_POU, tmp_path)
+    assert result.feature_count == 3
+    assert len(result.sha256) == 64
+    assert result.endpoint == ELSE_IOU_POU.endpoint
+    written = json.loads(result.path.read_text(encoding="utf-8"))
+    assert written["type"] == "FeatureCollection"
+    assert [f["properties"]["OBJECTID"] for f in written["features"]] == [1, 2, 3]
+
+
+def test_the_same_features_produce_the_same_bytes(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    features = [
+        {"type": "Feature", "properties": {"OBJECTID": i}, "geometry": None}
+        for i in range(1, 4)
+    ]
+    install(monkeypatch, _territory_handler([3, 3], features))
+    first = acquire.acquire_territories(ELSE_IOU_POU, tmp_path / "a")
+    install(monkeypatch, _territory_handler([3, 3], features))
+    second = acquire.acquire_territories(ELSE_IOU_POU, tmp_path / "b")
+    assert first.sha256 == second.sha256, (
+        "an unchanged layer must re-download to byte-identical bytes, or the hash in "
+        "PROVENANCE.md cannot be compared against anything"
+    )
+
+
+def test_a_walk_that_arrives_out_of_order_is_refused_rather_than_sorted(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """Sorting a scrambled walk would hide the reason it was scrambled.
+
+    The writer does sort before hashing, so that byte-for-byte comparison is possible.
+    That is not a licence to accept a walk that came back out of the order it asked for:
+    a service that reorders under pagination is a service that may also be repeating or
+    skipping pages, and only the order reveals it.
+    """
+    features = [
+        {"type": "Feature", "properties": {"OBJECTID": i}, "geometry": None}
+        for i in (3, 1, 2)
+    ]
+    install(monkeypatch, _territory_handler([3, 3], features))
+    with pytest.raises(IncompleteAcquisition, match="not strictly increasing"):
+        acquire.acquire_territories(ELSE_IOU_POU, tmp_path)
+
+
+def test_dins_acquisition_checks_the_walk_it_did_not_write(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    rows = [{"OBJECTID": i, "DAMAGE": "No Damage"} for i in range(1, 5)]
+    monkeypatch.setattr(acquire, "perimeter_layer_record_count", lambda _e: 4)
+    monkeypatch.setattr(acquire, "perimeter_fetch_layer", lambda _e, _f: rows)
+    result = acquire.acquire_dins(tmp_path)
+    assert result.feature_count == 4
+
+
+def test_a_short_upstream_walk_is_caught_here_rather_than_trusted(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    rows = [{"OBJECTID": i} for i in range(1, 4)]
+    monkeypatch.setattr(acquire, "perimeter_layer_record_count", lambda _e: 4)
+    monkeypatch.setattr(acquire, "perimeter_fetch_layer", lambda _e, _f: rows)
+    with pytest.raises(IncompleteAcquisition, match="hole in it"):
+        acquire.acquire_dins(tmp_path)
+    assert not list(tmp_path.iterdir()), "nothing is written when the walk is short"
+
+
+def test_dins_acquisition_refuses_a_layer_republished_mid_walk(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    counts = iter([4, 5])
+    monkeypatch.setattr(
+        acquire, "perimeter_layer_record_count", lambda _e: next(counts)
+    )
+    monkeypatch.setattr(
+        acquire, "perimeter_fetch_layer", lambda _e, _f: [{"OBJECTID": 1}]
+    )
+    with pytest.raises(IncompleteAcquisition, match="republished mid-walk"):
+        acquire.acquire_dins(tmp_path)
+
+
+def test_no_address_or_parcel_field_is_ever_requested() -> None:
+    forbidden = {
+        "SITEADDRESS",
+        "APN",
+        "STREETNUMBER",
+        "STREETNAME",
+        "STREETTYPE",
+        "ZIPCODE",
+        "ASSESSEDIMPROVEDVALUE",
+    }
+    assert forbidden.isdisjoint(acquire.DINS_FIELDS)

@@ -1,0 +1,72 @@
+# CodeQL over the two languages this repository contains: the Actions workflows and the
+# Python package.
+#
+# The findings gate is local rather than "the alerts will show up in the Security tab".
+# Uploading SARIF to code scanning does not fail a build, and a required check that cannot
+# go red is not a gate. `analyze` writes SARIF to disk, the step below refuses to pass when
+# there is no SARIF to read, and any finding fails the job. The SARIF is uploaded too, so
+# the alerts stay browsable.
+#
+# PRs into main plus a weekly schedule. No push:main trigger; the pull_request run covers
+# it. Actions pinned to the full commit SHA, resolved 2026-08-17.
+name: codeql
+
+on:
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "17 6 * * 3"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  analyze:
+    name: codeql (actions and python)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read # read this repository's own workflows; no write anywhere
+      security-events: write # upload SARIF to code scanning
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # `security-extended` rather than `security-and-quality`: the gate below fails on any
+      # result at all, and the quality queries report maintainability notes that are not
+      # what this job is for. A gate that fires on a style note gets loosened, and a
+      # loosened gate is not a gate.
+      - uses: github/codeql-action/init@ff2f1c621b7f889edc0d3c761ac2e6a3f8cdb0dd # v4.37.7
+        with:
+          languages: actions,python
+          queries: security-extended
+
+      - uses: github/codeql-action/analyze@ff2f1c621b7f889edc0d3c761ac2e6a3f8cdb0dd # v4.37.7
+        with:
+          upload: always
+          output: codeql-results
+
+      - name: zero findings, and refuse to pass without scan evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -d '' sarif < <(find codeql-results -type f -name '*.sarif' -print0)
+          if (( ${#sarif[@]} == 0 )); then
+            echo '::error::CodeQL produced no SARIF; refusing to pass without evidence.'
+            exit 1
+          fi
+          findings=$(jq -s '[.[] | .runs[]?.results[]?] | length' "${sarif[@]}")
+          if (( findings != 0 )); then
+            jq -rs '.[] | .runs[]?.results[]?
+                    | "\(.ruleId // "unknown rule"): \(.message.text // "finding")"' \
+              "${sarif[@]}"
+            echo "::error::CodeQL reported $findings finding(s)."
+            exit 1
+          fi
+          echo "CodeQL: ${#sarif[@]} SARIF file(s), zero findings."

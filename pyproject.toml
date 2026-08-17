@@ -1,0 +1,102 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "inspected"
+version = "0.1.0"
+description = "How much of California's wildfire damage-inspection record set can be attributed to a published electric service territory, measured rather than assumed"
+requires-python = ">=3.12"
+license = "Apache-2.0"
+authors = [
+  { name = "Chelsea Kelly-Reif" },
+]
+readme = "README.md"
+dependencies = [
+  # The upstream acquisition. `perimeter` already measures the completeness of the DINS
+  # file and already carries a paged walk that steps by rows received rather than by page
+  # size. Re-implementing either would be re-implementing a bug that has already been
+  # found and fixed once. Pinned to a commit, not a branch.
+  "perimeter @ git+https://github.com/ChelseaKR/perimeter@dac60195c50786f33f69a8fab70b6230894ed374",
+  "shapely>=2.1",
+  "pyproj>=3.7",
+]
+
+[dependency-groups]
+dev = [
+  "ruff>=0.15.0",
+  "mypy>=1.18",
+  "pytest>=8.0",
+  "pytest-cov>=5.0",
+  "pytest-xdist>=3.6",
+  "pip-audit>=2.7",
+]
+
+[project.scripts]
+inspected = "inspected.cli:main"
+
+[tool.hatch.metadata]
+# `perimeter` is a direct reference to a pinned commit rather than a PyPI release,
+# because it has none. This project is not published to an index either, so the usual
+# reason to forbid direct references does not apply here.
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/inspected"]
+
+# --- single-source ruff/mypy/pytest config; repos change values, not keys ---
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "UP", "B", "SIM", "S", "C90", "RUF"]
+ignore = ["E501"]            # line length owned by the formatter
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101"]        # assert is expected in tests
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.mypy]
+strict = true
+warn_return_any = true
+disallow_untyped_defs = true
+
+[[tool.mypy.overrides]]
+# None of the three ships type information that mypy --strict accepts wholesale.
+module = ["shapely.*", "pyproj.*", "perimeter.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+# `perimeter` is untyped, so its exception classes resolve to Any and mypy refuses the
+# subclass. IncompleteAcquisition is deliberately a kind of AcquisitionFailed: a caller
+# that already handles a failed acquisition should handle an incomplete one the same way.
+# Narrowed to this one module and this one rule rather than relaxed globally.
+module = ["inspected.acquire"]
+disallow_subclassing_any = false
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+minversion = "8.0"
+testpaths = ["tests"]
+addopts = "-ra --strict-markers --strict-config --import-mode=importlib"
+markers = [
+  "slow: > 2s",
+  "integration: requires an external service",
+  "smoke: critical path",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["src"]
+# No omit list. acquire.py is run by hand and never in CI, which is true of the network
+# call and false of the module: every refusal it makes is testable with the socket
+# substituted, and tests/test_acquire.py does exactly that. Omitting it would let the
+# floor pass over the module that carries this project's promises about somebody else's
+# server and about not publishing a partial download as a whole one.
+[tool.coverage.report]
+fail_under = 90
+show_missing = true

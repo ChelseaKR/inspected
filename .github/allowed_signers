@@ -1,0 +1,9 @@
+# SSH allowed-signers list, read by `git verify-tag` in .github/workflows/release.yml.
+#
+# Format, one principal per line:
+#   <email> namespaces="git" <keytype> <base64 key>
+#
+# This file carries no principal yet, and the release workflow refuses to run until it
+# does. That is the intended state: no tag has been cut, no key belonging to this
+# repository's maintainer is recorded here, and inventing one would make a signature
+# check that verifies nothing look like a signature check that verifies something.

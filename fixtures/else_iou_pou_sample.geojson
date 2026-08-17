@@ -1,0 +1,77 @@
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              -121.0,
+              38.0
+            ],
+            [
+              -120.0,
+              38.0
+            ],
+            [
+              -120.0,
+              39.0
+            ],
+            [
+              -121.0,
+              39.0
+            ],
+            [
+              -121.0,
+              38.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "Acronym": "AEC",
+        "OBJECTID": 1,
+        "Type": "IOU",
+        "Utility": "Alpha Electric Company"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              -120.5,
+              38.0
+            ],
+            [
+              -119.5,
+              38.0
+            ],
+            [
+              -119.5,
+              39.0
+            ],
+            [
+              -120.5,
+              39.0
+            ],
+            [
+              -120.5,
+              38.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "Acronym": "BMU",
+        "OBJECTID": 2,
+        "Type": "POU",
+        "Utility": "Beta Municipal Utility"
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}

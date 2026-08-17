@@ -1,0 +1,101 @@
+# Least-privilege GITHUB_TOKEN, SHA-pinned actions, and the gates that run on every pull
+# request: `make verify`, a secret scan, semgrep, and workflow static analysis. CodeQL
+# runs from codeql.yml.
+#
+# These gates report. As of 2026-08-17 they block nothing: `main` carries no ruleset and
+# no branch protection, so it can be force-pushed, deleted, or pushed to with every check
+# on this page red. Turning that on is a live repository setting and the owner's call.
+# This paragraph is edited when the protection goes on, not before.
+#
+# Every action is pinned to the full 40-char commit SHA of its tag, resolved 2026-08-17
+# via `gh api repos/OWNER/REPO/commits/TAG`. The pins stay `@<sha> # vX.Y.Z` so the
+# version is readable next to the SHA.
+#
+# CI never touches the network for data. `data/raw/` is not in the repository, so the test
+# suite runs against committed fixtures and the committed `published/` tree.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: ">=0.11.0"
+          python-version: "3.12"
+
+      # Byte-for-byte the local target. `make verify` runs the lockfile-drift gate, ruff,
+      # the formatter check, mypy --strict, pytest with the coverage floor, pip-audit, an
+      # offline build over the fixtures, and the determinism gate.
+      - name: make verify
+        run: make verify
+
+  secret-scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # The action lists the PR's commits to scope its scan to them. Read only.
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      # Comments off, so the job needs nothing beyond contents:read. With them on the
+      # action asks for pull-requests:write to annotate the PR and a least-privilege token
+      # gets a 403 instead. Findings still fail the job and appear in the log.
+      - uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_ENABLE_COMMENTS: "false"
+          GITLEAKS_ENABLE_UPLOAD_ARTIFACT: "false"
+
+  sast:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+      - run: uvx --from semgrep==1.168.0 semgrep scan --error --metrics off --config p/python --config p/security-audit .
+
+  # Nothing else in this repository reads the workflows themselves: `verify` never opens
+  # them, gitleaks looks for secrets, and semgrep's p/python and p/security-audit rule
+  # sets carry no GitHub Actions rules. This job and codeql.yml are what close that.
+  zizmor:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+      # Online mode on purpose. zizmor defaults to offline and in that mode silently drops
+      # the audits that need the API: whether a pinned SHA is still reachable from its tag,
+      # and whether a `uses:` resolves upstream at all. A gate that quietly runs a subset
+      # of itself is the failure mode this repository is trying not to have.
+      - name: workflow static analysis (zizmor, online)
+        run: uvx --from zizmor==1.29.0 zizmor --format=plain .github/workflows/
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

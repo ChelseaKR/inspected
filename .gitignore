@@ -1,0 +1,12 @@
+# The raw retrievals. Never in git: the DINS file is 132,000 rows of structure-level
+# records at their published coordinates, and this repository publishes counts.
+data/raw/
+build/
+.venv/
+__pycache__/
+*.pyc
+.coverage
+coverage.xml
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/

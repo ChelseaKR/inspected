@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+title: inspected
+message: "If you use this work, please cite it."
+authors:
+  - family-names: Kelly-Reif
+    given-names: Chelsea
+version: 0.1.0
+date-released: "2026-08-17"  # bump on every tagged release
+license: Apache-2.0
+repository-code: "https://github.com/ChelseaKR/inspected"
+abstract: >-
+  A measurement of how much of California's public wildfire damage-inspection record set
+  can be attributed to a published electric service territory boundary, and how much
+  cannot. Every published rate carries its denominator and a confidence interval, and no
+  utility is ranked or compared. Unofficial and not affiliated with any agency or utility.

@@ -1,0 +1,5075 @@
+{
+  "contested_groups": [
+    {
+      "records": 25345,
+      "territories": [
+        "Metropolitan Water District of So. Cal",
+        "Southern California Edison"
+      ]
+    },
+    {
+      "records": 12241,
+      "territories": [
+        "Pacific Gas & Electric Company",
+        "Power and Water Resource Pooling Authority"
+      ]
+    },
+    {
+      "records": 9794,
+      "territories": [
+        "Los Angeles Department of Water & Power",
+        "Metropolitan Water District of So. Cal"
+      ]
+    },
+    {
+      "records": 1880,
+      "territories": [
+        "Metropolitan Water District of So. Cal",
+        "Pasadena Water & Power"
+      ]
+    },
+    {
+      "records": 620,
+      "territories": [
+        "Metropolitan Water District of So. Cal",
+        "San Diego Gas & Electric"
+      ]
+    },
+    {
+      "records": 85,
+      "territories": [
+        "Lassen Municipal Utility District",
+        "Plumas-Sierra Rural Electric Cooperative"
+      ]
+    },
+    {
+      "records": 69,
+      "territories": [
+        "City of Healdsburg Electric Department",
+        "Power and Water Resource Pooling Authority"
+      ]
+    },
+    {
+      "records": 46,
+      "territories": [
+        "City of Anaheim Public Utilities Department",
+        "Metropolitan Water District of So. Cal"
+      ]
+    },
+    {
+      "records": 42,
+      "territories": [
+        "City of Riverside",
+        "Metropolitan Water District of So. Cal"
+      ]
+    },
+    {
+      "records": 40,
+      "territories": [
+        "Modesto Irrigation District",
+        "Pacific Gas & Electric Company"
+      ]
+    },
+    {
+      "records": 4,
+      "territories": [
+        "City and County of San Francisco - Hetch Hetchy Water and Power",
+        "Pacific Gas & Electric Company"
+      ]
+    },
+    {
+      "records": 1,
+      "territories": [
+        "PacifiCorp",
+        "Surprise Valley Electrification Corporation"
+      ]
+    }
+  ],
+  "excluded_types": [
+    {
+      "published_type": "ADMIN",
+      "reason": "A federal power marketing administration. The polygon is a marketing and transmission administration area, not a retail service territory."
+    },
+    {
+      "published_type": "CCA",
+      "reason": "A community choice aggregator procures energy for customers inside another entity's distribution footprint. Its polygon overlays a territory rather than being one, so counting a record into both would count it twice."
+    }
+  ],
+  "geometry_ledger": {
+    "note": "A polygon that fails an OGC validity check gives undefined answers to a containment question, so it is repaired before use and named here. A polygon that cannot be repaired into a testable shape is removed from the index and is not reported as holding zero records.",
+    "records_placed_via_repaired_geometry": {
+      "denominator": 82353,
+      "interval_high": 0.9189044717944177,
+      "interval_low": 0.9151367418228533,
+      "interval_method": "wilson-score-95",
+      "label": "placed records that sit inside a polygon this project repaired",
+      "note": "A repair is a choice. This is how much of the placed total depends on it, so a reader can weigh the result rather than take it whole.",
+      "numerator": 75521,
+      "rate": 0.9170400592571005,
+      "state": "measured"
+    },
+    "repaired": [
+      "City and County of San Francisco - Hetch Hetchy Water and Power",
+      "City of Healdsburg Electric Department",
+      "City of Palo Alto",
+      "Los Angeles Department of Water & Power",
+      "Metropolitan Water District of So. Cal",
+      "Pacific Gas & Electric Company",
+      "Power and Water Resource Pooling Authority",
+      "Southern California Edison"
+    ],
+    "territories_indexed": 59,
+    "territories_repaired": 8,
+    "unusable": [],
+    "unusable_count": 0
+  },
+  "is_fixture": false,
+  "placement_coverage": {
+    "counts": {
+      "contested_between_two_or_more": 50167,
+      "coordinate_not_usable": 0,
+      "covered_by_no_published_territory": 0,
+      "placed_in_exactly_one_territory": 82353
+    },
+    "counts_sum_to_fire_records": true,
+    "excluded_by_hazard_filter": 2,
+    "fire_records": 132520,
+    "rates": [
+      {
+        "denominator": 132520,
+        "interval_high": 0.6240461258557904,
+        "interval_low": 0.6188233808359634,
+        "interval_method": "wilson-score-95",
+        "label": "placed in exactly one published territory",
+        "note": "",
+        "numerator": 82353,
+        "rate": 0.6214382734681557,
+        "state": "measured"
+      },
+      {
+        "denominator": 132520,
+        "interval_high": 0.38117661916403645,
+        "interval_low": 0.37595387414420944,
+        "interval_method": "wilson-score-95",
+        "label": "inside two or more published territories",
+        "note": "",
+        "numerator": 50167,
+        "rate": 0.3785617265318442,
+        "state": "measured"
+      },
+      {
+        "denominator": 132520,
+        "interval_high": 2.89869262647943e-05,
+        "interval_low": 0.0,
+        "interval_method": "wilson-score-95",
+        "label": "inside no published territory",
+        "note": "",
+        "numerator": 0,
+        "rate": 0.0,
+        "state": "measured"
+      },
+      {
+        "denominator": 132520,
+        "interval_high": 2.89869262647943e-05,
+        "interval_low": 0.0,
+        "interval_method": "wilson-score-95",
+        "label": "coordinate not usable",
+        "note": "",
+        "numerator": 0,
+        "rate": 0.0,
+        "state": "measured"
+      }
+    ]
+  },
+  "provenance": {
+    "affiliation": "Unofficial. Not affiliated with, endorsed by, or approved by CAL FIRE, the California Energy Commission, or any electric utility.",
+    "dins_landing_page": "https://data.ca.gov/dataset/cal-fire-damage-inspection-dins-data",
+    "dins_retrieved": "2026-08-17",
+    "territories_item_modified": "2026-08-12",
+    "territories_landing_page": "https://cecgis-caenergy.opendata.arcgis.com/datasets/CAEnergy::electric-load-serving-entities-iou-pou/about",
+    "territories_retrieved": "2026-08-17"
+  },
+  "representativeness": {
+    "contested": {
+      "denominator": 50167,
+      "interval_high": 0.538179588805836,
+      "interval_low": 0.5294493347151081,
+      "interval_method": "wilson-score-95",
+      "label": "destroyed share among contested records",
+      "note": "",
+      "numerator": 26780,
+      "rate": 0.5338170510494947,
+      "state": "measured"
+    },
+    "difference": {
+      "difference": -0.004279572147693922,
+      "excludes_zero": false,
+      "interval_high": 0.0012600921565407205,
+      "interval_low": -0.009816850947513691,
+      "interval_method": "newcombe-score-95",
+      "label": "placed minus contested, destroyed share",
+      "left": {
+        "denominator": 82353,
+        "interval_high": 0.5329449610552308,
+        "interval_low": 0.5261272412515146,
+        "interval_method": "wilson-score-95",
+        "label": "destroyed share among placed records",
+        "note": "",
+        "numerator": 43609,
+        "rate": 0.5295374789018008,
+        "state": "measured"
+      },
+      "note": "A difference whose interval excludes zero means the records that can be attributed to one territory are not a representative sample of the record set, and a territory-level reading of them inherits that.",
+      "right": {
+        "denominator": 50167,
+        "interval_high": 0.538179588805836,
+        "interval_low": 0.5294493347151081,
+        "interval_method": "wilson-score-95",
+        "label": "destroyed share among contested records",
+        "note": "",
+        "numerator": 26780,
+        "rate": 0.5338170510494947,
+        "state": "measured"
+      },
+      "state": "measured"
+    },
+    "placed": {
+      "denominator": 82353,
+      "interval_high": 0.5329449610552308,
+      "interval_low": 0.5261272412515146,
+      "interval_method": "wilson-score-95",
+      "label": "destroyed share among placed records",
+      "note": "",
+      "numerator": 43609,
+      "rate": 0.5295374789018008,
+      "state": "measured"
+    },
+    "uncovered": {
+      "denominator": 0,
+      "interval_high": null,
+      "interval_low": null,
+      "interval_method": "none",
+      "label": "destroyed share among records in no published territory",
+      "note": "no records fall in this population, so there is nothing to divide",
+      "numerator": 0,
+      "rate": null,
+      "state": "not_measured"
+    }
+  },
+  "territories": [
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "Tribal",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_other",
+      "territory": "Aha Macav Power Service"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "Alameda Power & Telecom"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 305,
+            "interval_high": 0.03779525540364342,
+            "interval_low": 0.0070221045244812045,
+            "interval_method": "wilson-score-95",
+            "label": "within 100 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 5,
+            "rate": 0.01639344262295082,
+            "state": "measured"
+          },
+          {
+            "denominator": 305,
+            "interval_high": 0.08350620754161199,
+            "interval_low": 0.03254511198509316,
+            "interval_method": "wilson-score-95",
+            "label": "within 250 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 16,
+            "rate": 0.05245901639344262,
+            "state": "measured"
+          },
+          {
+            "denominator": 305,
+            "interval_high": 0.14436087904110523,
+            "interval_low": 0.07530347262898979,
+            "interval_method": "wilson-score-95",
+            "label": "within 500 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 32,
+            "rate": 0.10491803278688525,
+            "state": "measured"
+          },
+          {
+            "denominator": 305,
+            "interval_high": 0.19889605825947407,
+            "interval_low": 0.11790551104504896,
+            "interval_method": "wilson-score-95",
+            "label": "within 1000 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 47,
+            "rate": 0.1540983606557377,
+            "state": "measured"
+          }
+        ],
+        "state": "measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 11,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": "Nixon",
+        "share": {
+          "denominator": 305,
+          "interval_high": 0.4459486998969949,
+          "interval_low": 0.3371115140527825,
+          "interval_method": "wilson-score-95",
+          "label": "share of placed records from the largest single incident",
+          "note": "Where this is high, a territory-level damage rate would describe one fire rather than a territory. That is why no such rate is published.",
+          "numerator": 119,
+          "rate": 0.3901639344262295,
+          "state": "measured"
+        }
+      },
+      "published_type": "CO-OP",
+      "records_contested_here": 0,
+      "records_placed_here": 305,
+      "source_layer": "else_other",
+      "territory": "Anza Electric Cooperative, Inc."
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "Azusa Light & Power"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "IOU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "Bear Valley Electric Service"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "Biggs Municipal Utilities"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "Burbank Water & Power"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [
+        "Pacific Gas & Electric Company"
+      ],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "published geometry failed an OGC validity check and was repaired",
+      "geometry_state": "repaired",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 4,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "City and County of San Francisco - Hetch Hetchy Water and Power"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [
+        "Metropolitan Water District of So. Cal"
+      ],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 46,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "City of Anaheim Public Utilities Department"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 23,
+            "interval_high": 0.8439597554678597,
+            "interval_low": 0.49134243731240795,
+            "interval_method": "wilson-score-95",
+            "label": "within 100 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 16,
+            "rate": 0.6956521739130435,
+            "state": "measured"
+          },
+          {
+            "denominator": 23,
+            "interval_high": 0.9922833338565469,
+            "interval_low": 0.7900884492974114,
+            "interval_method": "wilson-score-95",
+            "label": "within 250 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 22,
+            "rate": 0.9565217391304348,
+            "state": "measured"
+          },
+          {
+            "denominator": 23,
+            "interval_high": 1.0,
+            "interval_low": 0.8568833815495731,
+            "interval_method": "wilson-score-95",
+            "label": "within 500 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 23,
+            "rate": 1.0,
+            "state": "measured"
+          },
+          {
+            "denominator": 23,
+            "interval_high": 1.0,
+            "interval_low": 0.8568833815495731,
+            "interval_method": "wilson-score-95",
+            "label": "within 1000 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 23,
+            "rate": 1.0,
+            "state": "measured"
+          }
+        ],
+        "state": "measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 2,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": "Apple",
+        "share": {
+          "denominator": 23,
+          "interval_high": 0.8439597554678597,
+          "interval_low": 0.49134243731240795,
+          "interval_method": "wilson-score-95",
+          "label": "share of placed records from the largest single incident",
+          "note": "Where this is high, a territory-level damage rate would describe one fire rather than a territory. That is why no such rate is published.",
+          "numerator": 16,
+          "rate": 0.6956521739130435,
+          "state": "measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 23,
+      "source_layer": "else_iou_pou",
+      "territory": "City of Banning Electric Department"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "City of Cerritos"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "City of Corona Department of Water & Power"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [
+        "Power and Water Resource Pooling Authority"
+      ],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "published geometry failed an OGC validity check and was repaired",
+      "geometry_state": "repaired",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 69,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "City of Healdsburg Electric Department"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "City of Industry"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "City of Lompoc Electric Division"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "City of Needles"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "published geometry failed an OGC validity check and was repaired",
+      "geometry_state": "repaired",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "City of Palo Alto"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "City of Pittsburg"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [
+        "Metropolitan Water District of So. Cal"
+      ],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 42,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "City of Riverside"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 25,
+            "interval_high": 0.13319225093904846,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "within 100 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          },
+          {
+            "denominator": 25,
+            "interval_high": 0.13319225093904846,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "within 250 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          },
+          {
+            "denominator": 25,
+            "interval_high": 0.2995579392092732,
+            "interval_low": 0.04166817150440358,
+            "interval_method": "wilson-score-95",
+            "label": "within 500 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 3,
+            "rate": 0.12,
+            "state": "measured"
+          },
+          {
+            "denominator": 25,
+            "interval_high": 1.0,
+            "interval_low": 0.8668077490609515,
+            "interval_method": "wilson-score-95",
+            "label": "within 1000 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 25,
+            "rate": 1.0,
+            "state": "measured"
+          }
+        ],
+        "state": "measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 1,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": "Ruby",
+        "share": {
+          "denominator": 25,
+          "interval_high": 1.0,
+          "interval_low": 0.8668077490609515,
+          "interval_method": "wilson-score-95",
+          "label": "share of placed records from the largest single incident",
+          "note": "Where this is high, a territory-level damage rate would describe one fire rather than a territory. That is why no such rate is published.",
+          "numerator": 25,
+          "rate": 1.0,
+          "state": "measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 25,
+      "source_layer": "else_iou_pou",
+      "territory": "City of Shasta Lake"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "City of Ukiah Electric Utilities Division"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "City of Vernon Municipal Light Department"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "Colton Electric Utility Department"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "Eastside Power Authority"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "Glendale Water & Power"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "Gridley Electric Utility"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "Imperial Irrigation District"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "Kirkwood Meadows Public Utility District"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 203,
+            "interval_high": 0.1415484834200059,
+            "interval_low": 0.06073909982975972,
+            "interval_method": "wilson-score-95",
+            "label": "within 100 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 19,
+            "rate": 0.09359605911330049,
+            "state": "measured"
+          },
+          {
+            "denominator": 203,
+            "interval_high": 0.2678118408757099,
+            "interval_low": 0.1568682949226059,
+            "interval_method": "wilson-score-95",
+            "label": "within 250 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 42,
+            "rate": 0.20689655172413793,
+            "state": "measured"
+          },
+          {
+            "denominator": 203,
+            "interval_high": 0.44271253697535307,
+            "interval_low": 0.31072180693821083,
+            "interval_method": "wilson-score-95",
+            "label": "within 500 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 76,
+            "rate": 0.37438423645320196,
+            "state": "measured"
+          },
+          {
+            "denominator": 203,
+            "interval_high": 0.5268103801241011,
+            "interval_low": 0.3910010678470868,
+            "interval_method": "wilson-score-95",
+            "label": "within 1000 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 93,
+            "rate": 0.458128078817734,
+            "state": "measured"
+          }
+        ],
+        "state": "measured"
+      },
+      "contested_with": [
+        "Plumas-Sierra Rural Electric Cooperative"
+      ],
+      "distinct_incidents_among_placed": 10,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": "Dixie",
+        "share": {
+          "denominator": 203,
+          "interval_high": 0.5414508917128118,
+          "interval_low": 0.4053682805038392,
+          "interval_method": "wilson-score-95",
+          "label": "share of placed records from the largest single incident",
+          "note": "Where this is high, a territory-level damage rate would describe one fire rather than a territory. That is why no such rate is published.",
+          "numerator": 96,
+          "rate": 0.4729064039408867,
+          "state": "measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 85,
+      "records_placed_here": 203,
+      "source_layer": "else_iou_pou",
+      "territory": "Lassen Municipal Utility District"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "Lathrop Irrigation District"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 1512,
+            "interval_high": 0.036578646117704276,
+            "interval_low": 0.020050929700519957,
+            "interval_method": "wilson-score-95",
+            "label": "within 100 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 41,
+            "rate": 0.027116402116402115,
+            "state": "measured"
+          },
+          {
+            "denominator": 1512,
+            "interval_high": 0.0624621712303481,
+            "interval_low": 0.04034637640097005,
+            "interval_method": "wilson-score-95",
+            "label": "within 250 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 76,
+            "rate": 0.05026455026455026,
+            "state": "measured"
+          },
+          {
+            "denominator": 1512,
+            "interval_high": 0.10117921441659644,
+            "interval_low": 0.07287688972635231,
+            "interval_method": "wilson-score-95",
+            "label": "within 500 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 130,
+            "rate": 0.08597883597883597,
+            "state": "measured"
+          },
+          {
+            "denominator": 1512,
+            "interval_high": 0.33126360729576626,
+            "interval_low": 0.2847912270582243,
+            "interval_method": "wilson-score-95",
+            "label": "within 1000 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 465,
+            "rate": 0.30753968253968256,
+            "state": "measured"
+          }
+        ],
+        "state": "measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 2,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": "Caldor",
+        "share": {
+          "denominator": 1512,
+          "interval_high": 0.759633527241043,
+          "interval_low": 0.7153501828364945,
+          "interval_method": "wilson-score-95",
+          "label": "share of placed records from the largest single incident",
+          "note": "Where this is high, a territory-level damage rate would describe one fire rather than a territory. That is why no such rate is published.",
+          "numerator": 1116,
+          "rate": 0.7380952380952381,
+          "state": "measured"
+        }
+      },
+      "published_type": "IOU",
+      "records_contested_here": 0,
+      "records_placed_here": 1512,
+      "source_layer": "else_iou_pou",
+      "territory": "Liberty Utilities"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "Lodi Electric Utility"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 18,
+            "interval_high": 0.17587922364665765,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "within 100 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          },
+          {
+            "denominator": 18,
+            "interval_high": 0.17587922364665765,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "within 250 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          },
+          {
+            "denominator": 18,
+            "interval_high": 0.17587922364665765,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "within 500 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          },
+          {
+            "denominator": 18,
+            "interval_high": 0.17587922364665765,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "within 1000 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          }
+        ],
+        "state": "measured"
+      },
+      "contested_with": [
+        "Metropolitan Water District of So. Cal"
+      ],
+      "distinct_incidents_among_placed": 2,
+      "geometry_note": "published geometry failed an OGC validity check and was repaired",
+      "geometry_state": "repaired",
+      "incident_concentration": {
+        "largest_incident": "Horseshoe",
+        "share": {
+          "denominator": 18,
+          "interval_high": 0.9099907189139831,
+          "interval_low": 0.5478541568378739,
+          "interval_method": "wilson-score-95",
+          "label": "share of placed records from the largest single incident",
+          "note": "Where this is high, a territory-level damage rate would describe one fire rather than a territory. That is why no such rate is published.",
+          "numerator": 14,
+          "rate": 0.7777777777777778,
+          "state": "measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 9794,
+      "records_placed_here": 18,
+      "source_layer": "else_iou_pou",
+      "territory": "Los Angeles Department of Water & Power"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "Merced Irrigation District"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [
+        "City of Anaheim Public Utilities Department",
+        "City of Riverside",
+        "Los Angeles Department of Water & Power",
+        "Pasadena Water & Power",
+        "San Diego Gas & Electric",
+        "Southern California Edison"
+      ],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "published geometry failed an OGC validity check and was repaired",
+      "geometry_state": "repaired",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 37727,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "Metropolitan Water District of So. Cal"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [
+        "Pacific Gas & Electric Company"
+      ],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 40,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "Modesto Irrigation District"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "Moreno Valley Utility"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "Tribal",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_other",
+      "territory": "Morongo Band of Mission Indians"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 1957,
+            "interval_high": 0.008046006731038832,
+            "interval_low": 0.0020728423637917876,
+            "interval_method": "wilson-score-95",
+            "label": "within 100 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 8,
+            "rate": 0.004087889626980072,
+            "state": "measured"
+          },
+          {
+            "denominator": 1957,
+            "interval_high": 0.014492633464564688,
+            "interval_low": 0.005825918370144028,
+            "interval_method": "wilson-score-95",
+            "label": "within 250 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 18,
+            "rate": 0.009197751660705161,
+            "state": "measured"
+          },
+          {
+            "denominator": 1957,
+            "interval_high": 0.019395815141746642,
+            "interval_low": 0.009082498884864551,
+            "interval_method": "wilson-score-95",
+            "label": "within 500 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 26,
+            "rate": 0.013285641287685232,
+            "state": "measured"
+          },
+          {
+            "denominator": 1957,
+            "interval_high": 0.01999920598044058,
+            "interval_low": 0.009499078320158429,
+            "interval_method": "wilson-score-95",
+            "label": "within 1000 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 27,
+            "rate": 0.013796627491057742,
+            "state": "measured"
+          }
+        ],
+        "state": "measured"
+      },
+      "contested_with": [
+        "Surprise Valley Electrification Corporation"
+      ],
+      "distinct_incidents_among_placed": 32,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": "Slater",
+        "share": {
+          "denominator": 1957,
+          "interval_high": 0.2485809952592502,
+          "interval_low": 0.2113447446642046,
+          "interval_method": "wilson-score-95",
+          "label": "share of placed records from the largest single incident",
+          "note": "Where this is high, a territory-level damage rate would describe one fire rather than a territory. That is why no such rate is published.",
+          "numerator": 449,
+          "rate": 0.22943280531425653,
+          "state": "measured"
+        }
+      },
+      "published_type": "IOU",
+      "records_contested_here": 1,
+      "records_placed_here": 1957,
+      "source_layer": "else_iou_pou",
+      "territory": "PacifiCorp"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 65865,
+            "interval_high": 0.0018960288286718765,
+            "interval_low": 0.0012897180916209448,
+            "interval_method": "wilson-score-95",
+            "label": "within 100 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 103,
+            "rate": 0.001563804752144538,
+            "state": "measured"
+          },
+          {
+            "denominator": 65865,
+            "interval_high": 0.00469739481181662,
+            "interval_low": 0.0037108517362411555,
+            "interval_method": "wilson-score-95",
+            "label": "within 250 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 275,
+            "rate": 0.004175206862521825,
+            "state": "measured"
+          },
+          {
+            "denominator": 65865,
+            "interval_high": 0.009722245370628003,
+            "interval_low": 0.008280826074951437,
+            "interval_method": "wilson-score-95",
+            "label": "within 500 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 591,
+            "rate": 0.008972899111819631,
+            "state": "measured"
+          },
+          {
+            "denominator": 65865,
+            "interval_high": 0.017051876796635015,
+            "interval_low": 0.015130888405724853,
+            "interval_method": "wilson-score-95",
+            "label": "within 1000 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 1058,
+            "rate": 0.016063159492902147,
+            "state": "measured"
+          }
+        ],
+        "state": "measured"
+      },
+      "contested_with": [
+        "City and County of San Francisco - Hetch Hetchy Water and Power",
+        "Modesto Irrigation District",
+        "Power and Water Resource Pooling Authority"
+      ],
+      "distinct_incidents_among_placed": 271,
+      "geometry_note": "published geometry failed an OGC validity check and was repaired",
+      "geometry_state": "repaired",
+      "incident_concentration": {
+        "largest_incident": "Camp",
+        "share": {
+          "denominator": 65865,
+          "interval_high": 0.36234395975273637,
+          "interval_low": 0.35501861126441414,
+          "interval_method": "wilson-score-95",
+          "label": "share of placed records from the largest single incident",
+          "note": "Where this is high, a territory-level damage rate would describe one fire rather than a territory. That is why no such rate is published.",
+          "numerator": 23624,
+          "rate": 0.3586730433462385,
+          "state": "measured"
+        }
+      },
+      "published_type": "IOU",
+      "records_contested_here": 12285,
+      "records_placed_here": 65865,
+      "source_layer": "else_iou_pou",
+      "territory": "Pacific Gas & Electric Company"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [
+        "Metropolitan Water District of So. Cal"
+      ],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 1880,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "Pasadena Water & Power"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 1060,
+            "interval_high": 0.027825801534914735,
+            "interval_low": 0.01150473824972278,
+            "interval_method": "wilson-score-95",
+            "label": "within 100 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 19,
+            "rate": 0.017924528301886792,
+            "state": "measured"
+          },
+          {
+            "denominator": 1060,
+            "interval_high": 0.05846358093321675,
+            "interval_low": 0.033506381328974856,
+            "interval_method": "wilson-score-95",
+            "label": "within 250 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 47,
+            "rate": 0.04433962264150943,
+            "state": "measured"
+          },
+          {
+            "denominator": 1060,
+            "interval_high": 0.11343005346281758,
+            "interval_low": 0.07817881563188718,
+            "interval_method": "wilson-score-95",
+            "label": "within 500 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 100,
+            "rate": 0.09433962264150944,
+            "state": "measured"
+          },
+          {
+            "denominator": 1060,
+            "interval_high": 0.1557943450407541,
+            "interval_low": 0.11477365777028177,
+            "interval_method": "wilson-score-95",
+            "label": "within 1000 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 142,
+            "rate": 0.1339622641509434,
+            "state": "measured"
+          }
+        ],
+        "state": "measured"
+      },
+      "contested_with": [
+        "Lassen Municipal Utility District"
+      ],
+      "distinct_incidents_among_placed": 5,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": "Beckwourth",
+        "share": {
+          "denominator": 1060,
+          "interval_high": 0.5149920343802931,
+          "interval_low": 0.45492829563253295,
+          "interval_method": "wilson-score-95",
+          "label": "share of placed records from the largest single incident",
+          "note": "Where this is high, a territory-level damage rate would describe one fire rather than a territory. That is why no such rate is published.",
+          "numerator": 514,
+          "rate": 0.4849056603773585,
+          "state": "measured"
+        }
+      },
+      "published_type": "CO-OP",
+      "records_contested_here": 85,
+      "records_placed_here": 1060,
+      "source_layer": "else_other",
+      "territory": "Plumas-Sierra Rural Electric Cooperative"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "Port of Oakland"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "Port of Stockton"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [
+        "City of Healdsburg Electric Department",
+        "Pacific Gas & Electric Company"
+      ],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "published geometry failed an OGC validity check and was repaired",
+      "geometry_state": "repaired",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 12310,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "Power and Water Resource Pooling Authority"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "Rancho Cucamonga Municipal Utility"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 399,
+            "interval_high": 0.1308324026794563,
+            "interval_low": 0.07232806412126092,
+            "interval_method": "wilson-score-95",
+            "label": "within 100 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 39,
+            "rate": 0.09774436090225563,
+            "state": "measured"
+          },
+          {
+            "denominator": 399,
+            "interval_high": 0.25849702653613227,
+            "interval_low": 0.17800585808618183,
+            "interval_method": "wilson-score-95",
+            "label": "within 250 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 86,
+            "rate": 0.21553884711779447,
+            "state": "measured"
+          },
+          {
+            "denominator": 399,
+            "interval_high": 0.5026938367376383,
+            "interval_low": 0.40545861582194587,
+            "interval_method": "wilson-score-95",
+            "label": "within 500 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 181,
+            "rate": 0.45363408521303256,
+            "state": "measured"
+          },
+          {
+            "denominator": 399,
+            "interval_high": 0.7729358072668345,
+            "interval_low": 0.6863019299352443,
+            "interval_method": "wilson-score-95",
+            "label": "within 1000 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 292,
+            "rate": 0.731829573934837,
+            "state": "measured"
+          }
+        ],
+        "state": "measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 2,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": "Carr",
+        "share": {
+          "denominator": 399,
+          "interval_high": 0.9995574454848419,
+          "interval_low": 0.9859419148893489,
+          "interval_method": "wilson-score-95",
+          "label": "share of placed records from the largest single incident",
+          "note": "Where this is high, a territory-level damage rate would describe one fire rather than a territory. That is why no such rate is published.",
+          "numerator": 398,
+          "rate": 0.9974937343358395,
+          "state": "measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 399,
+      "source_layer": "else_iou_pou",
+      "territory": "Redding Electric Utility"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "Roseville Electric"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 10,
+            "interval_high": 0.2775327998628892,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "within 100 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          },
+          {
+            "denominator": 10,
+            "interval_high": 0.2775327998628892,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "within 250 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          },
+          {
+            "denominator": 10,
+            "interval_high": 0.2775327998628892,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "within 500 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          },
+          {
+            "denominator": 10,
+            "interval_high": 0.2775327998628892,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "within 1000 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          }
+        ],
+        "state": "measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 2,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": "Grant",
+        "share": {
+          "denominator": 10,
+          "interval_high": 0.8318196702937638,
+          "interval_low": 0.31267376973365824,
+          "interval_method": "wilson-score-95",
+          "label": "share of placed records from the largest single incident",
+          "note": "Where this is high, a territory-level damage rate would describe one fire rather than a territory. That is why no such rate is published.",
+          "numerator": 6,
+          "rate": 0.6,
+          "state": "measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 10,
+      "source_layer": "else_iou_pou",
+      "territory": "Sacramento Municipal Utility District"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 608,
+            "interval_high": 0.0062785199749268725,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "within 100 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          },
+          {
+            "denominator": 608,
+            "interval_high": 0.0062785199749268725,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "within 250 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          },
+          {
+            "denominator": 608,
+            "interval_high": 0.0062785199749268725,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "within 500 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          },
+          {
+            "denominator": 608,
+            "interval_high": 0.0062785199749268725,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "within 1000 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          }
+        ],
+        "state": "measured"
+      },
+      "contested_with": [
+        "Metropolitan Water District of So. Cal"
+      ],
+      "distinct_incidents_among_placed": 8,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": "Valley",
+        "share": {
+          "denominator": 608,
+          "interval_high": 0.7671477391203599,
+          "interval_low": 0.6970247943124045,
+          "interval_method": "wilson-score-95",
+          "label": "share of placed records from the largest single incident",
+          "note": "Where this is high, a territory-level damage rate would describe one fire rather than a territory. That is why no such rate is published.",
+          "numerator": 446,
+          "rate": 0.7335526315789473,
+          "state": "measured"
+        }
+      },
+      "published_type": "IOU",
+      "records_contested_here": 620,
+      "records_placed_here": 608,
+      "source_layer": "else_iou_pou",
+      "territory": "San Diego Gas & Electric"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "Shelter Cove Resort Improvement District"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "Silicon Valley Power"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 9638,
+            "interval_high": 0.008702151165012507,
+            "interval_low": 0.005386595201629065,
+            "interval_method": "wilson-score-95",
+            "label": "within 100 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 66,
+            "rate": 0.006847893753890849,
+            "state": "measured"
+          },
+          {
+            "denominator": 9638,
+            "interval_high": 0.018793211460007442,
+            "interval_low": 0.013756738688112965,
+            "interval_method": "wilson-score-95",
+            "label": "within 250 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 155,
+            "rate": 0.01608217472504669,
+            "state": "measured"
+          },
+          {
+            "denominator": 9638,
+            "interval_high": 0.03412898588230037,
+            "interval_low": 0.02725363084588248,
+            "interval_method": "wilson-score-95",
+            "label": "within 500 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 294,
+            "rate": 0.03050425399460469,
+            "state": "measured"
+          },
+          {
+            "denominator": 9638,
+            "interval_high": 0.07090546307319594,
+            "interval_low": 0.06100310068535549,
+            "interval_method": "wilson-score-95",
+            "label": "within 1000 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 634,
+            "rate": 0.06578128242373936,
+            "state": "measured"
+          }
+        ],
+        "state": "measured"
+      },
+      "contested_with": [
+        "Metropolitan Water District of So. Cal"
+      ],
+      "distinct_incidents_among_placed": 46,
+      "geometry_note": "published geometry failed an OGC validity check and was repaired",
+      "geometry_state": "repaired",
+      "incident_concentration": {
+        "largest_incident": "Creek",
+        "share": {
+          "denominator": 9638,
+          "interval_high": 0.16903024129403896,
+          "interval_low": 0.15433552572636602,
+          "interval_method": "wilson-score-95",
+          "label": "share of placed records from the largest single incident",
+          "note": "Where this is high, a territory-level damage rate would describe one fire rather than a territory. That is why no such rate is published.",
+          "numerator": 1557,
+          "rate": 0.1615480390122432,
+          "state": "measured"
+        }
+      },
+      "published_type": "IOU",
+      "records_contested_here": 25345,
+      "records_placed_here": 9638,
+      "source_layer": "else_iou_pou",
+      "territory": "Southern California Edison"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 41,
+            "interval_high": 0.08566757018443186,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "within 100 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          },
+          {
+            "denominator": 41,
+            "interval_high": 0.08566757018443186,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "within 250 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          },
+          {
+            "denominator": 41,
+            "interval_high": 0.08566757018443186,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "within 500 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          },
+          {
+            "denominator": 41,
+            "interval_high": 0.08566757018443186,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "within 1000 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          }
+        ],
+        "state": "measured"
+      },
+      "contested_with": [
+        "PacifiCorp"
+      ],
+      "distinct_incidents_among_placed": 5,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": "Gold",
+        "share": {
+          "denominator": 41,
+          "interval_high": 0.91474748022405,
+          "interval_low": 0.6873738759959581,
+          "interval_method": "wilson-score-95",
+          "label": "share of placed records from the largest single incident",
+          "note": "Where this is high, a territory-level damage rate would describe one fire rather than a territory. That is why no such rate is published.",
+          "numerator": 34,
+          "rate": 0.8292682926829268,
+          "state": "measured"
+        }
+      },
+      "published_type": "CO-OP",
+      "records_contested_here": 1,
+      "records_placed_here": 41,
+      "source_layer": "else_other",
+      "territory": "Surprise Valley Electrification Corporation"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 574,
+            "interval_high": 0.006647946010198172,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "within 100 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          },
+          {
+            "denominator": 574,
+            "interval_high": 0.006647946010198172,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "within 250 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          },
+          {
+            "denominator": 574,
+            "interval_high": 0.006647946010198172,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "within 500 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          },
+          {
+            "denominator": 574,
+            "interval_high": 0.006647946010198172,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "within 1000 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          }
+        ],
+        "state": "measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 5,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": "Monument",
+        "share": {
+          "denominator": 574,
+          "interval_high": 0.545956991683225,
+          "interval_low": 0.4644264792644035,
+          "interval_method": "wilson-score-95",
+          "label": "share of placed records from the largest single incident",
+          "note": "Where this is high, a territory-level damage rate would describe one fire rather than a territory. That is why no such rate is published.",
+          "numerator": 290,
+          "rate": 0.5052264808362369,
+          "state": "measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 574,
+      "source_layer": "else_iou_pou",
+      "territory": "Trinity Public Utilities District"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "Truckee Donner Public Utilities District"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 115,
+            "interval_high": 0.12033312204215384,
+            "interval_low": 0.029795116013329806,
+            "interval_method": "wilson-score-95",
+            "label": "within 100 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 7,
+            "rate": 0.06086956521739131,
+            "state": "measured"
+          },
+          {
+            "denominator": 115,
+            "interval_high": 0.27269944735129814,
+            "interval_low": 0.12986594771740817,
+            "interval_method": "wilson-score-95",
+            "label": "within 250 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 22,
+            "rate": 0.19130434782608696,
+            "state": "measured"
+          },
+          {
+            "denominator": 115,
+            "interval_high": 0.39364014091388394,
+            "interval_low": 0.22770412356628206,
+            "interval_method": "wilson-score-95",
+            "label": "within 500 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 35,
+            "rate": 0.30434782608695654,
+            "state": "measured"
+          },
+          {
+            "denominator": 115,
+            "interval_high": 0.6274934886586452,
+            "interval_low": 0.4482376584453216,
+            "interval_method": "wilson-score-95",
+            "label": "within 1000 m of the published edge",
+            "note": "The publisher states the boundaries are approximate. This is how much of the territory's placed total sits close enough to the edge to be affected if the approximation is off by this much.",
+            "numerator": 62,
+            "rate": 0.5391304347826087,
+            "state": "measured"
+          }
+        ],
+        "state": "measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 1,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": "SCU Lightning Cmplx",
+        "share": {
+          "denominator": 115,
+          "interval_high": 1.0,
+          "interval_low": 0.9676757685506868,
+          "interval_method": "wilson-score-95",
+          "label": "share of placed records from the largest single incident",
+          "note": "Where this is high, a territory-level damage rate would describe one fire rather than a territory. That is why no such rate is published.",
+          "numerator": 115,
+          "rate": 1.0,
+          "state": "measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 115,
+      "source_layer": "else_iou_pou",
+      "territory": "Turlock Irrigation District"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "CO-OP",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_other",
+      "territory": "Valley Electrical Association"
+    },
+    {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 100 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 250 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 500 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          },
+          {
+            "denominator": 0,
+            "interval_high": null,
+            "interval_low": null,
+            "interval_method": "none",
+            "label": "within 1000 m of the published edge",
+            "note": "no records are placed in this territory, so no distance exists",
+            "numerator": 0,
+            "rate": null,
+            "state": "not_measured"
+          }
+        ],
+        "state": "not_measured"
+      },
+      "contested_with": [],
+      "distinct_incidents_among_placed": 0,
+      "geometry_note": "",
+      "geometry_state": "as_published",
+      "incident_concentration": {
+        "largest_incident": null,
+        "share": {
+          "denominator": 0,
+          "interval_high": null,
+          "interval_low": null,
+          "interval_method": "none",
+          "label": "share of placed records from the largest single incident",
+          "note": "no records are placed in this territory",
+          "numerator": 0,
+          "rate": null,
+          "state": "not_measured"
+        }
+      },
+      "published_type": "POU",
+      "records_contested_here": 0,
+      "records_placed_here": 0,
+      "source_layer": "else_iou_pou",
+      "territory": "Victorville Municipal Utilities Services"
+    }
+  ],
+  "years": [
+    {
+      "records": 279,
+      "year": 2013
+    },
+    {
+      "records": 310,
+      "year": 2014
+    },
+    {
+      "records": 3192,
+      "year": 2015
+    },
+    {
+      "records": 944,
+      "year": 2016
+    },
+    {
+      "records": 12757,
+      "year": 2017
+    },
+    {
+      "records": 28403,
+      "year": 2018
+    },
+    {
+      "records": 2108,
+      "year": 2019
+    },
+    {
+      "records": 28626,
+      "year": 2020
+    },
+    {
+      "records": 12253,
+      "year": 2021
+    },
+    {
+      "records": 3009,
+      "year": 2022
+    },
+    {
+      "records": 229,
+      "year": 2023
+    },
+    {
+      "records": 8117,
+      "year": 2024
+    },
+    {
+      "records": 32293,
+      "year": 2025
+    }
+  ]
+}

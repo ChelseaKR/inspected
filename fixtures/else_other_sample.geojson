@@ -1,0 +1,77 @@
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              -122.5,
+              40.0
+            ],
+            [
+              -122.0,
+              40.5
+            ],
+            [
+              -122.5,
+              40.5
+            ],
+            [
+              -122.0,
+              40.0
+            ],
+            [
+              -122.5,
+              40.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "Acronym": "GRC",
+        "OBJECTID": 1,
+        "Type": "CO-OP",
+        "Utility": "Gamma Rural Cooperative"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              -121.0,
+              38.0
+            ],
+            [
+              -120.0,
+              38.0
+            ],
+            [
+              -120.0,
+              39.0
+            ],
+            [
+              -121.0,
+              39.0
+            ],
+            [
+              -121.0,
+              38.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "Acronym": "DCE",
+        "OBJECTID": 2,
+        "Type": "CCA",
+        "Utility": "Delta Choice Energy"
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}

@@ -1,0 +1,190 @@
+# Release, in three jobs with the authority split between them.
+#
+# This workflow has never run. Version 0.1.0 carries no tag, and README.md says so under
+# Release & Versioning. It is committed so the path exists and is reviewable before it is
+# first used, not as evidence that anything has been released.
+#
+# The shape, and why it is this shape:
+#
+# `authorize` is read-only. It checks out `main`, which is the branch the maintainer
+#   controls, never the tag under release, and establishes three things about the tag
+#   before anything else runs: that it is an annotated tag object rather than a
+#   lightweight ref, that its signature verifies against a committed allowed-signers
+#   list, and that its commit is an ancestor of `main`. A tag pointing at a commit that
+#   never reached `main` does not release.
+#
+# `build` checks out the exact commit `authorize` resolved, by SHA rather than by tag
+#   name, so a tag moved after authorization cannot change what is built. It runs the
+#   same `make verify` as CI, then builds, and hands the result over as an artifact.
+#
+# `publish` is the only job with `contents: write`, and it never checks out this
+#   repository. A job that can write releases should not also be running code from the
+#   tree it is releasing. It re-reads the tag object from the API and refuses if it moved
+#   since `authorize` read it, attests the artifacts, and creates the release.
+#
+# Dispatch only, from `main`, with the tag named explicitly. There is deliberately no
+# `push: tags` trigger: pushing a tag should not be sufficient to publish.
+#
+# Actions pinned to the full 40-char commit SHA, resolved 2026-08-17.
+name: release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "The signed, annotated tag to release, for example v0.1.0"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  authorize:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      commit: ${{ steps.resolve.outputs.commit }}
+      tag_object: ${{ steps.resolve.outputs.tag_object }}
+    steps:
+      - name: dispatched from main, or not at all
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "$GITHUB_REF" != "refs/heads/main" ]; then
+            echo "::error::a release is dispatched from main; got $GITHUB_REF"
+            exit 1
+          fi
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: the tag must be an annotated tag, signed, on main
+        id: resolve
+        shell: bash
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          git fetch --tags --force --quiet
+
+          # A lightweight tag carries no signature to check, so refuse it by kind rather
+          # than discovering later that there was nothing to verify.
+          kind=$(git cat-file -t "refs/tags/${TAG}")
+          if [ "$kind" != "tag" ]; then
+            echo "::error::${TAG} is a ${kind}, not an annotated tag object"
+            exit 1
+          fi
+
+          # Present is not the same as populated. A file of comments would let
+          # verify-tag run against an empty principal list, and the failure would read
+          # like a bad signature rather than like a missing configuration.
+          if [ ! -s .github/allowed_signers ] \
+             || ! grep -qv '^[[:space:]]*\(#\|$\)' .github/allowed_signers; then
+            echo "::error::.github/allowed_signers names no principal; nothing to verify against"
+            exit 1
+          fi
+          git config gpg.ssh.allowedSignersFile .github/allowed_signers
+          git verify-tag "${TAG}"
+
+          commit=$(git rev-parse "${TAG}^{commit}")
+          if ! git merge-base --is-ancestor "${commit}" origin/main; then
+            echo "::error::${TAG} points at ${commit}, which is not an ancestor of main"
+            exit 1
+          fi
+
+          echo "commit=${commit}" >> "$GITHUB_OUTPUT"
+          echo "tag_object=$(git rev-parse "refs/tags/${TAG}")" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: authorize
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      # By SHA, not by tag name. `authorize` decided which commit this is; a tag moved
+      # in the meantime must not change what gets built.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.authorize.outputs.commit }}
+          persist-credentials: false
+
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: ">=0.11.0"
+          python-version: "3.12"
+
+      - name: the same gate CI runs
+        run: make verify
+
+      - name: the tag and the package version must agree
+        shell: bash
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          want="${TAG#v}"
+          have=$(uv run python -c "import tomllib,pathlib;print(tomllib.loads(pathlib.Path('pyproject.toml').read_text())['project']['version'])")
+          if [ "$want" != "$have" ]; then
+            echo "::error::tag ${TAG} does not match pyproject version ${have}"
+            exit 1
+          fi
+
+      - run: uv build
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: dist
+          path: dist/
+          if-no-files-found: error
+
+  publish:
+    needs: [authorize, build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # create the release and attach the artifacts
+      id-token: write # keyless signing for the provenance attestation
+      attestations: write
+    steps:
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: dist
+          path: dist
+
+      # The tag is read again here, from the API rather than from a working tree this job
+      # deliberately does not have. If it moved between authorization and now, the release
+      # would carry a name that no longer means what was verified.
+      - name: the tag must not have moved since it was authorized
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ inputs.tag }}
+          AUTHORIZED: ${{ needs.authorize.outputs.tag_object }}
+        run: |
+          set -euo pipefail
+          now=$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${TAG}" --jq '.object.sha')
+          if [ "$now" != "$AUTHORIZED" ]; then
+            echo "::error::${TAG} was ${AUTHORIZED} at authorization and is ${now} now"
+            exit 1
+          fi
+
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: "dist/*"
+
+      - name: create the release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          gh release create "${TAG}" dist/* \
+            --repo "${GITHUB_REPOSITORY}" \
+            --title "${TAG}" \
+            --generate-notes \
+            --verify-tag
