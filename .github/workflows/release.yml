@@ -128,15 +128,22 @@ jobs:
           ref: ${{ needs.authorize.outputs.commit }}
           persist-credentials: false
 
-      # `enable-cache: false` is not cosmetic and is not a scanner appeasement. The
-      # action's default enables the cache on a hosted runner, which makes this step a
-      # cache write in a run whose branch scope is `main`, and a cache entry written
-      # under that scope is readable by every other workflow in the repository including
-      # the ones that run on a pull request. A release build has nothing to gain from it:
-      # it runs once per release, against a clean checkout, and the seconds a warm cache
-      # would save are not worth holding a cross-workflow write it does not need.
-      # This clears CodeQL's `actions/cache-poisoning/poisonable-step`, which was a real
-      # finding rather than a false positive.
+      # `enable-cache: false` because the action's default enables the cache on a hosted
+      # runner, which made this step a cache write in a run whose branch scope is `main`,
+      # and a cache entry written under that scope is readable by every other workflow in
+      # the repository including the ones that run on a pull request. A release build has
+      # nothing to gain from it: it runs once per release, against a clean checkout, and
+      # the seconds a warm cache would save are not worth holding a cross-workflow write
+      # it does not need.
+      #
+      # It does not clear `actions/cache-poisoning/poisonable-step`, and the first draft
+      # of this comment claimed it would. Running the workflow proved otherwise: the
+      # alert moved down to `make verify`. The query is not looking for a step that
+      # writes a cache, it is looking for a step that runs code from an untrusted
+      # checkout, since code on the runner can read the cache token whatever the step was
+      # nominally doing. Every release workflow that builds the commit it releases has
+      # such a step. So that finding is accepted alongside the one above, for the same
+      # reason: `authorize` has already proved what the commit is.
       - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
           version: ">=0.11.0"

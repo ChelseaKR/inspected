@@ -62,12 +62,16 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   is not available and dropping the URL would resolve somebody else's package.
 - The release build writes no Actions cache. `setup-uv` enables one by default on a
   hosted runner, which made the release job a cache write in the `main` scope readable by
-  every other workflow, for no reuse a once-per-release build can collect. This clears
-  CodeQL's `actions/cache-poisoning/poisonable-step`.
+  every other workflow, for no reuse a once-per-release build can collect. It does not
+  clear `actions/cache-poisoning/poisonable-step`, which the first attempt assumed it
+  would: running the workflow moved the alert to `make verify` instead. The query is
+  about executing code from an untrusted checkout rather than about writing a cache, so
+  every release workflow that builds the commit it releases carries it.
 - The CodeQL gate now fails on any finding that is not written down in
   `.github/codeql-accepted.json`, and equally on an entry there whose finding has gone
-  away. One entry today, `actions/untrusted-checkout/medium` on the release build, with
-  the reasoning beside it.
+  away. Two entries today, both on the release build and both reducing to the same fact:
+  the job runs a commit that `authorize` has already proved is a signed annotated tag on
+  main, which is a runtime check the queries cannot see.
 - An interval whose two ends round to the same string is now printed at more decimal
   places until they differ. `0.7% to 0.7%` reads as certainty.
 - The repair strategy and the set of included types are parameters on

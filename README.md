@@ -212,12 +212,14 @@ docs/adr/        the decisions, with their reasoning
 - **`.github/allowed_signers` names no principal**, so the release workflow refuses at its
   first gate and no tag can be released. That is the intended state until the maintainer
   records a key.
-- **One CodeQL finding is accepted rather than fixed.**
-  `actions/untrusted-checkout/medium` on the release build, written down with its
-  reasoning in `.github/codeql-accepted.json`. The reasoning is that the commit being
-  checked out has already been proved to be a signed annotated tag on `main`, which is a
-  runtime fact the query cannot see. Somebody who disagrees with that reading should say
-  so; the entry is there to be argued with rather than to be forgotten.
+- **Two CodeQL findings are accepted rather than fixed.**
+  `actions/untrusted-checkout/medium` and `actions/cache-poisoning/poisonable-step`, both
+  on the release build, written down with their reasoning in
+  `.github/codeql-accepted.json`. Both reduce to one fact: the job runs a commit resolved
+  from a workflow input, and the proof that the commit is a signed annotated tag on
+  `main` lives in a prior job the queries cannot see. Every release workflow that builds
+  the commit it releases carries them. Somebody who disagrees with that reading should
+  say so; the entries are there to be argued with rather than to be forgotten.
 
 ## Standards conformance
 
@@ -230,7 +232,7 @@ standards bind it. The scoping below was derived here and a manifest entry super
 | Standard | State |
 |---|---|
 | Code Quality | Applies: uv, ruff, mypy `--strict`, pytest with branch coverage against a 90% floor, complexity capped at 10, `uv lock --check` as the drift gate and `uv sync --locked` as the install |
-| Security & Supply-Chain | Applies: semgrep, gitleaks, pip-audit, CodeQL over actions and python, zizmor over the workflows, every action SHA-pinned, `permissions: contents: read` at the top of every workflow, `persist-credentials: false` on every checkout, and the release build writing no Actions cache. A CodeQL finding fails the job unless it is written down in `.github/codeql-accepted.json` with its reasoning, and an entry there fails the job once the finding it excuses is gone. One entry today. Not met: no SBOM, no OpenSSF Scorecard workflow, no osv-scanner alongside pip-audit |
+| Security & Supply-Chain | Applies: semgrep, gitleaks, pip-audit, CodeQL over actions and python, zizmor over the workflows, every action SHA-pinned, `permissions: contents: read` at the top of every workflow, `persist-credentials: false` on every checkout, and the release build writing no Actions cache. A CodeQL finding fails the job unless it is written down in `.github/codeql-accepted.json` with its reasoning, and an entry there fails the job once the finding it excuses is gone. Two entries today, both on the release build. Not met: no SBOM, no OpenSSF Scorecard workflow, no osv-scanner alongside pip-audit |
 | CI/CD | Applies (not met): `main` carries no ruleset and no branch protection, so the gates report and block nothing. Applying a protection profile is a live repository setting and the owner's call |
 | Observability | Applies (Tier C): A library and a CLI writing to stdout. No hosted service, no telemetry, no SLO surface. Not met: no operations runbook |
 | Accessibility | Applies (not met): Output is Markdown and JSON, with no rendered UI and no colour encoding, so WCAG has little surface here. Not met: no ACR, and the generated tables have not been read with a screen reader |

@@ -1,5 +1,11 @@
 [
   {
+    "rule": "actions/cache-poisoning/poisonable-step",
+    "path": ".github/workflows/release.yml",
+    "accepted": "2026-08-17",
+    "reason": "The same finding as the one below, seen from the other end. This query is not about a step that writes a cache; it is about a step that executes code from an untrusted checkout, because code running on the runner can read the cache token and poison entries whatever the step was nominally doing. Setting enable-cache: false on setup-uv did remove a cache write the release job never needed, and it is kept for that reason, but the alert simply moved to the first step that runs the checked-out tree, which is `make verify`. Any release workflow that builds the commit it is releasing has such a step, so there is no version of this job that does not carry this finding. What bounds it is the same thing that bounds the checkout: `authorize` proves the commit is a signed annotated tag object on main before this job starts."
+  },
+  {
     "rule": "actions/untrusted-checkout/medium",
     "path": ".github/workflows/release.yml",
     "accepted": "2026-08-17",
