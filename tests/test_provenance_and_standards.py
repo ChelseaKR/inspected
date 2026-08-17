@@ -6,12 +6,14 @@ the engineering. Both drift the moment nothing reads them.
 
 from __future__ import annotations
 
+import json
 import re
 import tomllib
 from pathlib import Path
 
 import pytest
 
+from inspected.acquire import DINS_FIELDS
 from inspected.sources import RETRIEVED, SOURCES, WIRES_TYPES
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -60,6 +62,12 @@ def test_every_publisher_caveat_names_what_was_built_from_it() -> None:
 def test_provenance_names_the_fields_that_are_never_fetched() -> None:
     for field in ("SITEADDRESS", "APN", "ASSESSEDIMPROVEDVALUE"):
         assert field in PROVENANCE
+
+
+def test_provenance_names_every_field_that_is_fetched() -> None:
+    """A column added to the retrieval and not to the document is undisclosed collection."""
+    for field in DINS_FIELDS:
+        assert field in PROVENANCE, field
 
 
 def test_the_wires_types_are_the_ones_the_adr_argues_for() -> None:
@@ -201,6 +209,19 @@ def test_no_security_gate_is_silenced(workflow: Path) -> None:
 SCANNERS = ("codeql", "semgrep", "gitleaks", "zizmor", "pip-audit")
 
 
+def _uncommented(text: str) -> str:
+    """The workflow with its comment lines removed.
+
+    A workflow that explains in a comment why it accepts a scanner finding is not a
+    workflow that runs a scanner, and the check below is about the second thing. Matching
+    on the whole file made release.yml look like a scanner job the moment it said the
+    word CodeQL.
+    """
+    return "\n".join(
+        line for line in text.splitlines() if not line.lstrip().startswith("#")
+    )
+
+
 def test_no_scanner_is_manual_only() -> None:
     """A scanner reachable only by workflow_dispatch is documentation, not enforcement.
 
@@ -209,7 +230,7 @@ def test_no_scanner_is_manual_only() -> None:
     """
     for workflow in WORKFLOWS:
         text = workflow.read_text(encoding="utf-8")
-        if not any(scanner in text.lower() for scanner in SCANNERS):
+        if not any(scanner in _uncommented(text).lower() for scanner in SCANNERS):
             continue
         triggers = text.split("permissions:")[0]
         if "workflow_dispatch" not in triggers:
@@ -224,3 +245,48 @@ def test_contributing_names_the_rules_the_project_will_not_break() -> None:
         "make verify",
     ):
         assert phrase in CONTRIBUTING
+
+
+def test_every_accepted_codeql_finding_is_written_down_with_its_reasoning() -> None:
+    """An acceptance nobody can argue with is a suppression with better manners."""
+    accepted = json.loads(
+        (ROOT / ".github" / "codeql-accepted.json").read_text(encoding="utf-8")
+    )
+    assert isinstance(accepted, list)
+    for entry in accepted:
+        assert set(entry) == {"rule", "path", "accepted", "reason"}, entry
+        assert (ROOT / entry["path"]).exists(), entry["path"]
+        assert re.fullmatch(r"\d{4}-\d{2}-\d{2}", entry["accepted"]), entry
+        assert len(entry["reason"]) > 200, (
+            f"{entry['rule']} is excused in one line. Say why it is not a defect, or "
+            "fix it."
+        )
+    assert len(accepted) <= 3, (
+        "an acceptance list this long is a scanner that has been talked out of its job"
+    )
+
+
+def test_the_codeql_gate_refuses_an_acceptance_that_has_outlived_its_finding() -> None:
+    """The half of the gate that keeps the list from becoming a graveyard."""
+    codeql = (ROOT / ".github" / "workflows" / "codeql.yml").read_text(encoding="utf-8")
+    assert "codeql-accepted.json" in codeql
+    assert "no longer reports" in codeql
+    assert "stale.json" in codeql
+
+
+def test_the_release_build_writes_no_actions_cache() -> None:
+    release = (ROOT / ".github" / "workflows" / "release.yml").read_text(
+        encoding="utf-8"
+    )
+    assert "enable-cache: false" in release, (
+        "a release build caching under the main scope is a cross-workflow write it does "
+        "not need"
+    )
+
+
+def test_the_unresolvable_dependency_is_ignored_with_its_reason_rather_than_left_red() -> (
+    None
+):
+    dependabot = (ROOT / ".github" / "dependabot.yml").read_text(encoding="utf-8")
+    assert 'dependency-name: "perimeter"' in dependabot
+    assert "PyPI" in dependabot, "the ignore must say what the real fix is and is not"

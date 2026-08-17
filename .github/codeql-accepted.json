@@ -1,0 +1,8 @@
+[
+  {
+    "rule": "actions/untrusted-checkout/medium",
+    "path": ".github/workflows/release.yml",
+    "accepted": "2026-08-17",
+    "reason": "The release build checks out the commit `authorize` resolved from the tag input, which is the shape this query looks for. `authorize` first proves the tag is an annotated tag object, that its signature verifies against the committed allowed-signers list, and that its commit is an ancestor of main; dispatch additionally requires write access to this repository. The query cannot see a prior job's runtime checks, so it reports what it can see. Excluding the rule outright would switch it off for an unverified checkout added later, and rewriting the checkout as a shell git command would hide the pattern without changing what runs. Kept, and re-read whenever release.yml changes."
+  }
+]

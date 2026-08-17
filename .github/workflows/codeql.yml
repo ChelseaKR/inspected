@@ -4,8 +4,15 @@
 # The findings gate is local rather than "the alerts will show up in the Security tab".
 # Uploading SARIF to code scanning does not fail a build, and a required check that cannot
 # go red is not a gate. `analyze` writes SARIF to disk, the step below refuses to pass when
-# there is no SARIF to read, and any finding fails the job. The SARIF is uploaded too, so
-# the alerts stay browsable.
+# there is no SARIF to read, and any finding that is not written down in
+# `.github/codeql-accepted.json` fails the job. The SARIF is uploaded too, so the alerts
+# stay browsable.
+#
+# The accepted list is deliberately not a suppression list. It matches on rule and file
+# together rather than on rule alone, every entry carries its reasoning and the date it
+# was accepted, and an entry whose finding CodeQL has stopped reporting fails the job
+# until somebody deletes it. So the list can only ever describe findings that are still
+# there, and the gate can still go red for anything new.
 #
 # PRs into main plus a weekly schedule. No push:main trigger; the pull_request run covers
 # it. Actions pinned to the full commit SHA, resolved 2026-08-17.
@@ -52,7 +59,12 @@ jobs:
           upload: always
           output: codeql-results
 
-      - name: zero findings, and refuse to pass without scan evidence
+      # No finding except the ones written down, and none written down that is not still
+      # there. The second half is what keeps this from becoming a suppression list: an
+      # accepted entry whose finding has been fixed fails the job until it is deleted, so
+      # the file can only ever describe findings that currently exist. Each entry carries
+      # the reasoning in the file itself, next to the rule it excuses.
+      - name: no unaccepted finding, and no acceptance that has outlived its finding
         shell: bash
         run: |
           set -euo pipefail
@@ -61,12 +73,30 @@ jobs:
             echo '::error::CodeQL produced no SARIF; refusing to pass without evidence.'
             exit 1
           fi
-          findings=$(jq -s '[.[] | .runs[]?.results[]?] | length' "${sarif[@]}")
-          if (( findings != 0 )); then
-            jq -rs '.[] | .runs[]?.results[]?
-                    | "\(.ruleId // "unknown rule"): \(.message.text // "finding")"' \
-              "${sarif[@]}"
-            echo "::error::CodeQL reported $findings finding(s)."
+          jq -s '[.[] | .runs[]?.results[]? | {
+                   rule: (.ruleId // "unknown rule"),
+                   path: (.locations[0].physicalLocation.artifactLocation.uri // ""),
+                   text: (.message.text // "")
+                 }]' "${sarif[@]}" > findings.json
+          echo "CodeQL: ${#sarif[@]} SARIF file(s), $(jq length findings.json) finding(s)."
+
+          jq --slurpfile accepted .github/codeql-accepted.json '
+             ($accepted[0] | map({rule, path})) as $ok
+             | map(select([{rule, path}][0] as $x | ($ok | index($x)) == null))
+             ' findings.json > unaccepted.json
+          if [ "$(jq length unaccepted.json)" != "0" ]; then
+            jq -r '.[] | "\(.rule) in \(.path): \(.text)"' unaccepted.json
+            echo "::error::CodeQL reported $(jq length unaccepted.json) unaccepted finding(s)."
             exit 1
           fi
-          echo "CodeQL: ${#sarif[@]} SARIF file(s), zero findings."
+
+          jq --slurpfile found findings.json '
+             ($found[0] | map({rule, path})) as $seen
+             | map(select([{rule, path}][0] as $x | ($seen | index($x)) == null))
+             ' .github/codeql-accepted.json > stale.json
+          if [ "$(jq length stale.json)" != "0" ]; then
+            jq -r '.[] | "\(.rule) in \(.path)"' stale.json
+            echo "::error::.github/codeql-accepted.json excuses a finding CodeQL no longer reports. Delete the entry."
+            exit 1
+          fi
+          echo "CodeQL: every finding is one of the $(jq length .github/codeql-accepted.json) written down, and every one written down is still reported."

@@ -108,15 +108,40 @@ jobs:
     steps:
       # By SHA, not by tag name. `authorize` decided which commit this is; a tag moved
       # in the meantime must not change what gets built.
+      #
+      # CodeQL reports `actions/untrusted-checkout/medium` here, and the finding is kept
+      # rather than worked around. What the query sees is a checkout of a ref that came
+      # from a workflow input, which is the shape of the real vulnerability it is looking
+      # for. What it cannot see is the job above: this SHA is an annotated tag object,
+      # signature-verified against a committed allowed-signers list, and an ancestor of
+      # `main`. Dispatch also requires write access to this repository, so there is no
+      # anonymous path to it. The residual risk is a maintainer whose signing key is
+      # already trusted releasing their own commit, which is what a release is.
+      #
+      # It stays because the alternatives are worse. Laundering the SHA through a shell
+      # `git checkout` would hide the pattern from the analyzer without changing what
+      # runs, and excluding the rule would switch it off for a checkout added later that
+      # is not verified at all. See `.github/workflows/codeql.yml` for how the gate
+      # treats an accepted finding.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ needs.authorize.outputs.commit }}
           persist-credentials: false
 
+      # `enable-cache: false` is not cosmetic and is not a scanner appeasement. The
+      # action's default enables the cache on a hosted runner, which makes this step a
+      # cache write in a run whose branch scope is `main`, and a cache entry written
+      # under that scope is readable by every other workflow in the repository including
+      # the ones that run on a pull request. A release build has nothing to gain from it:
+      # it runs once per release, against a clean checkout, and the seconds a warm cache
+      # would save are not worth holding a cross-workflow write it does not need.
+      # This clears CodeQL's `actions/cache-poisoning/poisonable-step`, which was a real
+      # finding rather than a false positive.
       - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
           version: ">=0.11.0"
           python-version: "3.12"
+          enable-cache: false
 
       - name: the same gate CI runs
         run: make verify
