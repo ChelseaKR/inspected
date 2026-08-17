@@ -719,7 +719,7 @@
               "rate": 0.37791276788409295,
               "state": "measured"
             },
-            "note": "The same records measured twice against two different sets of outlines, so the two populations are not independent and this interval is wider than a paired comparison would give. It is published as the conservative bound; the count of records that change outcome is the exact figure.",
+            "note": "The same records measured twice against two different sets of outlines. The two proportions are positively correlated rather than independent, so a method built for two independent samples gives a wider interval here than a paired method would. It is published as the conservative bound. The exact figures are the two contested counts, which are a census and not an estimate.",
             "right": {
               "denominator": 132520,
               "interval_high": 0.38117661916403645,
@@ -799,7 +799,7 @@
               "rate": 0.3785617265318442,
               "state": "measured"
             },
-            "note": "The same records measured twice against two different sets of outlines, so the two populations are not independent and this interval is wider than a paired comparison would give. It is published as the conservative bound; the count of records that change outcome is the exact figure.",
+            "note": "The same records measured twice against two different sets of outlines. The two proportions are positively correlated rather than independent, so a method built for two independent samples gives a wider interval here than a paired method would. It is published as the conservative bound. The exact figures are the two contested counts, which are a census and not an estimate.",
             "right": {
               "denominator": 132520,
               "interval_high": 0.38117661916403645,
@@ -879,7 +879,7 @@
               "rate": 0.37791276788409295,
               "state": "measured"
             },
-            "note": "The same records measured twice against two different sets of outlines, so the two populations are not independent and this interval is wider than a paired comparison would give. It is published as the conservative bound; the count of records that change outcome is the exact figure.",
+            "note": "The same records measured twice against two different sets of outlines. The two proportions are positively correlated rather than independent, so a method built for two independent samples gives a wider interval here than a paired method would. It is published as the conservative bound. The exact figures are the two contested counts, which are a census and not an estimate.",
             "right": {
               "denominator": 132520,
               "interval_high": 0.38117661916403645,
@@ -958,7 +958,7 @@
               "rate": 0.563394204648355,
               "state": "measured"
             },
-            "note": "The same records measured twice against two different sets of outlines, so the two populations are not independent and this interval is wider than a paired comparison would give. It is published as the conservative bound; the count of records that change outcome is the exact figure.",
+            "note": "The same records measured twice against two different sets of outlines. The two proportions are positively correlated rather than independent, so a method built for two independent samples gives a wider interval here than a paired method would. It is published as the conservative bound. The exact figures are the two contested counts, which are a census and not an estimate.",
             "right": {
               "denominator": 132520,
               "interval_high": 0.38117661916403645,
@@ -1040,7 +1040,7 @@
               "rate": 0.743593419861153,
               "state": "measured"
             },
-            "note": "The same records measured twice against two different sets of outlines, so the two populations are not independent and this interval is wider than a paired comparison would give. It is published as the conservative bound; the count of records that change outcome is the exact figure.",
+            "note": "The same records measured twice against two different sets of outlines. The two proportions are positively correlated rather than independent, so a method built for two independent samples gives a wider interval here than a paired method would. It is published as the conservative bound. The exact figures are the two contested counts, which are a census and not an estimate.",
             "right": {
               "denominator": 132520,
               "interval_high": 0.38117661916403645,
@@ -1122,7 +1122,7 @@
               "rate": 0.9032900694234832,
               "state": "measured"
             },
-            "note": "The same records measured twice against two different sets of outlines, so the two populations are not independent and this interval is wider than a paired comparison would give. It is published as the conservative bound; the count of records that change outcome is the exact figure.",
+            "note": "The same records measured twice against two different sets of outlines. The two proportions are positively correlated rather than independent, so a method built for two independent samples gives a wider interval here than a paired method would. It is published as the conservative bound. The exact figures are the two contested counts, which are a census and not an estimate.",
             "right": {
               "denominator": 132520,
               "interval_high": 0.38117661916403645,

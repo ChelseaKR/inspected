@@ -94,10 +94,11 @@ def _variant_row(
             baseline,
             note=(
                 "The same records measured twice against two different sets of "
-                "outlines, so the two populations are not independent and this "
-                "interval is wider than a paired comparison would give. It is "
-                "published as the conservative bound; the count of records that "
-                "change outcome is the exact figure."
+                "outlines. The two proportions are positively correlated rather than "
+                "independent, so a method built for two independent samples gives a "
+                "wider interval here than a paired method would. It is published as "
+                "the conservative bound. The exact figures are the two contested "
+                "counts, which are a census and not an estimate."
             ),
         ).as_dict()
     return row
