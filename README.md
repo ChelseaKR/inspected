@@ -8,7 +8,7 @@ Energy Commission, SMUD, or any electric utility.** This is descriptive geograph
 two public datasets. It is not a risk rating of any company, it ranks nobody, and it
 contains no information about the location of anybody's infrastructure.
 
-**Status:** Beta, version `0.1.0`, no tag cut. Measured against pinned retrievals of
+**Status:** Beta, version `0.1.0`. Measured against pinned retrievals of
 CAL FIRE DINS and the CEC Electric Load Serving Entities layers, all three retrieved
 2026-08-17. The figures move only when those retrievals are deliberately refreshed.
 
@@ -209,9 +209,10 @@ docs/adr/        the decisions, with their reasoning
   FIRE's county field taken as published. Where a record's coordinate and its county
   disagree, this project reports the county the publisher recorded and does not correct
   it, because the correction would be a second opinion about where a structure is.
-- **`.github/allowed_signers` names no principal**, so the release workflow refuses at its
-  first gate and no tag can be released. That is the intended state until the maintainer
-  records a key.
+- **`.github/allowed_signers` names one principal**, the maintainer's release-signing
+  key, checked against the GitHub API on 2026-08-17. A release tag verifies against that
+  key or the workflow refuses at its first gate, and a comment-only signer list still
+  refuses rather than verifying nothing.
 - **Two CodeQL findings are accepted rather than fixed.**
   `actions/untrusted-checkout/medium` and `actions/cache-poisoning/poisonable-step`, both
   on the release build, written down with their reasoning in
@@ -240,7 +241,7 @@ standards bind it. The scoping below was derived here and a manifest entry super
 | AI Evaluation | N/A: No model, no LLM, no generated text anywhere in the pipeline or the output |
 | Quality & Metrics | Applies: Fail-closed gates throughout: the retrieval schema guard, the acquisition completeness checks, the publication rules, the coverage floor, and a determinism gate whose own failure modes are tested. Not met: no Definition of Done, no metrics ledger |
 | Documentation | Applies: README, `PROVENANCE.md`, `CONTRIBUTING.md`, `SECURITY.md`, `CHANGELOG.md`, `CITATION.cff`, a `docs/adr/` log, this table, and a `.standards-version` pin a test reads |
-| Release & Versioning | Applies (not met): Version `0.1.0` in `pyproject.toml` and `CITATION.cff`, no tag cut, no signed tag, no published artifact. A hardened three-job release workflow is committed, its allowed-signers list names no principal, and it has never run |
+| Release & Versioning | Applies: Version `0.1.0` in `pyproject.toml` and `CITATION.cff`, with a CHANGELOG entry for it. A hardened three-job release workflow is committed and its allowed-signers list names the maintainer's release-signing key. Not met: no tag has been cut and no artifact published yet; the first release ships when the maintainer signs and pushes `v0.1.0` and dispatches the workflow from `main` |
 | Responsible-Tech Framework | Applies: Unofficial framing on the README and on the generated report, no claim about any utility's posture, no address, parcel number, assessed value or coordinate republished, no ranking of any named company, and an acquisition that stops rather than routing around an access control. Not met: no dated ethics or residual-risk artifacts |
 | Performance | Applies (not met): A CLI over local files. The full build runs in about 18 seconds, and now does twelve placements of the record set rather than one. It was about 50 seconds doing one, before the containment query was changed to narrow by bounding box and then test against a prepared geometry, which a test holds to answering exactly what the predicate form answers. No budget is recorded |
 | Incident Response | Applies: `SECURITY.md` routes reports to GitHub private vulnerability reporting with a 72-hour acknowledgment target. Not met: no severity convention, no secret-leak runbook |

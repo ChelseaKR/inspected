@@ -5,8 +5,39 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [0.1.0] - 2026-08-18
+
+First release. One entry, because no earlier tag exists: the first measurement and the
+work recorded against it before any tag was cut all ship together.
+
 ### Added
 
+- Placement coverage over CAL FIRE DINS against the California Energy Commission's
+  published electric service territory outlines: how much of the wildfire record set
+  falls inside exactly one territory, inside more than one, inside none, or carries a
+  coordinate that cannot be used. Every share carries its denominator and a Wilson
+  interval.
+- A representativeness check between the placed and contested populations, with a
+  Newcombe interval on the difference, so a reader can see whether the third of the
+  record set that cannot be attributed resembles the two thirds that can.
+- Per-territory counts in name order, with the share of each territory's placed records
+  contributed by its single largest incident. No damage rate is published for any
+  territory and no territory is ordered against another.
+- Boundary-proximity bands at 100, 250, 500 and 1000 metres, operationalizing the
+  publisher's statement that the boundaries are approximate.
+- A geometry ledger naming the eight published polygons that arrive failing an OGC
+  validity check, and measuring what share of the placed total depends on the repair.
+- `artifacts.check_all`: publication rules enforced before anything is written. A rate
+  without a denominator or an interval, a not-measured rate carrying a zero, a coordinate
+  or parcel field, a collection long enough to be a record listing, a key that ranks or
+  scores, or territory rows out of name order each refuse the write.
+- Acquisition guards on top of the walk consumed from `perimeter`: the layer's own record
+  count read before and after, identifiers required to be strictly increasing and unique,
+  and nothing written when any of those fails.
+- A schema guard on the retrieval, so a file fetched without `HAZARDTYPE` raises instead
+  of filtering to zero fire records and producing an honest, empty, misleading report.
 - **The county cut, and the pin refresh it needed.** `COUNTY` is the eighth field the
   acquisition requests, and the contested share is published per county with its own two
   denominators and a Wilson interval, in name order. 52 counties are named in the record
@@ -36,8 +67,8 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   - **The geometry repair.** `make_valid` and `buffer(0)` both run to completion. 927
     records, 0.70% of the record set with an interval of 0.66% to 0.75%, come out
     differently; 770 move from placed to contested and 157 are contested under both but
-    between a different pair of outlines. The 0.1.0 note that the two disagreed on
-    "roughly 770 placements" was a recollection and it missed those 157. See
+    between a different pair of outlines. An earlier draft's note that the two disagreed
+    on "roughly 770 placements" was a recollection and it missed those 157. See
     `docs/adr/0007`.
 - Whether being unattributable is a property of the data or of the fire. 94.3% of the
   405 incidents in the record set fall entirely on one side of the contested line, with
@@ -81,37 +112,6 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - The per-year record counts moved from a standalone `years` block into the new
   measurement, where each year carries both its record count and the classified count
   that is the denominator of its share.
-
-## [0.1.0] - 2026-08-17
-
-First measurement. No tag cut.
-
-### Added
-
-- Placement coverage over CAL FIRE DINS against the California Energy Commission's
-  published electric service territory outlines: how much of the wildfire record set
-  falls inside exactly one territory, inside more than one, inside none, or carries a
-  coordinate that cannot be used. Every share carries its denominator and a Wilson
-  interval.
-- A representativeness check between the placed and contested populations, with a
-  Newcombe interval on the difference, so a reader can see whether the third of the
-  record set that cannot be attributed resembles the two thirds that can.
-- Per-territory counts in name order, with the share of each territory's placed records
-  contributed by its single largest incident. No damage rate is published for any
-  territory and no territory is ordered against another.
-- Boundary-proximity bands at 100, 250, 500 and 1000 metres, operationalizing the
-  publisher's statement that the boundaries are approximate.
-- A geometry ledger naming the eight published polygons that arrive failing an OGC
-  validity check, and measuring what share of the placed total depends on the repair.
-- `artifacts.check_all`: publication rules enforced before anything is written. A rate
-  without a denominator or an interval, a not-measured rate carrying a zero, a coordinate
-  or parcel field, a collection long enough to be a record listing, a key that ranks or
-  scores, or territory rows out of name order each refuse the write.
-- Acquisition guards on top of the walk consumed from `perimeter`: the layer's own record
-  count read before and after, identifiers required to be strictly increasing and unique,
-  and nothing written when any of those fails.
-- A schema guard on the retrieval, so a file fetched without `HAZARDTYPE` raises instead
-  of filtering to zero fire records and producing an honest, empty, misleading report.
 
 ### Notes
 

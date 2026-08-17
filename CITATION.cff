@@ -5,7 +5,7 @@ authors:
   - family-names: Kelly-Reif
     given-names: Chelsea
 version: 0.1.0
-date-released: "2026-08-17"  # bump on every tagged release
+date-released: "2026-08-18"  # bump on every tagged release
 license: Apache-2.0
 repository-code: "https://github.com/ChelseaKR/inspected"
 abstract: >-

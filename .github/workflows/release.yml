@@ -1,8 +1,8 @@
 # Release, in three jobs with the authority split between them.
 #
-# This workflow has never run. Version 0.1.0 carries no tag, and README.md says so under
-# Release & Versioning. It is committed so the path exists and is reviewable before it is
-# first used, not as evidence that anything has been released.
+# Committed and reviewed before first use. A run of this workflow is not evidence that
+# anything has been released; only a signed annotated tag on `main`, verified against
+# the committed .github/allowed_signers list, releases anything.
 #
 # The shape, and why it is this shape:
 #
