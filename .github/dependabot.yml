@@ -10,6 +10,28 @@ updates:
       default-days: 7
     open-pull-requests-limit: 5
     labels: ["dependencies"]
+    ignore:
+      # Every uv run failed on this one dependency, and a failed run checks nothing: the
+      # updater walks the rest of the tree, finds nothing to do, then errors out at
+      # `update_files` and reports the whole job as failed. Shipping a scanner that is
+      # always red is the same as not having one.
+      #
+      # The cause is a name collision, not a broken pin. `perimeter` here is a direct
+      # git reference to ChelseaKR/perimeter, which has no release anywhere. The name
+      # `perimeter` on PyPI belongs to somebody else: YunoJuno's django-perimeter, a
+      # Django access-control package, latest 0.14. The updater resolves the dependency
+      # name against PyPI, finds 0.14, proposes `perimeter==0.14`, and re-locking then
+      # fails because a direct git reference cannot satisfy it.
+      #
+      # So the usual advice, "publish it to PyPI and drop the git pin", is not available
+      # under this name and would be the wrong thing to reach for: dropping the URL
+      # would resolve an unrelated third party's package. The real fix is a release of
+      # the upstream project under a name nobody else holds, and a rename here to match.
+      # That is a change to another repository and it is not made from this one.
+      #
+      # Until then the pin is a commit SHA in pyproject.toml, bumped by hand, and this
+      # entry is what keeps the rest of the ecosystem being checked weekly.
+      - dependency-name: "perimeter"
 
   - package-ecosystem: "github-actions"
     directory: "/"
