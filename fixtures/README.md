@@ -21,5 +21,10 @@ The geography is arranged so each outcome has a case:
 and each record in `dins_sample.json` lands in exactly one of: one territory, more than
 one, none, an unusable coordinate, or a hazard that is not fire.
 
+The county names are invented too. Two counties that do not exist, and two records the
+publisher's county cell is empty on, so the branch that keeps a record with no county
+name out of the county cut and inside every other denominator is exercised by a build
+rather than only by a unit test.
+
 `make report-offline` builds the whole pipeline over these files, and `make determinism`
 builds it twice and compares the trees byte for byte.

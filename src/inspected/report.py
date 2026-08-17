@@ -277,6 +277,34 @@ def _by_fire(tree: dict[str, Any]) -> list[str]:
             f"{interval(node)} |"
         )
     lines.append("")
+    lines.extend(_by_county(block))
+    return lines
+
+
+def _by_county(block: dict[str, Any]) -> list[str]:
+    """The same cut by county, in name order, with the same refusals stated."""
+    lines = [
+        "The same cut by county, from CAL FIRE's own county field. In name order, never",
+        "in size order, and no county is compared against another. This says where in",
+        f"California the published outlines overlap: {block['counties_named_in_the_record_set']}",
+        "counties are named in the record set, and",
+        f"{count(block['records_carrying_no_county_name'])} records carry no county name and are",
+        "left out of this cut alone.",
+        "",
+        block["county_note"],
+        "",
+        "| County | Records | Classified | Contested share | 95% interval |",
+        "|---|---:|---:|---:|---|",
+    ]
+    for row in block["by_county"]:
+        node = row["contested"]
+        lines.append(
+            f"| {row['county']} | {count(row['records'])} | "
+            f"{count(row['records_classified'])} | "
+            f"{pct(node['rate']) if node['state'] == 'measured' else NOT_MEASURED} | "
+            f"{interval(node)} |"
+        )
+    lines.append("")
     return lines
 
 
@@ -374,6 +402,34 @@ def _sensitivity_repair(tree: dict[str, Any]) -> list[str]:
     return lines
 
 
+def _untouched(tree: dict[str, Any]) -> list[str]:
+    block = tree["sensitivity"]["untouched_outlines"]
+    inside = block["records_inside_at_least_one_of_them"]
+    changed = block["records_with_a_different_outcome_without_them"]
+    lines = [
+        "## The outlines that hold nothing",
+        "",
+        "Whether a particular named entity in the published layer operates a retail",
+        "distribution system is the publisher's classification to make, and this project",
+        "does not make it. The narrower question can be answered with a count: could that",
+        "outline be moving a figure here?",
+        "",
+        f"{block['outlines_no_record_falls_inside_count']} of the"
+        f" {block['outlines_indexed']} outlines read as service territories hold no",
+        f"record at all. {count(inside['numerator'])} records of"
+        f" {count(inside['denominator'])} fall inside one of them",
+        f"({interval(inside)}). Placing the whole record set again with all of them",
+        f"removed changes the outcome of {count(changed['numerator'])} records",
+        f"({interval(changed)}), so no figure in this document depends on any of them.",
+        "",
+    ]
+    if block["outlines_no_record_falls_inside"]:
+        lines.extend(f"- {name}" for name in block["outlines_no_record_falls_inside"])
+        lines.append("")
+    lines.extend([block["note"], ""])
+    return lines
+
+
 def _limits() -> list[str]:
     return [
         "## What this does not measure",
@@ -408,6 +464,7 @@ def render(tree: dict[str, Any]) -> str:
         _ledger(tree),
         _sensitivity_repair(tree),
         _sensitivity_types(tree),
+        _untouched(tree),
         _limits(),
     ):
         lines.extend(section)

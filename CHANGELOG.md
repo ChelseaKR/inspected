@@ -7,6 +7,23 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **The county cut, and the pin refresh it needed.** `COUNTY` is the eighth field the
+  acquisition requests, and the contested share is published per county with its own two
+  denominators and a Wilson interval, in name order. 52 counties are named in the record
+  set, 30 records carry no county name, and in 36 of the 52 counties the contested share
+  is zero rather than merely low. No damage rate is published for a county, for the same
+  reason none is published for a territory. See `docs/adr/0009`.
+- **What the refresh moved: nothing.** The artifact built after the re-acquisition was
+  compared against the one built before it at every published value. 4,370 values, none
+  removed, none changed. The re-acquired DINS file is byte-for-byte the previously pinned
+  file once the new column is removed, and both territory layers returned the hashes
+  already recorded. `PROVENANCE.md` states this rather than leaving a reader to assume it.
+- **What an outline that holds no record is worth.** 35 of the 59 indexed outlines hold
+  no record; 0 of 132,520 records fall inside any of them; removing all 35 and placing
+  the whole record set again changes the outcome of 0 records. This is a count, not a
+  classification: it does not say whether any named entity belongs in the set, it says
+  that for 35 of the 59 the answer cannot move a figure published here. See
+  `docs/adr/0010`.
 - `inspected.sensitivity`: the two judgment calls in this project, re-run over the whole
   record set and published with their denominators and intervals rather than argued for.
   - **The inclusion rule.** Seven readings of the publisher's `Type` field, each one the
@@ -35,9 +52,22 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Containment narrows by bounding box and then tests against a prepared geometry, rather
   than calling `STRtree.query(predicate="intersects")`, which does not use a prepared
-  geometry and re-walks every ring on every test. The full build runs in about 17 seconds
-  doing nine placements of the record set where it took about 50 doing one. A test holds
-  the two forms to identical answers, and every published figure is unchanged.
+  geometry and re-walks every ring on every test. The full build runs in about 18 seconds
+  doing twelve placements of the record set where it took about 50 doing one. A test
+  holds the two forms to identical answers, and every published figure is unchanged.
+- The Dependabot uv updater failed on every run and therefore checked nothing. The cause
+  is a name collision rather than a broken pin: `perimeter` here is a direct git
+  reference, and the name on PyPI belongs to an unrelated Django package. It is ignored
+  in `.github/dependabot.yml` with that written out, because publishing under this name
+  is not available and dropping the URL would resolve somebody else's package.
+- The release build writes no Actions cache. `setup-uv` enables one by default on a
+  hosted runner, which made the release job a cache write in the `main` scope readable by
+  every other workflow, for no reuse a once-per-release build can collect. This clears
+  CodeQL's `actions/cache-poisoning/poisonable-step`.
+- The CodeQL gate now fails on any finding that is not written down in
+  `.github/codeql-accepted.json`, and equally on an entry there whose finding has gone
+  away. One entry today, `actions/untrusted-checkout/medium` on the release build, with
+  the reasoning beside it.
 - An interval whose two ends round to the same string is now printed at more decimal
   places until they differ. `0.7% to 0.7%` reads as certainty.
 - The repair strategy and the set of included types are parameters on

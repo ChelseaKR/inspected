@@ -20,11 +20,12 @@ What is published
    250, 500 or 1000 metres.
 5. **Whether being unattributable is a property of the data or of the fire.** The share
    of incidents whose classified records fall entirely on one side of the contested
-   line, and the contested share within each incident year, each with its own
-   denominator. Denominators: the incident set, and the classified records of one year.
-6. **What the two judgment calls are worth**, in :mod:`inspected.sensitivity`: the whole
+   line, the contested share within each incident year, and the contested share within
+   each published county, each with its own denominator. Denominators: the incident set,
+   the classified records of one year, and the classified records of one county.
+6. **What the judgment calls are worth**, in :mod:`inspected.sensitivity`: the whole
    placement re-run under each alternative reading of the publisher's ``Type`` field,
-   and under the other geometry repair.
+   under the other geometry repair, and without every outline that holds no record.
 
 What is not published, and why
 ------------------------------
@@ -51,10 +52,15 @@ in the table is measured against the same boundaries, and a rise across years wo
 statement about where those years' fires burned dressed up as a statement about the data
 improving or degrading.
 
-**Nothing is broken out by county.** It would be a defensible cut, and the county field
-is published by CAL FIRE, but it is not one of the seven columns this project fetches.
-Adding it means a fresh acquisition and a fresh pin, which moves every figure here, so it
-is named in the README as an open item rather than half-built.
+**No damage rate is published for a county either.** The county cut carries the contested
+share and nothing else. Destroyed over inspected inside a county line would be the same
+arithmetic ADR 0004 refuses for a territory, with a place name on it instead of a company
+name, and it would still be describing which fires burned where.
+
+**No county is compared against another, and no county is named as a cause.** Counties
+come out in name order with their own denominators, exactly as the years do. Which
+counties the published outlines overlap in is visible from the rows; it is not restated
+as a ranking.
 """
 
 from __future__ import annotations
@@ -336,6 +342,37 @@ def _by_year(placement: Placement) -> list[dict[str, Any]]:
     return rows
 
 
+def _by_county(placement: Placement) -> list[dict[str, Any]]:
+    """The contested share within each published county, in name order.
+
+    ``records`` is every fire record CAL FIRE recorded that county on.
+    ``records_classified`` is the subset that had a usable coordinate and therefore an
+    outcome, and it is the denominator of the share, so a county whose records could not
+    be placed reads as not measured rather than as a county with no overlap.
+
+    Name order, never size order. The counties where the published outlines overlap are
+    readable from the rows, and sorting by the share would turn that into a league table
+    of places, which is ADR 0004's objection with a county name in place of a company
+    name.
+    """
+    rows: list[dict[str, Any]] = []
+    for county in sorted(placement.counties):
+        classified = placement.county_classified[county]
+        rows.append(
+            {
+                "county": county,
+                "records": placement.counties[county],
+                "records_classified": classified,
+                "contested": Rate.of(
+                    "inside two or more published territories, in this county",
+                    placement.county_contested[county],
+                    classified,
+                ).as_dict(),
+            }
+        )
+    return rows
+
+
 def attributability_by_fire(placement: Placement) -> dict[str, Any]:
     """Is the unattributable share a property of the record set or of the fire?
 
@@ -344,11 +381,12 @@ def attributability_by_fire(placement: Placement) -> dict[str, Any]:
     particular places, so whether a record is contested is mostly settled by where its
     fire burned, and this measures how strongly.
 
-    Two cuts, both with the record set as their denominator or the incident set as
-    theirs. No trend is published across the years and none can be: the territory layer
-    is a single retrieval, so a year-over-year change in the contested share is a change
-    in where fires burned against fixed boundaries, not a change in the boundaries. The
-    dispersion is the finding; a direction over time would be an artefact.
+    Three cuts, each with its own denominator: the incident set, the classified records
+    of one year, and the classified records of one county. No trend is published across
+    the years and none can be: the territory layer is a single retrieval, so a
+    year-over-year change in the contested share is a change in where fires burned
+    against fixed boundaries, not a change in the boundaries. The dispersion is the
+    finding; a direction over time would be an artefact.
     """
     return {
         "question": (
@@ -357,6 +395,9 @@ def attributability_by_fire(placement: Placement) -> dict[str, Any]:
         ),
         "by_incident": _incident_split(placement),
         "by_incident_year": _by_year(placement),
+        "by_county": _by_county(placement),
+        "counties_named_in_the_record_set": len(placement.counties),
+        "records_carrying_no_county_name": placement.records_with_no_county,
         "no_trend_is_published": (
             "The territory layer is one retrieval, so the boundaries are identical for "
             "every year in the table. A rise or fall across years would describe where "
@@ -364,8 +405,16 @@ def attributability_by_fire(placement: Placement) -> dict[str, Any]:
             "is not published as a trend."
         ),
         "note": (
-            "Incident names come from the published INCIDENTNAME field and are counted "
-            "as published. A record with no incident name is left out of the incident "
-            "cut and stays in every other denominator in this project."
+            "Incident and county names come from the published INCIDENTNAME and COUNTY "
+            "fields and are counted as published. A record with no incident name is "
+            "left out of the incident cut, a record with no county name is left out of "
+            "the county cut, and both stay in every other denominator in this project."
+        ),
+        "county_note": (
+            "The county cut carries the contested share and nothing else. A county is "
+            "not a service territory and this is not a statement about who serves it: "
+            "it says where in California the published outlines overlap each other. No "
+            "damage rate is published for a county, for the same reason none is "
+            "published for a territory."
         ),
     }

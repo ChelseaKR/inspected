@@ -58,6 +58,7 @@ TIMEOUT_SECONDS = 180
 
 DINS_FIELDS: tuple[str, ...] = (
     "OBJECTID",
+    "COUNTY",
     "DAMAGE",
     "HAZARDTYPE",
     "INCIDENTNAME",
@@ -65,7 +66,12 @@ DINS_FIELDS: tuple[str, ...] = (
     "LATITUDE",
     "LONGITUDE",
 )
-"""The seven fields this project reads.
+"""The eight fields this project reads.
+
+``COUNTY`` is the publisher's own county name, an administrative area of the same kind
+as an incident name and a great deal coarser than a coordinate this project already
+holds. It was added in the retrieval of 2026-08-17 so that the overlap can be cut by
+county; see ``docs/adr/0009``.
 
 Deliberately not fetched: SITEADDRESS, APN, STREETNUMBER, STREETNAME, ZIPCODE,
 ASSESSEDIMPROVEDVALUE. They are published by CAL FIRE and none of them is needed to

@@ -70,6 +70,16 @@ an average over a particular set of fires and not a property of the two datasets
 trend is drawn through the years and none can be: the territory layer is a single
 retrieval, so every year is measured against identical boundaries.
 
+**By county it is starker still, and it is now measured.** CAL FIRE publishes a county
+field, this project did not fetch it, and the retrieval was refreshed to add it. 52
+counties are named in the record set and 30 records carry no county name. In 36 of the
+52 the contested share is not low but zero, and where it is not zero it is mostly very
+high: 99.9% of 11,721 classified records in Sonoma, 94.0% of 34,464 in Los Angeles,
+93.9% of 2,510 in Orange, 0.0% of 28,747 in Butte. Every row carries its own denominator
+and its own interval, the rows are in name order, and no county is compared against
+another. No damage rate is published for a county for the same reason none is published
+for a territory.
+
 **The records that cannot be attributed look like the ones that can.** Destroyed share
 among placed records: 52.95% of 82,353. Among contested records: 53.38% of 50,167.
 Difference of minus 0.43 percentage points, Newcombe interval minus 0.98 to plus 0.13.
@@ -142,6 +152,13 @@ strictly increasing and unique, and a walk that fails any of those writes nothin
 DINS walk is [`perimeter`](https://github.com/ChelseaKR/perimeter)'s, pinned to a commit;
 these checks are applied to its output rather than assumed of it.
 
+**A refresh of the pin is compared against what it replaces, value by value.** A
+published number changing is fine. A published number changing quietly is not, and the
+only difference between the two is whether anybody measured it. The refresh of
+2026-08-17, which added the county field, is reported in `PROVENANCE.md` as a leaf-by-leaf
+comparison of the artifact before against the artifact after: 4,370 published values,
+none removed, none changed.
+
 ## Relationship to `perimeter`
 
 [`perimeter`](https://github.com/ChelseaKR/perimeter) measures the completeness of the
@@ -161,7 +178,7 @@ src/inspected/
   placement.py   the four outcomes, and the schema guard on the retrieval
   intervals.py   Wilson and Newcombe; the only route a proportion takes to an artifact
   measure.py     the measurements, and a written record of the ones not built
-  sensitivity.py the two judgment calls, re-run against every alternative
+  sensitivity.py the judgment calls, re-run against every alternative
   artifacts.py   the publication rules, enforced before anything is written
   report.py      the generated document
 published/       measurements.json and REPORT.md, from the real retrievals
@@ -176,7 +193,11 @@ docs/adr/        the decisions, with their reasoning
   it moves the headline by 0.065 points. What is not established is whether any named
   entity in the layer operates a distribution system, and this project deliberately does
   not decide that. A reviewer would be checking the publisher's classification, not this
-  code.
+  code. What that review could change is now bounded on one side: 35 of the 59 indexed
+  outlines hold no record at all, 0 records fall inside any of them, and removing all 35
+  at once changes the outcome of 0 records, so a disagreement about any of those 35 moves
+  nothing published here. The other 24 are where the question would matter, and it is
+  still open there. See `docs/adr/0010`.
 - **The publisher documents none of the six `Type` values.** As retrieved, the layer
   metadata carries no field description and no coded-value domain, the FGDC record has no
   entity and attribute section, and no data dictionary is attached. The rule reads a field
@@ -184,12 +205,19 @@ docs/adr/        the decisions, with their reasoning
 - **The overlap finding has not been raised with the publisher.** CEC's metadata invites
   reports of missing territories at the address in its own text; whether the overlaps are
   intended is not established here, and nothing has been sent.
-- **County is not measured.** CAL FIRE publishes a county field and this project does not
-  fetch it, so whether the overlap concentrates in particular counties is untested. Adding
-  it means a fresh acquisition and a fresh pin, which moves every figure here.
+- **Nothing has been checked against a county's own records.** The county cut is CAL
+  FIRE's county field taken as published. Where a record's coordinate and its county
+  disagree, this project reports the county the publisher recorded and does not correct
+  it, because the correction would be a second opinion about where a structure is.
 - **`.github/allowed_signers` names no principal**, so the release workflow refuses at its
   first gate and no tag can be released. That is the intended state until the maintainer
   records a key.
+- **One CodeQL finding is accepted rather than fixed.**
+  `actions/untrusted-checkout/medium` on the release build, written down with its
+  reasoning in `.github/codeql-accepted.json`. The reasoning is that the commit being
+  checked out has already been proved to be a signed annotated tag on `main`, which is a
+  runtime fact the query cannot see. Somebody who disagrees with that reading should say
+  so; the entry is there to be argued with rather than to be forgotten.
 
 ## Standards conformance
 
@@ -202,7 +230,7 @@ standards bind it. The scoping below was derived here and a manifest entry super
 | Standard | State |
 |---|---|
 | Code Quality | Applies: uv, ruff, mypy `--strict`, pytest with branch coverage against a 90% floor, complexity capped at 10, `uv lock --check` as the drift gate and `uv sync --locked` as the install |
-| Security & Supply-Chain | Applies: semgrep, gitleaks, pip-audit, CodeQL over actions and python, zizmor over the workflows, every action SHA-pinned, `permissions: contents: read` at the top of every workflow, `persist-credentials: false` on every checkout. Not met: no SBOM, no OpenSSF Scorecard workflow, no osv-scanner alongside pip-audit |
+| Security & Supply-Chain | Applies: semgrep, gitleaks, pip-audit, CodeQL over actions and python, zizmor over the workflows, every action SHA-pinned, `permissions: contents: read` at the top of every workflow, `persist-credentials: false` on every checkout, and the release build writing no Actions cache. A CodeQL finding fails the job unless it is written down in `.github/codeql-accepted.json` with its reasoning, and an entry there fails the job once the finding it excuses is gone. One entry today. Not met: no SBOM, no OpenSSF Scorecard workflow, no osv-scanner alongside pip-audit |
 | CI/CD | Applies (not met): `main` carries no ruleset and no branch protection, so the gates report and block nothing. Applying a protection profile is a live repository setting and the owner's call |
 | Observability | Applies (Tier C): A library and a CLI writing to stdout. No hosted service, no telemetry, no SLO surface. Not met: no operations runbook |
 | Accessibility | Applies (not met): Output is Markdown and JSON, with no rendered UI and no colour encoding, so WCAG has little surface here. Not met: no ACR, and the generated tables have not been read with a screen reader |
@@ -212,7 +240,7 @@ standards bind it. The scoping below was derived here and a manifest entry super
 | Documentation | Applies: README, `PROVENANCE.md`, `CONTRIBUTING.md`, `SECURITY.md`, `CHANGELOG.md`, `CITATION.cff`, a `docs/adr/` log, this table, and a `.standards-version` pin a test reads |
 | Release & Versioning | Applies (not met): Version `0.1.0` in `pyproject.toml` and `CITATION.cff`, no tag cut, no signed tag, no published artifact. A hardened three-job release workflow is committed, its allowed-signers list names no principal, and it has never run |
 | Responsible-Tech Framework | Applies: Unofficial framing on the README and on the generated report, no claim about any utility's posture, no address, parcel number, assessed value or coordinate republished, no ranking of any named company, and an acquisition that stops rather than routing around an access control. Not met: no dated ethics or residual-risk artifacts |
-| Performance | Applies (not met): A CLI over local files. The full build runs in about 17 seconds, and now does nine placements of the record set rather than one. It was about 50 seconds doing one, before the containment query was changed to narrow by bounding box and then test against a prepared geometry, which a test holds to answering exactly what the predicate form answers. No budget is recorded |
+| Performance | Applies (not met): A CLI over local files. The full build runs in about 18 seconds, and now does twelve placements of the record set rather than one. It was about 50 seconds doing one, before the containment query was changed to narrow by bounding box and then test against a prepared geometry, which a test holds to answering exactly what the predicate form answers. No budget is recorded |
 | Incident Response | Applies: `SECURITY.md` routes reports to GitHub private vulnerability reporting with a 72-hour acknowledgment target. Not met: no severity convention, no secret-leak runbook |
 | Data Governance | Applies (L1, handled above the tier): Openly licensed public civic data, republished only as counts. `data/raw/` is gitignored, the address and parcel columns are never fetched, fixtures are hand-written rather than sampled, and a test refuses a published artifact carrying a coordinate. Not met: no refresh cadence or staleness SLA |
 | AI Development Measurement | Applies (not met): No baseline and no outcome metrics recorded for this repository's development stream |

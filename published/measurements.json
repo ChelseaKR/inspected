@@ -1,5 +1,839 @@
 {
   "attributability_by_fire": {
+    "by_county": [
+      {
+        "contested": {
+          "denominator": 120,
+          "interval_high": 0.045696291245049675,
+          "interval_low": 0.0014725557333420923,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 1,
+          "rate": 0.008333333333333333,
+          "state": "measured"
+        },
+        "county": "Alameda",
+        "records": 120,
+        "records_classified": 120
+      },
+      {
+        "contested": {
+          "denominator": 415,
+          "interval_high": 0.009171629837003916,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Alpine",
+        "records": 415,
+        "records_classified": 415
+      },
+      {
+        "contested": {
+          "denominator": 87,
+          "interval_high": 0.04228750694412034,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Amador",
+        "records": 87,
+        "records_classified": 87
+      },
+      {
+        "contested": {
+          "denominator": 28747,
+          "interval_high": 0.0001336120484054763,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Butte",
+        "records": 28747,
+        "records_classified": 28747
+      },
+      {
+        "contested": {
+          "denominator": 1281,
+          "interval_high": 0.002989830997685933,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Calaveras",
+        "records": 1281,
+        "records_classified": 1281
+      },
+      {
+        "contested": {
+          "denominator": 52,
+          "interval_high": 0.06879223612386234,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Colusa",
+        "records": 52,
+        "records_classified": 52
+      },
+      {
+        "contested": {
+          "denominator": 2,
+          "interval_high": 0.9054687942657693,
+          "interval_low": 0.09453120573423074,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 1,
+          "rate": 0.5,
+          "state": "measured"
+        },
+        "county": "Contra Costa",
+        "records": 2,
+        "records_classified": 2
+      },
+      {
+        "contested": {
+          "denominator": 4668,
+          "interval_high": 0.0008222579585703276,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "El Dorado",
+        "records": 4668,
+        "records_classified": 4668
+      },
+      {
+        "contested": {
+          "denominator": 2984,
+          "interval_high": 0.0012856970068988718,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Fresno",
+        "records": 2984,
+        "records_classified": 2984
+      },
+      {
+        "contested": {
+          "denominator": 52,
+          "interval_high": 0.06879223612386234,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Glenn",
+        "records": 52,
+        "records_classified": 52
+      },
+      {
+        "contested": {
+          "denominator": 19,
+          "interval_high": 0.16817922405261626,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Humboldt",
+        "records": 19,
+        "records_classified": 19
+      },
+      {
+        "contested": {
+          "denominator": 20,
+          "interval_high": 0.16112515805281938,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Inyo",
+        "records": 20,
+        "records_classified": 20
+      },
+      {
+        "contested": {
+          "denominator": 1478,
+          "interval_high": 0.0025923548014045337,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Kern",
+        "records": 1478,
+        "records_classified": 1478
+      },
+      {
+        "contested": {
+          "denominator": 1,
+          "interval_high": 0.7934506856227626,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Kings",
+        "records": 1,
+        "records_classified": 1
+      },
+      {
+        "contested": {
+          "denominator": 3215,
+          "interval_high": 0.001193429024025788,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Lake",
+        "records": 3215,
+        "records_classified": 3215
+      },
+      {
+        "contested": {
+          "denominator": 1020,
+          "interval_high": 0.10189830278460701,
+          "interval_low": 0.0678950351614187,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 85,
+          "rate": 0.08333333333333333,
+          "state": "measured"
+        },
+        "county": "Lassen",
+        "records": 1020,
+        "records_classified": 1020
+      },
+      {
+        "contested": {
+          "denominator": 34464,
+          "interval_high": 0.9426815981379136,
+          "interval_low": 0.9376752422012903,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 32404,
+          "rate": 0.9402274837511606,
+          "state": "measured"
+        },
+        "county": "Los Angeles",
+        "records": 34464,
+        "records_classified": 34464
+      },
+      {
+        "contested": {
+          "denominator": 761,
+          "interval_high": 0.0050225556896683595,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Madera",
+        "records": 761,
+        "records_classified": 761
+      },
+      {
+        "contested": {
+          "denominator": 1182,
+          "interval_high": 0.0032394371036027127,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Mariposa",
+        "records": 1182,
+        "records_classified": 1182
+      },
+      {
+        "contested": {
+          "denominator": 937,
+          "interval_high": 0.004083003342039407,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Mendocino",
+        "records": 937,
+        "records_classified": 937
+      },
+      {
+        "contested": {
+          "denominator": 3,
+          "interval_high": 0.5614970317550455,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Merced",
+        "records": 3,
+        "records_classified": 3
+      },
+      {
+        "contested": {
+          "denominator": 7,
+          "interval_high": 0.5131278292743189,
+          "interval_low": 0.02567962434474355,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 1,
+          "rate": 0.14285714285714285,
+          "state": "measured"
+        },
+        "county": "Modoc",
+        "records": 7,
+        "records_classified": 7
+      },
+      {
+        "contested": {
+          "denominator": 114,
+          "interval_high": 0.03259853415884162,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Mono",
+        "records": 114,
+        "records_classified": 114
+      },
+      {
+        "contested": {
+          "denominator": 699,
+          "interval_high": 0.005465612155463559,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Monterey",
+        "records": 699,
+        "records_classified": 699
+      },
+      {
+        "contested": {
+          "denominator": 6320,
+          "interval_high": 0.0031141821995910417,
+          "interval_low": 0.0009721724297853233,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 11,
+          "rate": 0.001740506329113924,
+          "state": "measured"
+        },
+        "county": "Napa",
+        "records": 6320,
+        "records_classified": 6320
+      },
+      {
+        "contested": {
+          "denominator": 344,
+          "interval_high": 0.01104370604274152,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Nevada",
+        "records": 344,
+        "records_classified": 344
+      },
+      {
+        "contested": {
+          "denominator": 2510,
+          "interval_high": 0.947380123990085,
+          "interval_low": 0.9285701044037984,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 2356,
+          "rate": 0.9386454183266932,
+          "state": "measured"
+        },
+        "county": "Orange",
+        "records": 2510,
+        "records_classified": 2510
+      },
+      {
+        "contested": {
+          "denominator": 606,
+          "interval_high": 0.006299110637906946,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Placer",
+        "records": 606,
+        "records_classified": 606
+      },
+      {
+        "contested": {
+          "denominator": 3593,
+          "interval_high": 0.0010680089363609689,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Plumas",
+        "records": 3593,
+        "records_classified": 3593
+      },
+      {
+        "contested": {
+          "denominator": 1379,
+          "interval_high": 0.4497514760325656,
+          "interval_low": 0.39766414876368283,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 584,
+          "rate": 0.4234952864394489,
+          "state": "measured"
+        },
+        "county": "Riverside",
+        "records": 1379,
+        "records_classified": 1379
+      },
+      {
+        "contested": {
+          "denominator": 10,
+          "interval_high": 0.2775327998628892,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Sacramento",
+        "records": 10,
+        "records_classified": 10
+      },
+      {
+        "contested": {
+          "denominator": 42,
+          "interval_high": 0.12321201573766646,
+          "interval_low": 0.004215404134432499,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 1,
+          "rate": 0.023809523809523808,
+          "state": "measured"
+        },
+        "county": "San Benito",
+        "records": 42,
+        "records_classified": 42
+      },
+      {
+        "contested": {
+          "denominator": 1003,
+          "interval_high": 0.10685542043285366,
+          "interval_low": 0.07176402083582538,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 88,
+          "rate": 0.08773678963110668,
+          "state": "measured"
+        },
+        "county": "San Bernardino",
+        "records": 1003,
+        "records_classified": 1003
+      },
+      {
+        "contested": {
+          "denominator": 1114,
+          "interval_high": 0.48356447853982865,
+          "interval_low": 0.42518823483009016,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 506,
+          "rate": 0.4542190305206463,
+          "state": "measured"
+        },
+        "county": "San Diego",
+        "records": 1114,
+        "records_classified": 1114
+      },
+      {
+        "contested": {
+          "denominator": 104,
+          "interval_high": 0.08140040102511037,
+          "interval_low": 0.009858182902777006,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 3,
+          "rate": 0.028846153846153848,
+          "state": "measured"
+        },
+        "county": "San Joaquin",
+        "records": 104,
+        "records_classified": 104
+      },
+      {
+        "contested": {
+          "denominator": 110,
+          "interval_high": 0.033743935298164184,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "San Luis Obispo",
+        "records": 110,
+        "records_classified": 110
+      },
+      {
+        "contested": {
+          "denominator": 207,
+          "interval_high": 0.018219655859813683,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "San Mateo",
+        "records": 207,
+        "records_classified": 207
+      },
+      {
+        "contested": {
+          "denominator": 376,
+          "interval_high": 0.010113321575324678,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Santa Barbara",
+        "records": 376,
+        "records_classified": 376
+      },
+      {
+        "contested": {
+          "denominator": 589,
+          "interval_high": 0.9870568251107064,
+          "interval_low": 0.9626068524599276,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 576,
+          "rate": 0.9779286926994907,
+          "state": "measured"
+        },
+        "county": "Santa Clara",
+        "records": 589,
+        "records_classified": 589
+      },
+      {
+        "contested": {
+          "denominator": 4637,
+          "interval_high": 0.0008277504962796761,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Santa Cruz",
+        "records": 4637,
+        "records_classified": 4637
+      },
+      {
+        "contested": {
+          "denominator": 3790,
+          "interval_high": 0.0010125512260831882,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Shasta",
+        "records": 3790,
+        "records_classified": 3790
+      },
+      {
+        "contested": {
+          "denominator": 1877,
+          "interval_high": 0.002042415006686825,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Siskiyou",
+        "records": 1877,
+        "records_classified": 1877
+      },
+      {
+        "contested": {
+          "denominator": 2377,
+          "interval_high": 0.001613487872727536,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Solano",
+        "records": 2377,
+        "records_classified": 2377
+      },
+      {
+        "contested": {
+          "denominator": 11721,
+          "interval_high": 0.9997653704032231,
+          "interval_low": 0.9988835274197171,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 11715,
+          "rate": 0.9994880982851293,
+          "state": "measured"
+        },
+        "county": "Sonoma",
+        "records": 11721,
+        "records_classified": 11721
+      },
+      {
+        "contested": {
+          "denominator": 243,
+          "interval_high": 0.24324455411166876,
+          "interval_low": 0.14502676497137654,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 46,
+          "rate": 0.18930041152263374,
+          "state": "measured"
+        },
+        "county": "Stanislaus",
+        "records": 243,
+        "records_classified": 243
+      },
+      {
+        "contested": {
+          "denominator": 1212,
+          "interval_high": 0.003159506359011766,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Tehama",
+        "records": 1212,
+        "records_classified": 1212
+      },
+      {
+        "contested": {
+          "denominator": 572,
+          "interval_high": 0.006671035511339035,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Trinity",
+        "records": 572,
+        "records_classified": 572
+      },
+      {
+        "contested": {
+          "denominator": 1036,
+          "interval_high": 0.0036942735722913025,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Tulare",
+        "records": 1036,
+        "records_classified": 1036
+      },
+      {
+        "contested": {
+          "denominator": 352,
+          "interval_high": 0.01079542230246366,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Tuolumne",
+        "records": 352,
+        "records_classified": 352
+      },
+      {
+        "contested": {
+          "denominator": 3436,
+          "interval_high": 0.5373351664735343,
+          "interval_low": 0.5039458058328704,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 1789,
+          "rate": 0.520663562281723,
+          "state": "measured"
+        },
+        "county": "Ventura",
+        "records": 3436,
+        "records_classified": 3436
+      },
+      {
+        "contested": {
+          "denominator": 278,
+          "interval_high": 0.013629857142976395,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Yolo",
+        "records": 278,
+        "records_classified": 278
+      },
+      {
+        "contested": {
+          "denominator": 324,
+          "interval_high": 0.01171742840125394,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, in this county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "county": "Yuba",
+        "records": 324,
+        "records_classified": 324
+      }
+    ],
     "by_incident": {
       "distinct_incidents": 405,
       "every_record_contested": {
@@ -269,9 +1103,12 @@
         "year": 2025
       }
     ],
+    "counties_named_in_the_record_set": 52,
+    "county_note": "The county cut carries the contested share and nothing else. A county is not a service territory and this is not a statement about who serves it: it says where in California the published outlines overlap each other. No damage rate is published for a county, for the same reason none is published for a territory.",
     "no_trend_is_published": "The territory layer is one retrieval, so the boundaries are identical for every year in the table. A rise or fall across years would describe where that year's fires burned, not a change in the published boundaries, and it is not published as a trend.",
-    "note": "Incident names come from the published INCIDENTNAME field and are counted as published. A record with no incident name is left out of the incident cut and stays in every other denominator in this project.",
-    "question": "Is being inside more than one published outline a property of the record set, or a property of where a particular fire burned?"
+    "note": "Incident and county names come from the published INCIDENTNAME and COUNTY fields and are counted as published. A record with no incident name is left out of the incident cut, a record with no county name is left out of the county cut, and both stay in every other denominator in this project.",
+    "question": "Is being inside more than one published outline a property of the record set, or a property of where a particular fire burned?",
+    "records_carrying_no_county_name": 30
   },
   "contested_groups": [
     {
@@ -1176,6 +2013,71 @@
           "variant": "every published type read as a territory"
         }
       ]
+    },
+    "untouched_outlines": {
+      "note": "This is a count, not a classification. It does not establish that any of the outlines named here is or is not a retail service territory, and this project does not decide that; see ADR 0002 and ADR 0010. What it establishes is that the question cannot change a figure published here, because the outlines it would be asked about hold nothing.",
+      "outlines_indexed": 59,
+      "outlines_no_record_falls_inside": [
+        "Aha Macav Power Service",
+        "Alameda Power & Telecom",
+        "Azusa Light & Power",
+        "Bear Valley Electric Service",
+        "Biggs Municipal Utilities",
+        "Burbank Water & Power",
+        "City of Cerritos",
+        "City of Corona Department of Water & Power",
+        "City of Industry",
+        "City of Lompoc Electric Division",
+        "City of Needles",
+        "City of Palo Alto",
+        "City of Pittsburg",
+        "City of Ukiah Electric Utilities Division",
+        "City of Vernon Municipal Light Department",
+        "Colton Electric Utility Department",
+        "Eastside Power Authority",
+        "Glendale Water & Power",
+        "Gridley Electric Utility",
+        "Imperial Irrigation District",
+        "Kirkwood Meadows Public Utility District",
+        "Lathrop Irrigation District",
+        "Lodi Electric Utility",
+        "Merced Irrigation District",
+        "Moreno Valley Utility",
+        "Morongo Band of Mission Indians",
+        "Port of Oakland",
+        "Port of Stockton",
+        "Rancho Cucamonga Municipal Utility",
+        "Roseville Electric",
+        "Shelter Cove Resort Improvement District",
+        "Silicon Valley Power",
+        "Truckee Donner Public Utilities District",
+        "Valley Electrical Association",
+        "Victorville Municipal Utilities Services"
+      ],
+      "outlines_no_record_falls_inside_count": 35,
+      "question": "Is a published outline that a reader might question capable of moving a published figure at all?",
+      "records_inside_at_least_one_of_them": {
+        "denominator": 132520,
+        "interval_high": 2.89869262647943e-05,
+        "interval_low": 0.0,
+        "interval_method": "wilson-score-95",
+        "label": "records falling inside an outline that holds no record",
+        "note": "Zero by construction when it is zero: an outline holds no record exactly when no record falls inside it. It is counted from the signatures rather than asserted, so the two cannot drift apart.",
+        "numerator": 0,
+        "rate": 0.0,
+        "state": "measured"
+      },
+      "records_with_a_different_outcome_without_them": {
+        "denominator": 132520,
+        "interval_high": 2.89869262647943e-05,
+        "interval_low": 0.0,
+        "interval_method": "wilson-score-95",
+        "label": "records whose outcome changes when all of them are removed",
+        "note": "The whole record set placed again against the reduced index. Every published figure in this repository is a function of these signatures, so a zero here is the statement that no published figure moves.",
+        "numerator": 0,
+        "rate": 0.0,
+        "state": "measured"
+      }
     }
   },
   "territories": [

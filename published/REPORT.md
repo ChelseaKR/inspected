@@ -81,6 +81,70 @@ burned and not a change in the published boundaries. No trend is published.
 | 2024 | 8,117 | 8,117 | 32.1% | 31.1% to 33.1% |
 | 2025 | 32,293 | 32,293 | 92.5% | 92.2% to 92.8% |
 
+The same cut by county, from CAL FIRE's own county field. In name order, never
+in size order, and no county is compared against another. This says where in
+California the published outlines overlap: 52
+counties are named in the record set, and
+30 records carry no county name and are
+left out of this cut alone.
+
+The county cut carries the contested share and nothing else. A county is not a service territory and this is not a statement about who serves it: it says where in California the published outlines overlap each other. No damage rate is published for a county, for the same reason none is published for a territory.
+
+| County | Records | Classified | Contested share | 95% interval |
+|---|---:|---:|---:|---|
+| Alameda | 120 | 120 | 0.8% | 0.1% to 4.6% |
+| Alpine | 415 | 415 | 0.0% | 0.0% to 0.9% |
+| Amador | 87 | 87 | 0.0% | 0.0% to 4.2% |
+| Butte | 28,747 | 28,747 | 0.0% | 0.00% to 0.01% |
+| Calaveras | 1,281 | 1,281 | 0.0% | 0.0% to 0.3% |
+| Colusa | 52 | 52 | 0.0% | 0.0% to 6.9% |
+| Contra Costa | 2 | 2 | 50.0% | 9.5% to 90.5% |
+| El Dorado | 4,668 | 4,668 | 0.0% | 0.0% to 0.1% |
+| Fresno | 2,984 | 2,984 | 0.0% | 0.0% to 0.1% |
+| Glenn | 52 | 52 | 0.0% | 0.0% to 6.9% |
+| Humboldt | 19 | 19 | 0.0% | 0.0% to 16.8% |
+| Inyo | 20 | 20 | 0.0% | 0.0% to 16.1% |
+| Kern | 1,478 | 1,478 | 0.0% | 0.0% to 0.3% |
+| Kings | 1 | 1 | 0.0% | 0.0% to 79.3% |
+| Lake | 3,215 | 3,215 | 0.0% | 0.0% to 0.1% |
+| Lassen | 1,020 | 1,020 | 8.3% | 6.8% to 10.2% |
+| Los Angeles | 34,464 | 34,464 | 94.0% | 93.8% to 94.3% |
+| Madera | 761 | 761 | 0.0% | 0.0% to 0.5% |
+| Mariposa | 1,182 | 1,182 | 0.0% | 0.0% to 0.3% |
+| Mendocino | 937 | 937 | 0.0% | 0.0% to 0.4% |
+| Merced | 3 | 3 | 0.0% | 0.0% to 56.1% |
+| Modoc | 7 | 7 | 14.3% | 2.6% to 51.3% |
+| Mono | 114 | 114 | 0.0% | 0.0% to 3.3% |
+| Monterey | 699 | 699 | 0.0% | 0.0% to 0.5% |
+| Napa | 6,320 | 6,320 | 0.2% | 0.1% to 0.3% |
+| Nevada | 344 | 344 | 0.0% | 0.0% to 1.1% |
+| Orange | 2,510 | 2,510 | 93.9% | 92.9% to 94.7% |
+| Placer | 606 | 606 | 0.0% | 0.0% to 0.6% |
+| Plumas | 3,593 | 3,593 | 0.0% | 0.0% to 0.1% |
+| Riverside | 1,379 | 1,379 | 42.3% | 39.8% to 45.0% |
+| Sacramento | 10 | 10 | 0.0% | 0.0% to 27.8% |
+| San Benito | 42 | 42 | 2.4% | 0.4% to 12.3% |
+| San Bernardino | 1,003 | 1,003 | 8.8% | 7.2% to 10.7% |
+| San Diego | 1,114 | 1,114 | 45.4% | 42.5% to 48.4% |
+| San Joaquin | 104 | 104 | 2.9% | 1.0% to 8.1% |
+| San Luis Obispo | 110 | 110 | 0.0% | 0.0% to 3.4% |
+| San Mateo | 207 | 207 | 0.0% | 0.0% to 1.8% |
+| Santa Barbara | 376 | 376 | 0.0% | 0.0% to 1.0% |
+| Santa Clara | 589 | 589 | 97.8% | 96.3% to 98.7% |
+| Santa Cruz | 4,637 | 4,637 | 0.0% | 0.0% to 0.1% |
+| Shasta | 3,790 | 3,790 | 0.0% | 0.0% to 0.1% |
+| Siskiyou | 1,877 | 1,877 | 0.0% | 0.0% to 0.2% |
+| Solano | 2,377 | 2,377 | 0.0% | 0.0% to 0.2% |
+| Sonoma | 11,721 | 11,721 | 99.9% | 99.9% to 100.0% |
+| Stanislaus | 243 | 243 | 18.9% | 14.5% to 24.3% |
+| Tehama | 1,212 | 1,212 | 0.0% | 0.0% to 0.3% |
+| Trinity | 572 | 572 | 0.0% | 0.0% to 0.7% |
+| Tulare | 1,036 | 1,036 | 0.0% | 0.0% to 0.4% |
+| Tuolumne | 352 | 352 | 0.0% | 0.0% to 1.1% |
+| Ventura | 3,436 | 3,436 | 52.1% | 50.4% to 53.7% |
+| Yolo | 278 | 278 | 0.0% | 0.0% to 1.4% |
+| Yuba | 324 | 324 | 0.0% | 0.0% to 1.2% |
+
 ## Every published territory, in name order
 
 Counts, and two within-territory shares. No damage rate is published for a
@@ -253,6 +317,57 @@ A rule that drops an included type does not only move records out of the
 contested column. It moves them into the last one, where they are published
 as inside no published territory, which is a statement about coverage that
 the dropped entity's own published polygon contradicts.
+
+## The outlines that hold nothing
+
+Whether a particular named entity in the published layer operates a retail
+distribution system is the publisher's classification to make, and this project
+does not make it. The narrower question can be answered with a count: could that
+outline be moving a figure here?
+
+35 of the 59 outlines read as service territories hold no
+record at all. 0 records of 132,520 fall inside one of them
+(0.000% to 0.003%). Placing the whole record set again with all of them
+removed changes the outcome of 0 records
+(0.000% to 0.003%), so no figure in this document depends on any of them.
+
+- Aha Macav Power Service
+- Alameda Power & Telecom
+- Azusa Light & Power
+- Bear Valley Electric Service
+- Biggs Municipal Utilities
+- Burbank Water & Power
+- City of Cerritos
+- City of Corona Department of Water & Power
+- City of Industry
+- City of Lompoc Electric Division
+- City of Needles
+- City of Palo Alto
+- City of Pittsburg
+- City of Ukiah Electric Utilities Division
+- City of Vernon Municipal Light Department
+- Colton Electric Utility Department
+- Eastside Power Authority
+- Glendale Water & Power
+- Gridley Electric Utility
+- Imperial Irrigation District
+- Kirkwood Meadows Public Utility District
+- Lathrop Irrigation District
+- Lodi Electric Utility
+- Merced Irrigation District
+- Moreno Valley Utility
+- Morongo Band of Mission Indians
+- Port of Oakland
+- Port of Stockton
+- Rancho Cucamonga Municipal Utility
+- Roseville Electric
+- Shelter Cove Resort Improvement District
+- Silicon Valley Power
+- Truckee Donner Public Utilities District
+- Valley Electrical Association
+- Victorville Municipal Utilities Services
+
+This is a count, not a classification. It does not establish that any of the outlines named here is or is not a retail service territory, and this project does not decide that; see ADR 0002 and ADR 0010. What it establishes is that the question cannot change a figure published here, because the outlines it would be asked about hold nothing.
 
 ## What this does not measure
 

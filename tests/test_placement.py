@@ -60,7 +60,7 @@ def test_contested_partners_are_recorded_both_ways(placement: Placement) -> None
 
 
 def test_a_missing_coordinate_is_not_measured_rather_than_uncovered() -> None:
-    record = Record(1, "Destroyed (>50%)", "X", 2020, None, None)
+    record = Record(1, "Destroyed (>50%)", "X", "Sample County East", 2020, None, None)
     assert not record.has_usable_coordinate
 
 
@@ -71,11 +71,15 @@ def test_a_missing_coordinate_is_not_measured_rather_than_uncovered() -> None:
 def test_a_coordinate_outside_california_is_refused_not_corrected(
     lon: float, lat: float
 ) -> None:
-    assert not Record(1, "No Damage", "X", 2020, lon, lat).has_usable_coordinate
+    assert not Record(
+        1, "No Damage", "X", "Sample County East", 2020, lon, lat
+    ).has_usable_coordinate
 
 
 def test_an_in_state_coordinate_is_usable() -> None:
-    assert Record(1, "No Damage", "X", 2020, -121.0, 38.5).has_usable_coordinate
+    assert Record(
+        1, "No Damage", "X", "Sample County East", 2020, -121.0, 38.5
+    ).has_usable_coordinate
 
 
 def test_a_record_inside_no_published_outline_is_uncovered(
@@ -133,7 +137,11 @@ def test_a_territory_with_no_placements_has_no_bands_rather_than_zeroes(
 def test_classify_with_no_usable_coordinates_still_returns_a_result(
     territories: tuple[Territory, ...],
 ) -> None:
-    result = classify((Record(1, "No Damage", "X", 2020, None, None),), territories, 0)
+    result = classify(
+        (Record(1, "No Damage", "X", "Sample County East", 2020, None, None),),
+        territories,
+        0,
+    )
     assert result.not_measured == 1
     assert result.placed == 0
     assert result.classified == 1
@@ -193,6 +201,7 @@ def test_the_faster_containment_route_answers_what_the_predicate_form_answers(
             object_id=i,
             damage=None,
             incident=None,
+            county=None,
             year=None,
             lon=-121.2 + 0.05 * (i % 30),
             lat=37.9 + 0.05 * (i // 30),
@@ -221,7 +230,15 @@ def test_the_faster_containment_route_answers_what_the_predicate_form_answers(
 
 def test_a_record_set_with_no_usable_coordinate_has_no_signature() -> None:
     off_map = (
-        Record(object_id=1, damage=None, incident=None, year=None, lon=10.0, lat=50.0),
+        Record(
+            object_id=1,
+            damage=None,
+            incident=None,
+            county=None,
+            year=None,
+            lon=10.0,
+            lat=50.0,
+        ),
     )
     territories, _ = load_territories(
         {
@@ -270,6 +287,7 @@ def test_read_records_refuses_a_file_without_the_hazard_column() -> None:
     rows = [
         {
             "OBJECTID": 1,
+            "COUNTY": "Sample County East",
             "DAMAGE": "No Damage",
             "INCIDENTNAME": "X",
             "INCIDENTSTARTDATE": 0,
@@ -285,6 +303,7 @@ def test_a_non_numeric_coordinate_is_refused_rather_than_coerced() -> None:
     rows = [
         {
             "OBJECTID": 1,
+            "COUNTY": "Sample County East",
             "DAMAGE": "No Damage",
             "HAZARDTYPE": "Fire",
             "INCIDENTNAME": "X",
@@ -302,6 +321,7 @@ def test_a_missing_start_date_leaves_the_year_unknown_rather_than_guessed() -> N
     rows = [
         {
             "OBJECTID": 1,
+            "COUNTY": "Sample County East",
             "DAMAGE": "No Damage",
             "HAZARDTYPE": "Fire",
             "INCIDENTNAME": "X",
@@ -312,3 +332,47 @@ def test_a_missing_start_date_leaves_the_year_unknown_rather_than_guessed() -> N
     ]
     kept, _ = read_records(rows)
     assert kept[0].year is None
+
+
+def test_the_county_is_read_from_the_publishers_own_field(
+    placement: Placement,
+) -> None:
+    """Two invented counties in the fixture, and two records the cell is empty on."""
+    assert dict(placement.counties) == {
+        "Sample County East": 6,
+        "Sample County West": 4,
+    }
+    assert placement.records_with_no_county == 2
+    assert (
+        sum(placement.counties.values()) + placement.records_with_no_county
+        == placement.fire_records
+    )
+
+
+def test_an_empty_county_cell_is_absent_rather_than_a_county_called_nothing() -> None:
+    """A null and an empty string are the same fact: nobody recorded a county."""
+    rows: list[dict[str, Any]] = [
+        {
+            "OBJECTID": oid,
+            "COUNTY": value,
+            "DAMAGE": "No Damage",
+            "HAZARDTYPE": "Fire",
+            "INCIDENTNAME": "X",
+            "INCIDENTSTARTDATE": 0,
+            "LATITUDE": 38.0,
+            "LONGITUDE": -121.0,
+        }
+        for oid, value in ((1, None), (2, ""), (3, "  "), (4, " Napa "))
+    ]
+    kept, _ = read_records(rows)
+    assert [r.county for r in kept] == [None, None, None, "Napa"]
+
+
+def test_the_county_split_counts_only_records_that_got_an_outcome(
+    placement: Placement,
+) -> None:
+    for name, contested in placement.county_contested.items():
+        assert contested <= placement.county_classified[name]
+    assert sum(placement.county_classified.values()) <= placement.classified
+    for name, classified in placement.county_classified.items():
+        assert classified <= placement.counties[name]

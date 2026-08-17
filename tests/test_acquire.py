@@ -24,6 +24,7 @@ from inspected.acquire import (
     fetch_feature_pages,
     layer_record_count,
 )
+from inspected.placement import REQUIRED_COLUMNS
 from inspected.sources import ELSE_IOU_POU
 
 
@@ -310,3 +311,11 @@ def test_no_address_or_parcel_field_is_ever_requested() -> None:
         "ASSESSEDIMPROVEDVALUE",
     }
     assert forbidden.isdisjoint(acquire.DINS_FIELDS)
+
+
+def test_the_county_column_is_requested_and_is_read_by_the_pipeline() -> None:
+    """The field the county cut needs, asked for once, in the one place that asks."""
+    assert "COUNTY" in acquire.DINS_FIELDS
+    assert set(acquire.DINS_FIELDS) >= set(REQUIRED_COLUMNS), (
+        "the retrieval must fetch every column the schema guard then insists on"
+    )

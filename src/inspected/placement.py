@@ -51,6 +51,7 @@ class Record:
     object_id: int
     damage: str | None
     incident: str | None
+    county: str | None
     year: int | None
     lon: float | None
     lat: float | None
@@ -79,7 +80,20 @@ def _coordinate(value: Any) -> float | None:
     return float(value)
 
 
+def _name(value: Any) -> str | None:
+    """A published name, or None when the publisher left the cell empty.
+
+    An empty county cell is an absent value, not a county called "". Records carrying
+    one stay in every other denominator here and are counted separately in the county
+    cut, because a record whose county nobody recorded is not evidence about a county.
+    """
+    if not isinstance(value, str) or not value.strip():
+        return None
+    return value.strip()
+
+
 REQUIRED_COLUMNS: Final[tuple[str, ...]] = (
+    "COUNTY",
     "DAMAGE",
     "HAZARDTYPE",
     "INCIDENTNAME",
@@ -131,6 +145,7 @@ def read_records(rows: list[dict[str, Any]]) -> tuple[tuple[Record, ...], int]:
                 object_id=int(row["OBJECTID"]),
                 damage=row.get("DAMAGE"),
                 incident=row.get("INCIDENTNAME"),
+                county=_name(row.get("COUNTY")),
                 year=_year_of(row.get("INCIDENTSTARTDATE")),
                 lon=_coordinate(row.get("LONGITUDE")),
                 lat=_coordinate(row.get("LATITUDE")),
@@ -184,6 +199,10 @@ class Placement:
     year_contested: Counter[int] = field(default_factory=Counter)
     incident_classified: Counter[str] = field(default_factory=Counter)
     incident_contested: Counter[str] = field(default_factory=Counter)
+    counties: Counter[str] = field(default_factory=Counter)
+    county_classified: Counter[str] = field(default_factory=Counter)
+    county_contested: Counter[str] = field(default_factory=Counter)
+    records_with_no_county: int = 0
 
     @property
     def classified(self) -> int:
@@ -291,9 +310,9 @@ def _tally_contested(
 
 
 def _tally_dispersion(result: Placement, record: Record, contested: bool) -> None:
-    """Count each classified record against its year and its incident.
+    """Count each classified record against its year, its incident and its county.
 
-    These two are kept separately from the running totals because they answer a
+    These three are kept separately from the running totals because they answer a
     different question: whether being inside more than one published outline is a
     property of the record set or a property of where a particular fire burned. Only
     records that could be classified are counted, so the denominator of any share taken
@@ -307,6 +326,10 @@ def _tally_dispersion(result: Placement, record: Record, contested: bool) -> Non
         result.incident_classified[record.incident] += 1
         if contested:
             result.incident_contested[record.incident] += 1
+    if record.county:
+        result.county_classified[record.county] += 1
+        if contested:
+            result.county_contested[record.county] += 1
 
 
 def classify(
@@ -323,6 +346,10 @@ def classify(
     for record in records:
         if record.year is not None:
             result.years[record.year] += 1
+        if record.county:
+            result.counties[record.county] += 1
+        else:
+            result.records_with_no_county += 1
     usable, lons, lats = _usable_positions(records)
     result.not_measured = len(records) - len(usable)
     if not usable:

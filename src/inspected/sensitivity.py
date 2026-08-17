@@ -18,7 +18,16 @@ reasoning on trust and the author had to take the size of the exposure on trust 
     to completion over the same records, counts the records whose outcome changes, and
     names the direction of the change.
 
-Neither function decides anything. Both produce numbers with denominators and intervals,
+``untouched_outlines``
+    ADR 0002 declines to decide whether any named entity in the layer operates a
+    distribution system, and ADR 0006 measures what the type rule costs without
+    reaching that question either. What neither answers is the one a reader arrives
+    with about a specific outline: would dropping this one change anything? For an
+    outline no record falls inside, that is answerable without deciding what the
+    entity is. This counts those outlines, counts the records they touch, and re-places
+    the whole record set without them to show that the counts hold.
+
+None of the three decides anything. All produce numbers with denominators and intervals,
 in the same shapes the rest of the output uses, so the publication rules in
 :mod:`inspected.artifacts` apply to them unchanged.
 """
@@ -269,5 +278,83 @@ def repair_comparison(
             "Neither repair is correct. Both are answers to a question the published "
             "polygon does not answer, and the difference between them is the size of "
             "the ambiguity the publisher's invalid geometry leaves behind."
+        ),
+    }
+
+
+def untouched_outlines(
+    placement: Placement,
+    records: tuple[Record, ...],
+    chosen: tuple[Territory, ...],
+) -> dict[str, Any]:
+    """Which published outlines hold no record, and what dropping them would change.
+
+    A reader can reasonably doubt whether a particular outline in this layer belongs in
+    a retail service territory set at all. This project does not answer that, because
+    answering it means classifying a named organisation from outside the publisher's own
+    field, which ADR 0002 refuses. It can answer the narrower question the doubt is
+    usually a proxy for: could that outline be moving a published figure?
+
+    For an outline no record falls inside, the answer is no, and it is arithmetic rather
+    than judgment. Removing an outline can only change the signature of a record that
+    was inside it, so a record inside none of the removed outlines keeps the outcome it
+    had. That is asserted here by re-placing the whole record set against the reduced
+    index and counting the records whose signature moves, which is a census and not an
+    argument.
+    """
+    untouched = tuple(
+        t
+        for t in chosen
+        if placement.tallies[t.name].placed == 0
+        and placement.tallies[t.name].contested == 0
+    )
+    reduced = tuple(t for t in chosen if t not in untouched)
+    names = frozenset(t.name for t in untouched)
+    before = containment_signatures(records, chosen)
+    # An empty index is not something a spatial tree can be built over, and it is not
+    # something this comparison needs one for: with every outline removed, every record
+    # with a coordinate is inside none of them, which is what the second branch writes.
+    after = (
+        containment_signatures(records, reduced)
+        if reduced
+        else tuple(None if s is None else () for s in before)
+    )
+    _, changed, _ = _transitions(before, after)
+    touching = sum(1 for s in before if s is not None and not names.isdisjoint(s))
+    total = len(records)
+    return {
+        "question": (
+            "Is a published outline that a reader might question capable of moving a "
+            "published figure at all?"
+        ),
+        "outlines_no_record_falls_inside": sorted(t.name for t in untouched),
+        "outlines_no_record_falls_inside_count": len(untouched),
+        "outlines_indexed": len(chosen),
+        "records_inside_at_least_one_of_them": Rate.of(
+            "records falling inside an outline that holds no record",
+            touching,
+            total,
+            note=(
+                "Zero by construction when it is zero: an outline holds no record "
+                "exactly when no record falls inside it. It is counted from the "
+                "signatures rather than asserted, so the two cannot drift apart."
+            ),
+        ).as_dict(),
+        "records_with_a_different_outcome_without_them": Rate.of(
+            "records whose outcome changes when all of them are removed",
+            changed,
+            total,
+            note=(
+                "The whole record set placed again against the reduced index. Every "
+                "published figure in this repository is a function of these signatures, "
+                "so a zero here is the statement that no published figure moves."
+            ),
+        ).as_dict(),
+        "note": (
+            "This is a count, not a classification. It does not establish that any of "
+            "the outlines named here is or is not a retail service territory, and this "
+            "project does not decide that; see ADR 0002 and ADR 0010. What it "
+            "establishes is that the question cannot change a figure published here, "
+            "because the outlines it would be asked about hold nothing."
         ),
     }

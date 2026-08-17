@@ -1,4 +1,4 @@
-"""The two judgment calls, re-run against their alternatives.
+"""The judgment calls, re-run against their alternatives.
 
 These tests are built on hand-made geography rather than on the shared fixtures, because
 the point of each one is a difference between two runs and the difference has to be
@@ -19,6 +19,7 @@ from inspected.sensitivity import (
     _types_present,
     repair_comparison,
     type_inclusion,
+    untouched_outlines,
 )
 
 
@@ -48,6 +49,7 @@ def record(oid: int, lon: float, lat: float, incident: str = "SAMPLE") -> Record
         object_id=oid,
         damage="Destroyed (>50%)",
         incident=incident,
+        county="Sample County East",
         year=2025,
         lon=lon,
         lat=lat,
@@ -271,3 +273,53 @@ def test_the_type_census_reads_past_a_feature_it_cannot_parse() -> None:
         [{"type": "Feature"}, {"properties": {"Type": "  "}}, {"properties": None}]
     )
     assert _types_present(collections) == ["IOU"]
+
+
+def test_an_outline_no_record_falls_inside_cannot_move_a_published_figure() -> None:
+    """The question a reader asks about one named entity, answered as a count.
+
+    Two squares, one of which no record is anywhere near. Whether that entity belongs in
+    a retail service territory set is not decided here and is not decidable from this
+    data. What is decidable is whether it could be moving anything, and the whole record
+    set is placed again without it to answer that rather than reasoning about it.
+    """
+    collections = collection(
+        feature(1, "Wires IOU", "IOU", square(-121.0, 38.0, -120.5, 38.5)),
+        feature(2, "Empty Utility", "POU", square(-119.0, 38.0, -118.5, 38.5)),
+    )
+    territories, _ = load_territories(collections)
+    records = (record(1, -120.75, 38.25), record(2, -120.6, 38.4))
+    placement = classify(records, territories, 0)
+    block = untouched_outlines(placement, records, territories)
+
+    assert block["outlines_no_record_falls_inside"] == ["Empty Utility"]
+    assert block["outlines_no_record_falls_inside_count"] == 1
+    assert block["outlines_indexed"] == 2
+    assert block["records_inside_at_least_one_of_them"]["numerator"] == 0
+    assert block["records_inside_at_least_one_of_them"]["denominator"] == 2
+    assert block["records_with_a_different_outcome_without_them"]["numerator"] == 0
+
+
+def test_an_outline_that_does_hold_records_is_not_reported_as_holding_none() -> None:
+    """Guard the guard: the count above must be able to come back empty."""
+    collections = collection(
+        feature(1, "Wires IOU", "IOU", square(-121.0, 38.0, -120.5, 38.5))
+    )
+    territories, _ = load_territories(collections)
+    records = (record(1, -120.75, 38.25),)
+    block = untouched_outlines(classify(records, territories, 0), records, territories)
+    assert block["outlines_no_record_falls_inside"] == []
+    assert block["records_with_a_different_outcome_without_them"]["numerator"] == 0
+
+
+def test_removing_every_outline_leaves_every_record_inside_none_of_them() -> None:
+    """The degenerate case: an empty index cannot be built, and does not need to be."""
+    collections = collection(
+        feature(1, "Empty Utility", "POU", square(-119.0, 38.0, -118.5, 38.5))
+    )
+    territories, _ = load_territories(collections)
+    records = (record(1, -120.75, 38.25),)
+    block = untouched_outlines(classify(records, territories, 0), records, territories)
+    assert block["outlines_no_record_falls_inside"] == ["Empty Utility"]
+    assert block["records_inside_at_least_one_of_them"]["numerator"] == 0
+    assert block["records_with_a_different_outcome_without_them"]["numerator"] == 0

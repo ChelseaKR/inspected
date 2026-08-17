@@ -1,5 +1,6 @@
 [
   {
+    "COUNTY": "Sample County East",
     "DAMAGE": "Destroyed (>50%)",
     "HAZARDTYPE": "Fire",
     "INCIDENTNAME": "SAMPLE ONE",
@@ -9,6 +10,7 @@
     "OBJECTID": 1
   },
   {
+    "COUNTY": "Sample County East",
     "DAMAGE": "No Damage",
     "HAZARDTYPE": "Fire",
     "INCIDENTNAME": "SAMPLE ONE",
@@ -18,6 +20,7 @@
     "OBJECTID": 2
   },
   {
+    "COUNTY": "Sample County East",
     "DAMAGE": "Destroyed (>50%)",
     "HAZARDTYPE": "Fire",
     "INCIDENTNAME": "SAMPLE ONE",
@@ -27,6 +30,7 @@
     "OBJECTID": 3
   },
   {
+    "COUNTY": "Sample County West",
     "DAMAGE": "Inaccessible",
     "HAZARDTYPE": "Fire",
     "INCIDENTNAME": "SAMPLE TWO",
@@ -36,6 +40,7 @@
     "OBJECTID": 4
   },
   {
+    "COUNTY": "Sample County East",
     "DAMAGE": "Destroyed (>50%)",
     "HAZARDTYPE": "Fire",
     "INCIDENTNAME": "SAMPLE TWO",
@@ -45,6 +50,7 @@
     "OBJECTID": 5
   },
   {
+    "COUNTY": "Sample County East",
     "DAMAGE": "No Damage",
     "HAZARDTYPE": "Fire",
     "INCIDENTNAME": "SAMPLE TWO",
@@ -54,6 +60,7 @@
     "OBJECTID": 6
   },
   {
+    "COUNTY": "Sample County East",
     "DAMAGE": "No Damage",
     "HAZARDTYPE": "Fire",
     "INCIDENTNAME": "SAMPLE TWO",
@@ -63,6 +70,7 @@
     "OBJECTID": 7
   },
   {
+    "COUNTY": "Sample County West",
     "DAMAGE": "Destroyed (>50%)",
     "HAZARDTYPE": "Fire",
     "INCIDENTNAME": "SAMPLE THREE",
@@ -72,6 +80,7 @@
     "OBJECTID": 8
   },
   {
+    "COUNTY": "Sample County West",
     "DAMAGE": "Destroyed (>50%)",
     "HAZARDTYPE": "Fire",
     "INCIDENTNAME": "SAMPLE THREE",
@@ -81,6 +90,7 @@
     "OBJECTID": 9
   },
   {
+    "COUNTY": "Sample County West",
     "DAMAGE": "No Damage",
     "HAZARDTYPE": "Fire",
     "INCIDENTNAME": "SAMPLE THREE",
@@ -90,6 +100,7 @@
     "OBJECTID": 10
   },
   {
+    "COUNTY": null,
     "DAMAGE": "Destroyed (>50%)",
     "HAZARDTYPE": "Fire",
     "INCIDENTNAME": "SAMPLE FOUR",
@@ -99,6 +110,7 @@
     "OBJECTID": 11
   },
   {
+    "COUNTY": "",
     "DAMAGE": "Destroyed (>50%)",
     "HAZARDTYPE": "Fire",
     "INCIDENTNAME": "SAMPLE FOUR",
@@ -108,6 +120,7 @@
     "OBJECTID": 12
   },
   {
+    "COUNTY": "Sample County East",
     "DAMAGE": "Destroyed (>50%)",
     "HAZARDTYPE": "Flood",
     "INCIDENTNAME": "SAMPLE FLOOD",

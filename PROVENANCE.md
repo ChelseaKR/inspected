@@ -11,15 +11,33 @@ Energy Commission, or any electric utility.
 
 | Source | Publisher | Features | Bytes | Retrieved |
 |---|---|---:|---:|---|
-| CAL FIRE Damage Inspection (DINS) Data | California Department of Forestry and Fire Protection | 132522 | 23924477 | 2026-08-17 |
+| CAL FIRE Damage Inspection (DINS) Data | California Department of Forestry and Fire Protection | 132522 | 26505764 | 2026-08-17 |
 | Electric Load Serving Entities (IOU & POU) | California Energy Commission | 53 | 11724721 | 2026-08-17 |
 | Electric Load Serving Entities (Other) | California Energy Commission | 32 | 7397382 | 2026-08-17 |
 
 SHA-256 of each written file:
 
-- `dins_postfire.json` `289a12cf3a55e77ae420e20128ab3c94407cad55a9405abc2a9dad195dac0715`
+- `dins_postfire.json` `fd6c77ca5c7b680b56e5f82afbcd04f24ce248eec996b964c35cea353dcca467`
 - `else_iou_pou.geojson` `e805520e747de619c9a97d03f8d70c9125f44b6e6fb2c0067bc122b317f2260e`
 - `else_other.geojson` `f6e6880c03c4e062aa6f0b2a69a66b74e7782ff62a2a3ce7e641efc4f0f7ffe3`
+
+## The refresh of 2026-08-17
+
+The DINS file was re-acquired to add the publisher's `COUNTY` column, so its byte count
+and hash above are not the ones the previous pin carried. What that refresh did and did
+not move is recorded rather than assumed:
+
+- The re-acquired file holds the same 132,522 records, and with the new column removed it
+  is byte-for-byte the file the previous pin hashed. The only change in the retrieval is
+  the added column.
+- Both territory layers came back with the hashes the previous pin already recorded, so
+  the boundaries are unchanged.
+- Every figure published before the refresh is unchanged after it. The artifact was
+  compared leaf by leaf against the previous one: 4,370 published values, none removed,
+  none changed. What the refresh added is the county cut and nothing else.
+
+A refresh that had moved the figures would say so here, with the sizes. This one did not,
+and that is a fact about this retrieval rather than a promise about the next one.
 
 The files themselves are not in git. `data/raw/` is ignored. The DINS retrieval is
 132,522 structure-level records at their published coordinates, and this repository
@@ -36,11 +54,16 @@ Energy Commission, ArcGIS Online items `30410214d637434ba1003cbdcc32cf55` and
 `07224640a2fe42f89399be796e7b8810`, both last modified by the publisher 2026-08-12.
 Terms: [CEC conditions of use](https://www.energy.ca.gov/conditions-of-use).
 
-Seven DINS fields are requested and no others: `OBJECTID`, `DAMAGE`, `HAZARDTYPE`,
-`INCIDENTNAME`, `INCIDENTSTARTDATE`, `LATITUDE`, `LONGITUDE`. `SITEADDRESS`, `APN`,
-`STREETNUMBER`, `STREETNAME`, `ZIPCODE` and `ASSESSEDIMPROVEDVALUE` are published by CAL
-FIRE, are not needed to answer which polygon a point is in, and are therefore never
-downloaded. `tests/test_acquire.py` asserts that.
+Eight DINS fields are requested and no others: `OBJECTID`, `COUNTY`, `DAMAGE`,
+`HAZARDTYPE`, `INCIDENTNAME`, `INCIDENTSTARTDATE`, `LATITUDE`, `LONGITUDE`.
+`SITEADDRESS`, `APN`, `STREETNUMBER`, `STREETNAME`, `ZIPCODE` and
+`ASSESSEDIMPROVEDVALUE` are published by CAL FIRE, are not needed to answer which polygon
+a point is in, and are therefore never downloaded. `tests/test_acquire.py` asserts that.
+
+`COUNTY` is a published administrative area name, coarser by orders of magnitude than the
+coordinate this project already reads and does not republish. It is used for one thing,
+the county cut in `docs/adr/0009`, and it reaches the output only as a row label beside a
+count.
 
 Requests carry a User-Agent naming this project, pause between pages, and stop rather
 than route around a 401, 403 or 429. No agency website is crawled: three REST endpoints

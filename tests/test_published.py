@@ -21,7 +21,11 @@ PUBLISHED = Path(__file__).resolve().parents[1] / "published"
 def test_the_published_artifact_passes_every_publication_rule(
     published_artifact: dict[str, Any],
 ) -> None:
-    ceiling = max(len(published_artifact["territories"]), 32)
+    ceiling = max(
+        len(published_artifact["territories"]),
+        len(published_artifact["attributability_by_fire"]["by_county"]),
+        32,
+    )
     check_all(published_artifact, max_rows=ceiling)
 
 
@@ -212,6 +216,86 @@ def test_no_year_row_is_compared_against_another_year(
     for row in published_artifact["attributability_by_fire"]["by_incident_year"]:
         assert "difference" not in row
         assert row["contested"]["interval_method"] in ("wilson-score-95", "none")
+
+
+def test_the_county_cut_accounts_for_every_record_in_the_set(
+    published_artifact: dict[str, Any],
+) -> None:
+    block = published_artifact["attributability_by_fire"]
+    rows = block["by_county"]
+    total = published_artifact["placement_coverage"]["fire_records"]
+    assert len(rows) == block["counties_named_in_the_record_set"]
+    assert (
+        sum(row["records"] for row in rows) + block["records_carrying_no_county_name"]
+        == total
+    )
+
+
+def test_counties_are_in_name_order_and_none_is_compared_against_another(
+    published_artifact: dict[str, Any],
+) -> None:
+    rows = published_artifact["attributability_by_fire"]["by_county"]
+    names = [row["county"] for row in rows]
+    assert names == sorted(names)
+    for row in rows:
+        assert "difference" not in row
+        assert row["contested"]["interval_method"] in ("wilson-score-95", "none")
+
+
+def test_no_county_row_carries_a_damage_rate(
+    published_artifact: dict[str, Any],
+) -> None:
+    """ADR 0004's refusal holds for a place name as well as for a company name."""
+    banned = ("destroyed", "damage", "loss")
+    for row in published_artifact["attributability_by_fire"]["by_county"]:
+        for key in _every_key(row):
+            assert not any(word in key.lower() for word in banned), row["county"]
+
+
+def _every_key(node: Any) -> list[str]:
+    keys: list[str] = []
+    if isinstance(node, dict):
+        for key, value in node.items():
+            keys.append(key)
+            keys.extend(_every_key(value))
+    elif isinstance(node, list):
+        for value in node:
+            keys.extend(_every_key(value))
+    return keys
+
+
+def test_an_outline_holding_no_record_is_shown_to_move_nothing(
+    published_artifact: dict[str, Any],
+) -> None:
+    """The count that stands in for an entity-level judgment this project will not make."""
+    block = published_artifact["sensitivity"]["untouched_outlines"]
+    rows = {row["territory"]: row for row in published_artifact["territories"]}
+    named = block["outlines_no_record_falls_inside"]
+    assert named == sorted(named)
+    assert len(named) == block["outlines_no_record_falls_inside_count"]
+    assert block["outlines_indexed"] == len(rows)
+    for name in named:
+        assert rows[name]["records_placed_here"] == 0
+        assert rows[name]["records_contested_here"] == 0
+    inside = block["records_inside_at_least_one_of_them"]
+    changed = block["records_with_a_different_outcome_without_them"]
+    total = published_artifact["placement_coverage"]["fire_records"]
+    assert inside["denominator"] == total
+    assert changed["denominator"] == total
+    assert inside["numerator"] == 0, (
+        "an outline reported as holding no record must hold no record"
+    )
+    assert changed["numerator"] == 0
+
+
+def test_the_untouched_outline_count_names_no_judgment(
+    published_artifact: dict[str, Any],
+) -> None:
+    """A number, not a classification. The wording is the point of the measurement."""
+    note = published_artifact["sensitivity"]["untouched_outlines"]["note"].lower()
+    assert "does not establish" in note
+    for phrase in ("not a real utility", "should be excluded", "is not a territory"):
+        assert phrase not in note
 
 
 def test_every_measured_rate_has_a_denominator_that_contains_it(

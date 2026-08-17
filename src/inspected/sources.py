@@ -155,8 +155,8 @@ DINS = Source(
     item_modified="",
     retrieved=RETRIEVED,
     feature_count=132522,
-    raw_bytes=23924477,
-    sha256="289a12cf3a55e77ae420e20128ab3c94407cad55a9405abc2a9dad195dac0715",
+    raw_bytes=26505764,
+    sha256="fd6c77ca5c7b680b56e5f82afbcd04f24ce248eec996b964c35cea353dcca467",
     raw_file="dins_postfire.json",
     caveats=(
         Caveat(

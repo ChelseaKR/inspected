@@ -68,11 +68,17 @@ def build(
             "repair_strategy": sensitivity.repair_comparison(
                 collections, records, territories
             ),
+            "untouched_outlines": sensitivity.untouched_outlines(
+                placement, records, territories
+            ),
         },
         "excluded_types": measure.excluded_type_note(),
     }
 
-    ceiling = max(len(territories) + len(unusable), 32)
+    # The aggregate ceiling is the largest number of things any one collection here
+    # reports on: one row per published outline, or one row per county named in the
+    # record set. A list longer than that is a record listing under another name.
+    ceiling = max(len(territories) + len(unusable), len(placement.counties), 32)
     artifact_path = artifacts.write_json(
         tree, out_dir / ARTIFACT_NAME, max_rows=ceiling
     )

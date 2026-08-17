@@ -8,7 +8,7 @@ import pytest
 
 from inspected import measure, report
 from inspected.geometry import Territory
-from inspected.placement import Placement, classify
+from inspected.placement import Placement, Record, classify
 from inspected.report import NOT_MEASURED, pct
 
 ALPHA = "Alpha Electric Company"
@@ -226,6 +226,7 @@ def test_a_not_measured_rate_renders_as_words_in_a_table_row() -> None:
         "The published polygons, as they arrived",
         "What the repair is worth",
         "What the inclusion rule is worth",
+        "The outlines that hold nothing",
         "What this does not measure",
     ],
 )
@@ -237,3 +238,49 @@ def test_the_report_opens_with_the_unaffiliated_line(published_report: str) -> N
     head = published_report.split("## ")[0]
     assert "Not affiliated with, endorsed by, or approved by CAL FIRE" in head
     assert "any electric utility" in head
+
+
+def test_county_rows_are_in_name_order_and_carry_both_denominators(
+    placement: Placement,
+) -> None:
+    block = measure.attributability_by_fire(placement)
+    rows = block["by_county"]
+    names = [row["county"] for row in rows]
+    assert names == sorted(names), (
+        "ordering counties by their contested share would be a league table of places"
+    )
+    assert len(rows) == block["counties_named_in_the_record_set"]
+    for row in rows:
+        assert row["records_classified"] <= row["records"]
+        if row["contested"]["state"] == "measured":
+            assert row["contested"]["denominator"] == row["records_classified"]
+
+
+def test_the_county_cut_accounts_for_every_record_or_says_it_cannot(
+    placement: Placement,
+) -> None:
+    block = measure.attributability_by_fire(placement)
+    counted = sum(row["records"] for row in block["by_county"])
+    assert counted + block["records_carrying_no_county_name"] == placement.fire_records
+
+
+def test_no_county_row_carries_a_damage_rate(placement: Placement) -> None:
+    """ADR 0004's refusal, restated for a place name instead of a company name."""
+    banned = {"destroyed", "damage", "loss", "damaged"}
+    for row in measure.attributability_by_fire(placement)["by_county"]:
+        for key in _all_keys(row):
+            assert not any(word in key.lower() for word in banned), (
+                f"{row['county']} carries a key named {key}"
+            )
+
+
+def test_a_county_whose_records_could_not_be_placed_is_not_measured(
+    territories: tuple[Territory, ...],
+) -> None:
+    unplaceable = (Record(1, "No Damage", "X", "Sample County East", 2020, None, None),)
+    block = measure.attributability_by_fire(classify(unplaceable, territories, 0))
+    row = block["by_county"][0]
+    assert row["records"] == 1
+    assert row["records_classified"] == 0
+    assert row["contested"]["state"] == "not_measured"
+    assert row["contested"]["rate"] is None
