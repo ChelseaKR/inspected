@@ -67,8 +67,23 @@ self-intersections and nested shells. An invalid polygon answers a containment q
 undefined rather than refusing it, so each is passed through `make_valid`, named in the
 report, and flagged on its territory row. 91.7% of the placed records sit inside one of
 those repaired polygons, because two of the eight are the two largest territories in the
-state. That figure is published in the report; it is the size of this project's exposure
-to the repair, and a different repair would place a different set.
+state. Both repairs are then run to completion: 927 records, 0.70% of the record set,
+come out differently under `buffer(0)`. The exposure and what it is worth are both
+published. See `docs/adr/0007`.
+
+## What the publisher does not document
+
+The inclusion rule reads the CEC `Type` field, and CEC documents none of its six values.
+As retrieved on 2026-08-17: the layer metadata carries no description on the `Type` field
+and no coded-value domain, the FGDC record carries no entity and attribute section, and
+no data dictionary is attached to either item. The published load serving entities page
+the metadata points to names four categories in prose and does not name `Tribal` or
+`ADMIN` at all.
+
+This is recorded as a fact about the source rather than as a complaint, and it is why the
+rule is published with its sensitivity: `docs/adr/0006` reports what each reading of the
+field is worth in records. What the rule costs is measured. What each value means is
+still the publisher's to say.
 
 ## Refresh
 

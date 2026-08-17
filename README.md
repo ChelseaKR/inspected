@@ -46,8 +46,8 @@ Over the 132,520 records the published file marks as wildfire, out of 132,522 to
 |---|---:|---:|---|
 | Inside exactly one published territory | 82,353 | 62.1% | 61.9% to 62.4% |
 | Inside two or more published territories | 50,167 | 37.9% | 37.6% to 38.1% |
-| Inside no published territory | 0 | 0.0000% | 0.0000% to 0.0029% |
-| Coordinate not usable | 0 | 0.0000% | 0.0000% to 0.0029% |
+| Inside no published territory | 0 | 0.0% | 0.000% to 0.003% |
+| Coordinate not usable | 0 | 0.0% | 0.000% to 0.003% |
 
 Wilson score intervals. The denominator is the wildfire record set, stated on every row.
 
@@ -61,6 +61,14 @@ Central Valley and contests 12,241 records with one investor-owned utility. For 
 record inside two outlines, public data does not say which entity serves it, and this
 project does not decide on its behalf: it is counted as contested and it is never awarded
 to the larger polygon, the smaller one, or the one listed first.
+
+**That third is not spread evenly. It is a property of which fire burned where.** Of the
+405 incidents in the record set, 353 have no contested record at all and 29 have nothing
+but contested records: 94.3% of incidents fall entirely on one side, interval 91.6% to
+96.2%. By year the contested share runs from 0.0% in 2013 to 92.5% in 2025. So 37.9% is
+an average over a particular set of fires and not a property of the two datasets. No
+trend is drawn through the years and none can be: the territory layer is a single
+retrieval, so every year is measured against identical boundaries.
 
 **The records that cannot be attributed look like the ones that can.** Destroyed share
 among placed records: 52.95% of 82,353. Among contested records: 53.38% of 50,167.
@@ -77,12 +85,27 @@ territories are at 100%, a third at 99.7%, a fourth at 82.9%. Dividing destroyed
 inside those boundaries and printing the answers next to each other would produce a
 league table of which fires happened where, labelled with company names.
 
-**91.7% of the placed records depend on a geometry repair.** Eight published polygons
-fail an OGC validity check on retrieval, and two of the eight are the largest territories
-in the state. An invalid polygon answers a containment question undefined rather than
-refusing it, so each is repaired before use, named in the report, and flagged on its row.
-A different repair places a different set of records. That figure is the size of the
-exposure, published rather than left implicit.
+**91.7% of the placed records depend on a geometry repair, and the two obvious repairs
+disagree about 927 of them.** Eight published polygons fail an OGC validity check on
+retrieval, and two of the eight are the largest territories in the state. An invalid
+polygon answers a containment question undefined rather than refusing it, so each is
+repaired before use, named in the report, and flagged on its row. Both repairs are then
+run to completion over the same records: 927 records, 0.70% of the record set with an
+interval of 0.66% to 0.75%, come out differently under `buffer(0)` than under
+`make_valid`. 770 of them move from attributable to contested and 157 are contested under
+both but between a different pair of outlines. The attributable share is 62.14% under one
+repair and 61.56% under the other, a difference of 0.58 percentage points, Newcombe
+interval 0.21 to 0.95. No record changes which single territory it is placed in, and none
+becomes uncovered. That the two disagree at all is a fact about the published boundaries.
+
+**The inclusion rule is worth less than the part of it nobody has reviewed suggests.**
+Reading `CO-OP` and `Tribal` as service territories, which is the unreviewed half of the
+rule, is worth 0.065 percentage points on the headline. Dropping `Tribal` changes nothing
+at all: no record in the file falls inside either tribal outline. Dropping `CO-OP` moves
+1,406 records into "inside no published territory", which would be a false statement
+about coverage rather than a tidier result. The exclusions are what carry weight: reading
+`CCA` as a territory would take the contested share to 56.3% and reading `ADMIN` would
+take it to 74.4%. Every variant is published with its denominator and its interval.
 
 ## The rules this project is built on
 
@@ -90,7 +113,15 @@ exposure, published rather than left implicit.
 `Rate` cannot be constructed without a denominator, and `artifacts.check_all` refuses to
 write an artifact containing a rate-shaped object missing either. A rate with a zero
 denominator is not zero percent, it is not measured, and the writer refuses a
-not-measured rate that carries a value.
+not-measured rate that carries a value. An interval whose two ends round to the same
+string is printed at more decimal places until they do not, because `0.7% to 0.7%` reads
+as certainty.
+
+**A judgment call is published with what it is worth.** Two decisions here could have
+gone the other way: which published types count as territories, and which repair is
+applied to the polygons that arrive invalid. Both are parameters, both are re-run over
+the whole record set on every build, and the difference is published as a measurement.
+Neither is chosen by the code that measures it.
 
 **A measurement that could not be made is never a zero.** A coordinate outside California
 is reported as not measured, not as uncovered. A territory with no placed records has no
@@ -130,6 +161,7 @@ src/inspected/
   placement.py   the four outcomes, and the schema guard on the retrieval
   intervals.py   Wilson and Newcombe; the only route a proportion takes to an artifact
   measure.py     the measurements, and a written record of the ones not built
+  sensitivity.py the two judgment calls, re-run against every alternative
   artifacts.py   the publication rules, enforced before anything is written
   report.py      the generated document
 published/       measurements.json and REPORT.md, from the real retrievals
@@ -139,14 +171,25 @@ docs/adr/        the decisions, with their reasoning
 
 ## What still needs a person
 
-- Nobody with California utility service territory expertise has reviewed the decision to
-  read CEC's `CO-OP` and `Tribal` types as service territories and to exclude `CCA` and
-  `ADMIN`. The reasoning is in `docs/adr/0002`.
-- The overlap finding has not been raised with the publisher. CEC's metadata invites
+- **Nobody with California utility service territory expertise has reviewed the inclusion
+  rule.** What the rule costs is now measured, in `docs/adr/0006`: the unreviewed half of
+  it moves the headline by 0.065 points. What is not established is whether any named
+  entity in the layer operates a distribution system, and this project deliberately does
+  not decide that. A reviewer would be checking the publisher's classification, not this
+  code.
+- **The publisher documents none of the six `Type` values.** As retrieved, the layer
+  metadata carries no field description and no coded-value domain, the FGDC record has no
+  entity and attribute section, and no data dictionary is attached. The rule reads a field
+  whose values are defined nowhere by the party that publishes them.
+- **The overlap finding has not been raised with the publisher.** CEC's metadata invites
   reports of missing territories at the address in its own text; whether the overlaps are
-  intended is not established here.
-- The 91.7% repair exposure is measured but its sensitivity is not: the alternative repair
-  strategies have not been run against each other.
+  intended is not established here, and nothing has been sent.
+- **County is not measured.** CAL FIRE publishes a county field and this project does not
+  fetch it, so whether the overlap concentrates in particular counties is untested. Adding
+  it means a fresh acquisition and a fresh pin, which moves every figure here.
+- **`.github/allowed_signers` names no principal**, so the release workflow refuses at its
+  first gate and no tag can be released. That is the intended state until the maintainer
+  records a key.
 
 ## Standards conformance
 
@@ -169,7 +212,7 @@ standards bind it. The scoping below was derived here and a manifest entry super
 | Documentation | Applies: README, `PROVENANCE.md`, `CONTRIBUTING.md`, `SECURITY.md`, `CHANGELOG.md`, `CITATION.cff`, a `docs/adr/` log, this table, and a `.standards-version` pin a test reads |
 | Release & Versioning | Applies (not met): Version `0.1.0` in `pyproject.toml` and `CITATION.cff`, no tag cut, no signed tag, no published artifact. A hardened three-job release workflow is committed, its allowed-signers list names no principal, and it has never run |
 | Responsible-Tech Framework | Applies: Unofficial framing on the README and on the generated report, no claim about any utility's posture, no address, parcel number, assessed value or coordinate republished, no ranking of any named company, and an acquisition that stops rather than routing around an access control. Not met: no dated ethics or residual-risk artifacts |
-| Performance | Applies (not met): A CLI over local files. The full build runs in about 50 seconds, dominated by boundary distances; no budget is recorded |
+| Performance | Applies (not met): A CLI over local files. The full build runs in about 17 seconds, and now does nine placements of the record set rather than one. It was about 50 seconds doing one, before the containment query was changed to narrow by bounding box and then test against a prepared geometry, which a test holds to answering exactly what the predicate form answers. No budget is recorded |
 | Incident Response | Applies: `SECURITY.md` routes reports to GitHub private vulnerability reporting with a 72-hour acknowledgment target. Not met: no severity convention, no secret-leak runbook |
 | Data Governance | Applies (L1, handled above the tier): Openly licensed public civic data, republished only as counts. `data/raw/` is gitignored, the address and parcel columns are never fetched, fixtures are hand-written rather than sampled, and a test refuses a published artifact carrying a coordinate. Not met: no refresh cadence or staleness SLA |
 | AI Development Measurement | Applies (not met): No baseline and no outcome metrics recorded for this repository's development stream |

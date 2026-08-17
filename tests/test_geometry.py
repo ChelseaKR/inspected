@@ -10,6 +10,8 @@ from shapely.geometry import LineString, MultiPolygon, Polygon
 
 from inspected.geometry import (
     AS_PUBLISHED,
+    BUFFER_ZERO,
+    MAKE_VALID,
     REPAIRED,
     Territory,
     TerritoryLoadError,
@@ -17,6 +19,7 @@ from inspected.geometry import (
     distances_to_boundary,
     load_territories,
     project_lonlat,
+    repair,
     territory_index,
 )
 
@@ -211,3 +214,58 @@ def test_a_territory_dataclass_reports_repair_from_its_state() -> None:
     fixed = Territory("B", "IOU", 2, "a", Polygon(), REPAIRED, "note")
     assert not plain.repaired
     assert fixed.repaired
+
+
+def test_a_repair_this_project_does_not_know_is_refused() -> None:
+    """A new strategy has to be added to the sensitivity run, not just to a call site."""
+    with pytest.raises(TerritoryLoadError, match="not a repair this project knows"):
+        repair(Polygon(square(-121, 38, -120, 39)), "simplify")
+
+
+def test_the_alternative_repair_is_reachable_through_the_loader() -> None:
+    usable, _ = load_territories(
+        {"a": collection(feature(1, "Bowtie Co", "CO-OP", BOWTIE))},
+        strategy=BUFFER_ZERO,
+    )
+    assert usable[0].geometry_state == REPAIRED
+    assert BUFFER_ZERO in usable[0].geometry_note
+    assert usable[0].geometry.is_valid
+
+
+def test_the_two_repairs_can_disagree_about_what_survives() -> None:
+    """A bowtie is two lobes. One repair keeps both and the other keeps one."""
+    both, _ = load_territories(
+        {"a": collection(feature(1, "Bowtie Co", "CO-OP", BOWTIE))},
+        strategy=MAKE_VALID,
+    )
+    one, _ = load_territories(
+        {"a": collection(feature(1, "Bowtie Co", "CO-OP", BOWTIE))},
+        strategy=BUFFER_ZERO,
+    )
+    assert both[0].geometry.area != one[0].geometry.area
+
+
+def test_a_repair_returning_a_mixed_collection_keeps_only_the_polygons() -> None:
+    """`make_valid` on a spike returns a polygon and a dangling line. Lines cannot hold
+    a point, so only the polygonal part is indexed."""
+    spike = [
+        [-121.0, 38.0],
+        [-120.0, 38.0],
+        [-120.0, 39.0],
+        [-120.5, 39.0],
+        [-120.5, 40.0],
+        [-120.5, 39.0],
+        [-121.0, 39.0],
+        [-121.0, 38.0],
+    ]
+    usable, unusable = load_territories(
+        {"a": collection(feature(1, "Spike Co", "IOU", spike))}
+    )
+    assert unusable == ()
+    assert usable[0].geometry_state == REPAIRED
+    assert usable[0].geometry.geom_type in ("Polygon", "MultiPolygon")
+
+
+def test_an_outline_with_no_edges_is_refused() -> None:
+    with pytest.raises(TerritoryLoadError, match="no edges"):
+        boundary_segments(Polygon())

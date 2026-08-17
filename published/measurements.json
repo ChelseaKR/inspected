@@ -1,4 +1,278 @@
 {
+  "attributability_by_fire": {
+    "by_incident": {
+      "distinct_incidents": 405,
+      "every_record_contested": {
+        "denominator": 405,
+        "interval_high": 0.10094461937089586,
+        "interval_low": 0.05031562463438733,
+        "interval_method": "wilson-score-95",
+        "label": "incidents whose every classified record is contested",
+        "note": "",
+        "numerator": 29,
+        "rate": 0.07160493827160494,
+        "state": "measured"
+      },
+      "no_record_contested": {
+        "denominator": 405,
+        "interval_high": 0.9007276302326354,
+        "interval_low": 0.835499074535116,
+        "interval_method": "wilson-score-95",
+        "label": "incidents no record of which is contested",
+        "note": "",
+        "numerator": 353,
+        "rate": 0.8716049382716049,
+        "state": "measured"
+      },
+      "one_way_or_the_other": {
+        "denominator": 405,
+        "interval_high": 0.9618629613123836,
+        "interval_low": 0.9162280254371936,
+        "interval_method": "wilson-score-95",
+        "label": "incidents that fall entirely on one side",
+        "note": "",
+        "numerator": 382,
+        "rate": 0.9432098765432099,
+        "state": "measured"
+      },
+      "records_carrying_an_incident_name": 132520,
+      "records_in_an_incident_that_falls_entirely_on_one_side": {
+        "denominator": 132520,
+        "interval_high": 0.6266835587707785,
+        "interval_low": 0.6214680163570728,
+        "interval_method": "wilson-score-95",
+        "label": "records belonging to an incident that falls entirely on one side",
+        "note": "",
+        "numerator": 82703,
+        "rate": 0.6240793842438878,
+        "state": "measured"
+      },
+      "split_both_ways": {
+        "denominator": 405,
+        "interval_high": 0.08377197456280629,
+        "interval_low": 0.03813703868761635,
+        "interval_method": "wilson-score-95",
+        "label": "incidents with records on both sides",
+        "note": "",
+        "numerator": 23,
+        "rate": 0.056790123456790124,
+        "state": "measured"
+      }
+    },
+    "by_incident_year": [
+      {
+        "contested": {
+          "denominator": 279,
+          "interval_high": 0.013581668107324387,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, this year",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "records": 279,
+        "records_classified": 279,
+        "year": 2013
+      },
+      {
+        "contested": {
+          "denominator": 310,
+          "interval_high": 0.2028261285505851,
+          "interval_low": 0.1216735701296929,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, this year",
+          "note": "",
+          "numerator": 49,
+          "rate": 0.15806451612903225,
+          "state": "measured"
+        },
+        "records": 310,
+        "records_classified": 310,
+        "year": 2014
+      },
+      {
+        "contested": {
+          "denominator": 3192,
+          "interval_high": 0.004520017860093635,
+          "interval_low": 0.0010626930004375534,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, this year",
+          "note": "",
+          "numerator": 7,
+          "rate": 0.0021929824561403508,
+          "state": "measured"
+        },
+        "records": 3192,
+        "records_classified": 3192,
+        "year": 2015
+      },
+      {
+        "contested": {
+          "denominator": 944,
+          "interval_high": 0.04377113222767473,
+          "interval_low": 0.021473385455311387,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, this year",
+          "note": "",
+          "numerator": 29,
+          "rate": 0.03072033898305085,
+          "state": "measured"
+        },
+        "records": 944,
+        "records_classified": 944,
+        "year": 2016
+      },
+      {
+        "contested": {
+          "denominator": 12757,
+          "interval_high": 0.6136075006783264,
+          "interval_low": 0.5966450918844803,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, this year",
+          "note": "",
+          "numerator": 7720,
+          "rate": 0.6051579524966685,
+          "state": "measured"
+        },
+        "records": 12757,
+        "records_classified": 12757,
+        "year": 2017
+      },
+      {
+        "contested": {
+          "denominator": 28403,
+          "interval_high": 0.07283878082110652,
+          "interval_low": 0.06691070398435771,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, this year",
+          "note": "",
+          "numerator": 1983,
+          "rate": 0.06981656867232335,
+          "state": "measured"
+        },
+        "records": 28403,
+        "records_classified": 28403,
+        "year": 2018
+      },
+      {
+        "contested": {
+          "denominator": 2108,
+          "interval_high": 0.8796396735347113,
+          "interval_low": 0.850528774271542,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, this year",
+          "note": "",
+          "numerator": 1825,
+          "rate": 0.8657495256166983,
+          "state": "measured"
+        },
+        "records": 2108,
+        "records_classified": 2108,
+        "year": 2019
+      },
+      {
+        "contested": {
+          "denominator": 28626,
+          "interval_high": 0.20389165067803114,
+          "interval_low": 0.19463802596135468,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, this year",
+          "note": "",
+          "numerator": 5703,
+          "rate": 0.19922448124083,
+          "state": "measured"
+        },
+        "records": 28626,
+        "records_classified": 28626,
+        "year": 2020
+      },
+      {
+        "contested": {
+          "denominator": 12253,
+          "interval_high": 0.0004621808286983511,
+          "interval_low": 1.4406784865850762e-05,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, this year",
+          "note": "",
+          "numerator": 1,
+          "rate": 8.161266628580756e-05,
+          "state": "measured"
+        },
+        "records": 12253,
+        "records_classified": 12253,
+        "year": 2021
+      },
+      {
+        "contested": {
+          "denominator": 3009,
+          "interval_high": 0.12964949786107968,
+          "interval_low": 0.10661964160413727,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, this year",
+          "note": "",
+          "numerator": 354,
+          "rate": 0.11764705882352941,
+          "state": "measured"
+        },
+        "records": 3009,
+        "records_classified": 3009,
+        "year": 2022
+      },
+      {
+        "contested": {
+          "denominator": 229,
+          "interval_high": 0.13611636747419914,
+          "interval_low": 0.06076205380384132,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, this year",
+          "note": "",
+          "numerator": 21,
+          "rate": 0.09170305676855896,
+          "state": "measured"
+        },
+        "records": 229,
+        "records_classified": 229,
+        "year": 2023
+      },
+      {
+        "contested": {
+          "denominator": 8117,
+          "interval_high": 0.33116981466577383,
+          "interval_low": 0.31086235469243045,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, this year",
+          "note": "",
+          "numerator": 2605,
+          "rate": 0.32093137858814835,
+          "state": "measured"
+        },
+        "records": 8117,
+        "records_classified": 8117,
+        "year": 2024
+      },
+      {
+        "contested": {
+          "denominator": 32293,
+          "interval_high": 0.9277912787876441,
+          "interval_low": 0.9220441466051341,
+          "interval_method": "wilson-score-95",
+          "label": "inside two or more published territories, this year",
+          "note": "",
+          "numerator": 29870,
+          "rate": 0.9249682593750967,
+          "state": "measured"
+        },
+        "records": 32293,
+        "records_classified": 32293,
+        "year": 2025
+      }
+    ],
+    "no_trend_is_published": "The territory layer is one retrieval, so the boundaries are identical for every year in the table. A rise or fall across years would describe where that year's fires burned, not a change in the published boundaries, and it is not published as a trend.",
+    "note": "Incident names come from the published INCIDENTNAME field and are counted as published. A record with no incident name is left out of the incident cut and stays in every other denominator in this project.",
+    "question": "Is being inside more than one published outline a property of the record set, or a property of where a particular fire burned?"
+  },
   "contested_groups": [
     {
       "records": 25345,
@@ -92,7 +366,7 @@
     },
     {
       "published_type": "CCA",
-      "reason": "A community choice aggregator procures energy for customers inside another entity's distribution footprint. Its polygon overlays a territory rather than being one, so counting a record into both would count it twice."
+      "reason": "A community choice aggregator is defined at Public Utilities Code section 331.1 as a local government electricity buyers' programme, and section 366.2 leaves metering, billing and delivery with the electrical corporation. Its polygon overlays another entity's distribution footprint rather than being one, so counting a record into both would count it twice."
     }
   ],
   "geometry_ledger": {
@@ -254,6 +528,654 @@
       "numerator": 0,
       "rate": null,
       "state": "not_measured"
+    }
+  },
+  "sensitivity": {
+    "repair_strategy": {
+      "alternative": "buffer_zero",
+      "chosen": "make_valid",
+      "note": "Neither repair is correct. Both are answers to a question the published polygon does not answer, and the difference between them is the size of the ambiguity the publisher's invalid geometry leaves behind.",
+      "placed_difference": {
+        "difference": 0.005810443706610324,
+        "excludes_zero": true,
+        "interval_high": 0.009508775096486797,
+        "interval_low": 0.002111888309227107,
+        "interval_method": "newcombe-score-95",
+        "label": "make_valid minus buffer_zero, placed share",
+        "left": {
+          "denominator": 132520,
+          "interval_high": 0.6240461258557904,
+          "interval_low": 0.6188233808359634,
+          "interval_method": "wilson-score-95",
+          "label": "placed in exactly one published territory, under make_valid",
+          "note": "",
+          "numerator": 82353,
+          "rate": 0.6214382734681557,
+          "state": "measured"
+        },
+        "note": "The same records placed twice, so the two proportions are not independent and this Newcombe interval is the conservative bound rather than the tight one. The exact figure is the disagreement count above, which needs no interval because it is a census of the difference and not an estimate of it.",
+        "right": {
+          "denominator": 132520,
+          "interval_high": 0.6182434842780324,
+          "interval_low": 0.6130054718543074,
+          "interval_method": "wilson-score-95",
+          "label": "placed in exactly one published territory, under buffer_zero",
+          "note": "",
+          "numerator": 81583,
+          "rate": 0.6156278297615454,
+          "state": "measured"
+        },
+        "state": "measured"
+      },
+      "placed_under_the_alternative": {
+        "denominator": 132520,
+        "interval_high": 0.6182434842780324,
+        "interval_low": 0.6130054718543074,
+        "interval_method": "wilson-score-95",
+        "label": "placed in exactly one published territory, under buffer_zero",
+        "note": "",
+        "numerator": 81583,
+        "rate": 0.6156278297615454,
+        "state": "measured"
+      },
+      "placed_under_the_chosen_repair": {
+        "denominator": 132520,
+        "interval_high": 0.6240461258557904,
+        "interval_low": 0.6188233808359634,
+        "interval_method": "wilson-score-95",
+        "label": "placed in exactly one published territory, under make_valid",
+        "note": "",
+        "numerator": 82353,
+        "rate": 0.6214382734681557,
+        "state": "measured"
+      },
+      "question": "How much of the result depends on which repair is applied to the polygons the publisher ships invalid?",
+      "records_with_a_different_outcome": {
+        "denominator": 132520,
+        "interval_high": 0.007458409245765455,
+        "interval_low": 0.006560513224105624,
+        "interval_method": "wilson-score-95",
+        "label": "records the two repairs disagree about",
+        "note": "Counted per record, not inferred from two totals. A record counts here if the set of outlines it falls inside is not the same under both repairs, including when both repairs agree on the kind of outcome.",
+        "numerator": 927,
+        "rate": 0.006995170540295805,
+        "state": "measured"
+      },
+      "records_with_the_same_outcome_but_different_outlines": 157,
+      "territories_indexed": {
+        "buffer_zero": 59,
+        "make_valid": 59
+      },
+      "territories_unusable_under_the_alternative": 0,
+      "transitions": [
+        {
+          "records": 157,
+          "under_the_alternative": "contested_between_two_or_more",
+          "under_the_chosen_repair": "contested_between_two_or_more"
+        },
+        {
+          "records": 770,
+          "under_the_alternative": "contested_between_two_or_more",
+          "under_the_chosen_repair": "placed_in_exactly_one_territory"
+        }
+      ]
+    },
+    "type_inclusion": {
+      "note": "No rule is chosen here and none is changed. Each row is the whole record set re-placed against a different set of published outlines, so a reader can see which parts of the inclusion rule the result depends on. A variant that raises the uncovered count is reporting that records the dropped entities do sit over would be published as inside no territory, which is a statement about coverage that the dropped entity's own polygon contradicts.",
+      "published_types_present_in_this_retrieval": [
+        "ADMIN",
+        "CCA",
+        "CO-OP",
+        "IOU",
+        "POU",
+        "Tribal"
+      ],
+      "question": "How much of the headline figure rests on reading CO-OP and Tribal as service territories, and on not reading CCA and ADMIN as territories?",
+      "rule_as_built": [
+        "CO-OP",
+        "IOU",
+        "POU",
+        "Tribal"
+      ],
+      "the_published_type_field_is_undocumented": "The inclusion rule reads the publisher's Type field, and the publisher documents none of its values. As retrieved, the layer metadata carries no description on the Type field and no coded-value domain, the FGDC record carries no entity and attribute section, and no data dictionary is attached to either item. What each value means is therefore inferred from the value itself, which is why the rule is published with its sensitivity and why the README asks for a domain review.",
+      "unexpected_published_types": [],
+      "variants": [
+        {
+          "contested": {
+            "denominator": 132520,
+            "interval_high": 0.38117661916403645,
+            "interval_low": 0.37595387414420944,
+            "interval_method": "wilson-score-95",
+            "label": "inside two or more published territories",
+            "note": "",
+            "numerator": 50167,
+            "rate": 0.3785617265318442,
+            "state": "measured"
+          },
+          "counts": {
+            "contested_between_two_or_more": 50167,
+            "coordinate_not_usable": 0,
+            "covered_by_no_published_territory": 0,
+            "placed_in_exactly_one_territory": 82353
+          },
+          "placed": {
+            "denominator": 132520,
+            "interval_high": 0.6240461258557904,
+            "interval_low": 0.6188233808359634,
+            "interval_method": "wilson-score-95",
+            "label": "placed in exactly one published territory",
+            "note": "",
+            "numerator": 82353,
+            "rate": 0.6214382734681557,
+            "state": "measured"
+          },
+          "territories_indexed": 59,
+          "types_read_as_territories": [
+            "CO-OP",
+            "IOU",
+            "POU",
+            "Tribal"
+          ],
+          "uncovered": {
+            "denominator": 132520,
+            "interval_high": 2.89869262647943e-05,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "inside no published territory",
+            "note": "",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          },
+          "variant": "the rule as built"
+        },
+        {
+          "contested": {
+            "denominator": 132520,
+            "interval_high": 0.38052680207395034,
+            "interval_low": 0.3753058115614259,
+            "interval_method": "wilson-score-95",
+            "label": "inside two or more published territories",
+            "note": "",
+            "numerator": 50081,
+            "rate": 0.37791276788409295,
+            "state": "measured"
+          },
+          "contested_difference_from_the_rule_as_built": {
+            "difference": -0.0006489586477512743,
+            "excludes_zero": false,
+            "interval_high": 0.0030434753491450583,
+            "interval_low": -0.004341367718559504,
+            "interval_method": "newcombe-score-95",
+            "label": "this variant minus the rule as built, contested share",
+            "left": {
+              "denominator": 132520,
+              "interval_high": 0.38052680207395034,
+              "interval_low": 0.3753058115614259,
+              "interval_method": "wilson-score-95",
+              "label": "inside two or more published territories",
+              "note": "",
+              "numerator": 50081,
+              "rate": 0.37791276788409295,
+              "state": "measured"
+            },
+            "note": "The same records measured twice against two different sets of outlines, so the two populations are not independent and this interval is wider than a paired comparison would give. It is published as the conservative bound; the count of records that change outcome is the exact figure.",
+            "right": {
+              "denominator": 132520,
+              "interval_high": 0.38117661916403645,
+              "interval_low": 0.37595387414420944,
+              "interval_method": "wilson-score-95",
+              "label": "inside two or more published territories",
+              "note": "",
+              "numerator": 50167,
+              "rate": 0.3785617265318442,
+              "state": "measured"
+            },
+            "state": "measured"
+          },
+          "counts": {
+            "contested_between_two_or_more": 50081,
+            "coordinate_not_usable": 0,
+            "covered_by_no_published_territory": 1406,
+            "placed_in_exactly_one_territory": 81033
+          },
+          "placed": {
+            "denominator": 132520,
+            "interval_high": 0.6140984983949874,
+            "interval_low": 0.6088500644806282,
+            "interval_method": "wilson-score-95",
+            "label": "placed in exactly one published territory",
+            "note": "",
+            "numerator": 81033,
+            "rate": 0.6114775128282524,
+            "state": "measured"
+          },
+          "territories_indexed": 55,
+          "types_read_as_territories": [
+            "IOU",
+            "POU",
+            "Tribal"
+          ],
+          "uncovered": {
+            "denominator": 132520,
+            "interval_high": 0.01117570358069451,
+            "interval_low": 0.010072106834578305,
+            "interval_method": "wilson-score-95",
+            "label": "inside no published territory",
+            "note": "",
+            "numerator": 1406,
+            "rate": 0.010609719287654694,
+            "state": "measured"
+          },
+          "variant": "without CO-OP"
+        },
+        {
+          "contested": {
+            "denominator": 132520,
+            "interval_high": 0.38117661916403645,
+            "interval_low": 0.37595387414420944,
+            "interval_method": "wilson-score-95",
+            "label": "inside two or more published territories",
+            "note": "",
+            "numerator": 50167,
+            "rate": 0.3785617265318442,
+            "state": "measured"
+          },
+          "contested_difference_from_the_rule_as_built": {
+            "difference": 0.0,
+            "excludes_zero": false,
+            "interval_high": 0.0036930417752288683,
+            "interval_low": -0.0036930417752288683,
+            "interval_method": "newcombe-score-95",
+            "label": "this variant minus the rule as built, contested share",
+            "left": {
+              "denominator": 132520,
+              "interval_high": 0.38117661916403645,
+              "interval_low": 0.37595387414420944,
+              "interval_method": "wilson-score-95",
+              "label": "inside two or more published territories",
+              "note": "",
+              "numerator": 50167,
+              "rate": 0.3785617265318442,
+              "state": "measured"
+            },
+            "note": "The same records measured twice against two different sets of outlines, so the two populations are not independent and this interval is wider than a paired comparison would give. It is published as the conservative bound; the count of records that change outcome is the exact figure.",
+            "right": {
+              "denominator": 132520,
+              "interval_high": 0.38117661916403645,
+              "interval_low": 0.37595387414420944,
+              "interval_method": "wilson-score-95",
+              "label": "inside two or more published territories",
+              "note": "",
+              "numerator": 50167,
+              "rate": 0.3785617265318442,
+              "state": "measured"
+            },
+            "state": "measured"
+          },
+          "counts": {
+            "contested_between_two_or_more": 50167,
+            "coordinate_not_usable": 0,
+            "covered_by_no_published_territory": 0,
+            "placed_in_exactly_one_territory": 82353
+          },
+          "placed": {
+            "denominator": 132520,
+            "interval_high": 0.6240461258557904,
+            "interval_low": 0.6188233808359634,
+            "interval_method": "wilson-score-95",
+            "label": "placed in exactly one published territory",
+            "note": "",
+            "numerator": 82353,
+            "rate": 0.6214382734681557,
+            "state": "measured"
+          },
+          "territories_indexed": 57,
+          "types_read_as_territories": [
+            "CO-OP",
+            "IOU",
+            "POU"
+          ],
+          "uncovered": {
+            "denominator": 132520,
+            "interval_high": 2.89869262647943e-05,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "inside no published territory",
+            "note": "",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          },
+          "variant": "without Tribal"
+        },
+        {
+          "contested": {
+            "denominator": 132520,
+            "interval_high": 0.38052680207395034,
+            "interval_low": 0.3753058115614259,
+            "interval_method": "wilson-score-95",
+            "label": "inside two or more published territories",
+            "note": "",
+            "numerator": 50081,
+            "rate": 0.37791276788409295,
+            "state": "measured"
+          },
+          "contested_difference_from_the_rule_as_built": {
+            "difference": -0.0006489586477512743,
+            "excludes_zero": false,
+            "interval_high": 0.0030434753491450583,
+            "interval_low": -0.004341367718559504,
+            "interval_method": "newcombe-score-95",
+            "label": "this variant minus the rule as built, contested share",
+            "left": {
+              "denominator": 132520,
+              "interval_high": 0.38052680207395034,
+              "interval_low": 0.3753058115614259,
+              "interval_method": "wilson-score-95",
+              "label": "inside two or more published territories",
+              "note": "",
+              "numerator": 50081,
+              "rate": 0.37791276788409295,
+              "state": "measured"
+            },
+            "note": "The same records measured twice against two different sets of outlines, so the two populations are not independent and this interval is wider than a paired comparison would give. It is published as the conservative bound; the count of records that change outcome is the exact figure.",
+            "right": {
+              "denominator": 132520,
+              "interval_high": 0.38117661916403645,
+              "interval_low": 0.37595387414420944,
+              "interval_method": "wilson-score-95",
+              "label": "inside two or more published territories",
+              "note": "",
+              "numerator": 50167,
+              "rate": 0.3785617265318442,
+              "state": "measured"
+            },
+            "state": "measured"
+          },
+          "counts": {
+            "contested_between_two_or_more": 50081,
+            "coordinate_not_usable": 0,
+            "covered_by_no_published_territory": 1406,
+            "placed_in_exactly_one_territory": 81033
+          },
+          "placed": {
+            "denominator": 132520,
+            "interval_high": 0.6140984983949874,
+            "interval_low": 0.6088500644806282,
+            "interval_method": "wilson-score-95",
+            "label": "placed in exactly one published territory",
+            "note": "",
+            "numerator": 81033,
+            "rate": 0.6114775128282524,
+            "state": "measured"
+          },
+          "territories_indexed": 53,
+          "types_read_as_territories": [
+            "IOU",
+            "POU"
+          ],
+          "uncovered": {
+            "denominator": 132520,
+            "interval_high": 0.01117570358069451,
+            "interval_low": 0.010072106834578305,
+            "interval_method": "wilson-score-95",
+            "label": "inside no published territory",
+            "note": "",
+            "numerator": 1406,
+            "rate": 0.010609719287654694,
+            "state": "measured"
+          },
+          "variant": "without CO-OP or Tribal"
+        },
+        {
+          "contested": {
+            "denominator": 132520,
+            "interval_high": 0.5660626182606919,
+            "interval_low": 0.5607221158297465,
+            "interval_method": "wilson-score-95",
+            "label": "inside two or more published territories",
+            "note": "",
+            "numerator": 74661,
+            "rate": 0.563394204648355,
+            "state": "measured"
+          },
+          "contested_difference_from_the_rule_as_built": {
+            "difference": 0.18483247811651077,
+            "excludes_zero": true,
+            "interval_high": 0.18856360733997615,
+            "interval_low": 0.18109379892026706,
+            "interval_method": "newcombe-score-95",
+            "label": "this variant minus the rule as built, contested share",
+            "left": {
+              "denominator": 132520,
+              "interval_high": 0.5660626182606919,
+              "interval_low": 0.5607221158297465,
+              "interval_method": "wilson-score-95",
+              "label": "inside two or more published territories",
+              "note": "",
+              "numerator": 74661,
+              "rate": 0.563394204648355,
+              "state": "measured"
+            },
+            "note": "The same records measured twice against two different sets of outlines, so the two populations are not independent and this interval is wider than a paired comparison would give. It is published as the conservative bound; the count of records that change outcome is the exact figure.",
+            "right": {
+              "denominator": 132520,
+              "interval_high": 0.38117661916403645,
+              "interval_low": 0.37595387414420944,
+              "interval_method": "wilson-score-95",
+              "label": "inside two or more published territories",
+              "note": "",
+              "numerator": 50167,
+              "rate": 0.3785617265318442,
+              "state": "measured"
+            },
+            "state": "measured"
+          },
+          "counts": {
+            "contested_between_two_or_more": 74661,
+            "coordinate_not_usable": 0,
+            "covered_by_no_published_territory": 0,
+            "placed_in_exactly_one_territory": 57859
+          },
+          "placed": {
+            "denominator": 132520,
+            "interval_high": 0.4392778841702534,
+            "interval_low": 0.43393738173930807,
+            "interval_method": "wilson-score-95",
+            "label": "placed in exactly one published territory",
+            "note": "",
+            "numerator": 57859,
+            "rate": 0.436605795351645,
+            "state": "measured"
+          },
+          "territories_indexed": 84,
+          "types_read_as_territories": [
+            "CCA",
+            "CO-OP",
+            "IOU",
+            "POU",
+            "Tribal"
+          ],
+          "uncovered": {
+            "denominator": 132520,
+            "interval_high": 2.89869262647943e-05,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "inside no published territory",
+            "note": "",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          },
+          "variant": "with CCA read as a territory"
+        },
+        {
+          "contested": {
+            "denominator": 132520,
+            "interval_high": 0.7459372655380262,
+            "interval_low": 0.7412354521352796,
+            "interval_method": "wilson-score-95",
+            "label": "inside two or more published territories",
+            "note": "",
+            "numerator": 98541,
+            "rate": 0.743593419861153,
+            "state": "measured"
+          },
+          "contested_difference_from_the_rule_as_built": {
+            "difference": 0.3650316933293088,
+            "excludes_zero": true,
+            "interval_high": 0.36853804565511544,
+            "interval_low": 0.3615106600613385,
+            "interval_method": "newcombe-score-95",
+            "label": "this variant minus the rule as built, contested share",
+            "left": {
+              "denominator": 132520,
+              "interval_high": 0.7459372655380262,
+              "interval_low": 0.7412354521352796,
+              "interval_method": "wilson-score-95",
+              "label": "inside two or more published territories",
+              "note": "",
+              "numerator": 98541,
+              "rate": 0.743593419861153,
+              "state": "measured"
+            },
+            "note": "The same records measured twice against two different sets of outlines, so the two populations are not independent and this interval is wider than a paired comparison would give. It is published as the conservative bound; the count of records that change outcome is the exact figure.",
+            "right": {
+              "denominator": 132520,
+              "interval_high": 0.38117661916403645,
+              "interval_low": 0.37595387414420944,
+              "interval_method": "wilson-score-95",
+              "label": "inside two or more published territories",
+              "note": "",
+              "numerator": 50167,
+              "rate": 0.3785617265318442,
+              "state": "measured"
+            },
+            "state": "measured"
+          },
+          "counts": {
+            "contested_between_two_or_more": 98541,
+            "coordinate_not_usable": 0,
+            "covered_by_no_published_territory": 0,
+            "placed_in_exactly_one_territory": 33979
+          },
+          "placed": {
+            "denominator": 132520,
+            "interval_high": 0.25876454786472036,
+            "interval_low": 0.2540627344619738,
+            "interval_method": "wilson-score-95",
+            "label": "placed in exactly one published territory",
+            "note": "",
+            "numerator": 33979,
+            "rate": 0.256406580138847,
+            "state": "measured"
+          },
+          "territories_indexed": 60,
+          "types_read_as_territories": [
+            "ADMIN",
+            "CO-OP",
+            "IOU",
+            "POU",
+            "Tribal"
+          ],
+          "uncovered": {
+            "denominator": 132520,
+            "interval_high": 2.89869262647943e-05,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "inside no published territory",
+            "note": "",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          },
+          "variant": "with ADMIN read as a territory"
+        },
+        {
+          "contested": {
+            "denominator": 132520,
+            "interval_high": 0.9048697155315177,
+            "interval_low": 0.9016870430364372,
+            "interval_method": "wilson-score-95",
+            "label": "inside two or more published territories",
+            "note": "",
+            "numerator": 119704,
+            "rate": 0.9032900694234832,
+            "state": "measured"
+          },
+          "contested_difference_from_the_rule_as_built": {
+            "difference": 0.5247283428916389,
+            "excludes_zero": true,
+            "interval_high": 0.527777305978054,
+            "interval_low": 0.521661201376244,
+            "interval_method": "newcombe-score-95",
+            "label": "this variant minus the rule as built, contested share",
+            "left": {
+              "denominator": 132520,
+              "interval_high": 0.9048697155315177,
+              "interval_low": 0.9016870430364372,
+              "interval_method": "wilson-score-95",
+              "label": "inside two or more published territories",
+              "note": "",
+              "numerator": 119704,
+              "rate": 0.9032900694234832,
+              "state": "measured"
+            },
+            "note": "The same records measured twice against two different sets of outlines, so the two populations are not independent and this interval is wider than a paired comparison would give. It is published as the conservative bound; the count of records that change outcome is the exact figure.",
+            "right": {
+              "denominator": 132520,
+              "interval_high": 0.38117661916403645,
+              "interval_low": 0.37595387414420944,
+              "interval_method": "wilson-score-95",
+              "label": "inside two or more published territories",
+              "note": "",
+              "numerator": 50167,
+              "rate": 0.3785617265318442,
+              "state": "measured"
+            },
+            "state": "measured"
+          },
+          "counts": {
+            "contested_between_two_or_more": 119704,
+            "coordinate_not_usable": 0,
+            "covered_by_no_published_territory": 0,
+            "placed_in_exactly_one_territory": 12816
+          },
+          "placed": {
+            "denominator": 132520,
+            "interval_high": 0.09831295696356265,
+            "interval_low": 0.09513028446848223,
+            "interval_method": "wilson-score-95",
+            "label": "placed in exactly one published territory",
+            "note": "",
+            "numerator": 12816,
+            "rate": 0.09670993057651675,
+            "state": "measured"
+          },
+          "territories_indexed": 85,
+          "types_read_as_territories": [
+            "ADMIN",
+            "CCA",
+            "CO-OP",
+            "IOU",
+            "POU",
+            "Tribal"
+          ],
+          "uncovered": {
+            "denominator": 132520,
+            "interval_high": 2.89869262647943e-05,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "inside no published territory",
+            "note": "",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          },
+          "variant": "every published type read as a territory"
+        }
+      ]
     }
   },
   "territories": [
@@ -877,7 +1799,7 @@
         "Pacific Gas & Electric Company"
       ],
       "distinct_incidents_among_placed": 0,
-      "geometry_note": "published geometry failed an OGC validity check and was repaired",
+      "geometry_note": "published geometry failed an OGC validity check and was repaired with make_valid",
       "geometry_state": "repaired",
       "incident_concentration": {
         "largest_incident": null,
@@ -1281,7 +2203,7 @@
         "Power and Water Resource Pooling Authority"
       ],
       "distinct_incidents_among_placed": 0,
-      "geometry_note": "published geometry failed an OGC validity check and was repaired",
+      "geometry_note": "published geometry failed an OGC validity check and was repaired with make_valid",
       "geometry_state": "repaired",
       "incident_concentration": {
         "largest_incident": null,
@@ -1601,7 +2523,7 @@
       },
       "contested_with": [],
       "distinct_incidents_among_placed": 0,
-      "geometry_note": "published geometry failed an OGC validity check and was repaired",
+      "geometry_note": "published geometry failed an OGC validity check and was repaired with make_valid",
       "geometry_state": "repaired",
       "incident_concentration": {
         "largest_incident": null,
@@ -2887,7 +3809,7 @@
         "Metropolitan Water District of So. Cal"
       ],
       "distinct_incidents_among_placed": 2,
-      "geometry_note": "published geometry failed an OGC validity check and was repaired",
+      "geometry_note": "published geometry failed an OGC validity check and was repaired with make_valid",
       "geometry_state": "repaired",
       "incident_concentration": {
         "largest_incident": "Horseshoe",
@@ -3054,7 +3976,7 @@
         "Southern California Edison"
       ],
       "distinct_incidents_among_placed": 0,
-      "geometry_note": "published geometry failed an OGC validity check and was repaired",
+      "geometry_note": "published geometry failed an OGC validity check and was repaired with make_valid",
       "geometry_state": "repaired",
       "incident_concentration": {
         "largest_incident": null,
@@ -3462,7 +4384,7 @@
         "Power and Water Resource Pooling Authority"
       ],
       "distinct_incidents_among_placed": 271,
-      "geometry_note": "published geometry failed an OGC validity check and was repaired",
+      "geometry_note": "published geometry failed an OGC validity check and was repaired with make_valid",
       "geometry_state": "repaired",
       "incident_concentration": {
         "largest_incident": "Camp",
@@ -3869,7 +4791,7 @@
         "Pacific Gas & Electric Company"
       ],
       "distinct_incidents_among_placed": 0,
-      "geometry_note": "published geometry failed an OGC validity check and was repaired",
+      "geometry_note": "published geometry failed an OGC validity check and was repaired with make_valid",
       "geometry_state": "repaired",
       "incident_concentration": {
         "largest_incident": null,
@@ -4513,7 +5435,7 @@
         "Metropolitan Water District of So. Cal"
       ],
       "distinct_incidents_among_placed": 46,
-      "geometry_note": "published geometry failed an OGC validity check and was repaired",
+      "geometry_note": "published geometry failed an OGC validity check and was repaired with make_valid",
       "geometry_state": "repaired",
       "incident_concentration": {
         "largest_incident": "Creek",
@@ -5016,60 +5938,6 @@
       "records_placed_here": 0,
       "source_layer": "else_iou_pou",
       "territory": "Victorville Municipal Utilities Services"
-    }
-  ],
-  "years": [
-    {
-      "records": 279,
-      "year": 2013
-    },
-    {
-      "records": 310,
-      "year": 2014
-    },
-    {
-      "records": 3192,
-      "year": 2015
-    },
-    {
-      "records": 944,
-      "year": 2016
-    },
-    {
-      "records": 12757,
-      "year": 2017
-    },
-    {
-      "records": 28403,
-      "year": 2018
-    },
-    {
-      "records": 2108,
-      "year": 2019
-    },
-    {
-      "records": 28626,
-      "year": 2020
-    },
-    {
-      "records": 12253,
-      "year": 2021
-    },
-    {
-      "records": 3009,
-      "year": 2022
-    },
-    {
-      "records": 229,
-      "year": 2023
-    },
-    {
-      "records": 8117,
-      "year": 2024
-    },
-    {
-      "records": 32293,
-      "year": 2025
     }
   ]
 }

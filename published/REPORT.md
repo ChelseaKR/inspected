@@ -22,8 +22,8 @@ hazard other than fire and are excluded here rather than counted as wildfire.
 |---|---:|---:|---:|---|
 | placed in exactly one published territory | 62.1% | 82,353 | 132,520 | 61.9% to 62.4% |
 | inside two or more published territories | 37.9% | 50,167 | 132,520 | 37.6% to 38.1% |
-| inside no published territory | 0.0% | 0 | 132,520 | 0.0% to 0.0029% |
-| coordinate not usable | 0.0% | 0 | 132,520 | 0.0% to 0.0029% |
+| inside no published territory | 0.0% | 0 | 132,520 | 0.000% to 0.003% |
+| coordinate not usable | 0.0% | 0 | 132,520 | 0.000% to 0.003% |
 
 A record inside two or more published territories is not awarded to either.
 The publisher states that the boundaries are approximate and that not all
@@ -41,6 +41,45 @@ record belongs to, and this project does not decide on its behalf.
 Difference, placed minus contested: -0.4% (-1.0% to 0.1%, Newcombe score).
 
 The interval includes zero, so this comparison does not establish a difference between the two populations.
+
+## Is the unattributable share a property of the data or of the fire
+
+The headline is one number over the whole record set, which reads as a property
+of the two datasets. It is mostly not. The published outlines overlap in
+particular places, so whether a record is contested is largely settled by where
+its fire burned.
+
+Of 405 distinct incidents in the record set,
+94.3% (91.6% to 96.2%) fall entirely on one side: every
+classified record contested, or none of them. Those incidents hold
+62.4%
+of the records that carry an incident name.
+
+| Incidents | Share | Incidents | Of | 95% interval |
+|---|---:|---:|---:|---|
+| incidents whose every classified record is contested | 7.2% | 29 | 405 | 5.0% to 10.1% |
+| incidents no record of which is contested | 87.2% | 353 | 405 | 83.5% to 90.1% |
+| incidents with records on both sides | 5.7% | 23 | 405 | 3.8% to 8.4% |
+
+The same thing seen by year. The boundaries are one retrieval and are identical
+for every row, so the movement down this column is where each year's fires
+burned and not a change in the published boundaries. No trend is published.
+
+| Incident year | Records | Classified | Contested share | 95% interval |
+|---:|---:|---:|---:|---|
+| 2013 | 279 | 279 | 0.0% | 0.0% to 1.4% |
+| 2014 | 310 | 310 | 15.8% | 12.2% to 20.3% |
+| 2015 | 3,192 | 3,192 | 0.2% | 0.1% to 0.5% |
+| 2016 | 944 | 944 | 3.1% | 2.1% to 4.4% |
+| 2017 | 12,757 | 12,757 | 60.5% | 59.7% to 61.4% |
+| 2018 | 28,403 | 28,403 | 7.0% | 6.7% to 7.3% |
+| 2019 | 2,108 | 2,108 | 86.6% | 85.1% to 88.0% |
+| 2020 | 28,626 | 28,626 | 19.9% | 19.5% to 20.4% |
+| 2021 | 12,253 | 12,253 | 0.0082% | 0.00% to 0.05% |
+| 2022 | 3,009 | 3,009 | 11.8% | 10.7% to 13.0% |
+| 2023 | 229 | 229 | 9.2% | 6.1% to 13.6% |
+| 2024 | 8,117 | 8,117 | 32.1% | 31.1% to 33.1% |
+| 2025 | 32,293 | 32,293 | 92.5% | 92.2% to 92.8% |
 
 ## Every published territory, in name order
 
@@ -163,25 +202,57 @@ zero records.
 Two published entity types are not read as service territories:
 
 - **ADMIN**: A federal power marketing administration. The polygon is a marketing and transmission administration area, not a retail service territory.
-- **CCA**: A community choice aggregator procures energy for customers inside another entity's distribution footprint. Its polygon overlays a territory rather than being one, so counting a record into both would count it twice.
+- **CCA**: A community choice aggregator is defined at Public Utilities Code section 331.1 as a local government electricity buyers' programme, and section 366.2 leaves metering, billing and delivery with the electrical corporation. Its polygon overlays another entity's distribution footprint rather than being one, so counting a record into both would count it twice.
 
-## The span of the record set
+## What the repair is worth
 
-| Incident year | Records |
-|---:|---:|
-| 2013 | 279 |
-| 2014 | 310 |
-| 2015 | 3,192 |
-| 2016 | 944 |
-| 2017 | 12,757 |
-| 2018 | 28,403 |
-| 2019 | 2,108 |
-| 2020 | 28,626 |
-| 2021 | 12,253 |
-| 2022 | 3,009 |
-| 2023 | 229 |
-| 2024 | 8,117 |
-| 2025 | 32,293 |
+Both repairs run to completion over the same records. 927
+of 132,520 records, 0.7%
+(0.66% to 0.75%), come out differently under `buffer_zero` than
+under `make_valid`. That count is a census of the disagreement and not an
+estimate of it.
+
+| Under the repair used here | Under the alternative | Records |
+|---|---|---:|
+| contested between two or more | contested between two or more | 157 |
+| placed in exactly one territory | contested between two or more | 770 |
+
+| Repair | Placed share | Placed | Of | 95% interval |
+|---|---:|---:|---:|---|
+| placed in exactly one published territory, under make_valid | 62.1% | 82,353 | 132,520 | 61.9% to 62.4% |
+| placed in exactly one published territory, under buffer_zero | 61.6% | 81,583 | 132,520 | 61.3% to 61.8% |
+
+Difference in the placed share: 0.6% (0.2% to 1.0%, Newcombe score). The same records are placed twice,
+so that interval is the conservative bound.
+
+Neither repair is correct. Both are answers to a question the published
+polygon does not answer, and the gap between them is the size of the
+ambiguity the invalid geometry leaves behind.
+
+## What the inclusion rule is worth
+
+Which published outlines count as a service territory is a judgment, and this is
+the whole record set placed again under each way that judgment could have gone.
+The first row is the rule this project uses. Nothing here chooses between them,
+and the difference column is the conservative bound rather than the tight one,
+because the same records are being measured twice.
+
+The inclusion rule reads the publisher's Type field, and the publisher documents none of its values. As retrieved, the layer metadata carries no description on the Type field and no coded-value domain, the FGDC record carries no entity and attribute section, and no data dictionary is attached to either item. What each value means is therefore inferred from the value itself, which is why the rule is published with its sensitivity and why the README asks for a domain review.
+
+| Inclusion rule | Outlines | Contested | Contested share | 95% interval | Difference from the rule as built | Inside no published territory |
+|---|---:|---:|---:|---|---|---:|
+| the rule as built | 59 | 50,167 | 37.9% | 37.6% to 38.1% | reference | 0 |
+| without CO-OP | 55 | 50,081 | 37.8% | 37.5% to 38.1% | -0.1% (-0.4% to 0.3%) | 1,406 |
+| without Tribal | 57 | 50,167 | 37.9% | 37.6% to 38.1% | 0.0% (-0.4% to 0.4%) | 0 |
+| without CO-OP or Tribal | 53 | 50,081 | 37.8% | 37.5% to 38.1% | -0.1% (-0.4% to 0.3%) | 1,406 |
+| with CCA read as a territory | 84 | 74,661 | 56.3% | 56.1% to 56.6% | 18.5% (18.1% to 18.9%) | 0 |
+| with ADMIN read as a territory | 60 | 98,541 | 74.4% | 74.1% to 74.6% | 36.5% (36.2% to 36.9%) | 0 |
+| every published type read as a territory | 85 | 119,704 | 90.3% | 90.2% to 90.5% | 52.5% (52.2% to 52.8%) | 0 |
+
+A rule that drops an included type does not only move records out of the
+contested column. It moves them into the last one, where they are published
+as inside no published territory, which is a statement about coverage that
+the dropped entity's own published polygon contradicts.
 
 ## What this does not measure
 

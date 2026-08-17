@@ -212,6 +212,14 @@ DINS = Source(
 SOURCES: tuple[Source, ...] = (DINS, ELSE_IOU_POU, ELSE_OTHER)
 
 
+PUBLISHED_TYPES: tuple[str, ...] = ("ADMIN", "CCA", "CO-OP", "IOU", "POU", "Tribal")
+"""Every ``Type`` value the two CEC layers carry, in name order.
+
+Held here so the inclusion rule below can be re-run against its own alternatives. A type
+that appears in a future retrieval and not in this tuple is a change in the publisher's
+data, and :mod:`inspected.sensitivity` reports it rather than absorbing it.
+"""
+
 WIRES_TYPES: tuple[str, ...] = ("CO-OP", "IOU", "POU", "Tribal")
 """The CEC ``Type`` values read as a retail electric service territory.
 
@@ -222,15 +230,29 @@ that are about what the polygon represents rather than about the organisation:
 
 EXCLUDED_TYPES: dict[str, str] = {
     "CCA": (
-        "A community choice aggregator procures energy for customers inside another "
-        "entity's distribution footprint. Its polygon overlays a territory rather than "
-        "being one, so counting a record into both would count it twice."
+        "A community choice aggregator is defined at Public Utilities Code section "
+        "331.1 as a local government electricity buyers' programme, and section 366.2 "
+        "leaves metering, billing and delivery with the electrical corporation. Its "
+        "polygon overlays another entity's distribution footprint rather than being "
+        "one, so counting a record into both would count it twice."
     ),
     "ADMIN": (
         "A federal power marketing administration. The polygon is a marketing and "
         "transmission administration area, not a retail service territory."
     ),
 }
+
+TYPE_FIELD_IS_UNDOCUMENTED: str = (
+    "The inclusion rule reads the publisher's Type field, and the publisher documents "
+    "none of its values. As retrieved, the layer metadata carries no description on the "
+    "Type field and no coded-value domain, the FGDC record carries no entity and "
+    "attribute section, and no data dictionary is attached to either item. What each "
+    "value means is therefore inferred from the value itself, which is why the rule is "
+    "published with its sensitivity and why the README asks for a domain review."
+)
+"""Checked against the published metadata on the retrieval date, and recorded as a fact
+about the source rather than as a complaint. The measurement built from it is
+:mod:`inspected.sensitivity`, which reports what the rule is worth in records."""
 
 CALIFORNIA_BBOX: tuple[float, float, float, float] = (-124.5, 32.4, -114.0, 42.1)
 """Longitude and latitude bounds used only to refuse a coordinate, never to correct one.

@@ -120,6 +120,100 @@ def test_boundary_bands_are_nested_within_each_territory(
         assert numerators == sorted(numerators)
 
 
+def test_the_published_sensitivity_re_places_the_whole_record_set(
+    published_artifact: dict[str, Any],
+) -> None:
+    total = published_artifact["placement_coverage"]["fire_records"]
+    for row in published_artifact["sensitivity"]["type_inclusion"]["variants"]:
+        assert sum(row["counts"].values()) == total
+        assert row["contested"]["denominator"] == total
+
+
+def test_the_rule_as_built_variant_reproduces_the_headline(
+    published_artifact: dict[str, Any],
+) -> None:
+    """The sensitivity run and the main pipeline must not have drifted apart."""
+    variants = published_artifact["sensitivity"]["type_inclusion"]["variants"]
+    reference = variants[0]
+    assert reference["variant"] == "the rule as built"
+    assert reference["counts"] == published_artifact["placement_coverage"]["counts"]
+    assert "contested_difference_from_the_rule_as_built" not in reference
+    for row in variants[1:]:
+        assert "contested_difference_from_the_rule_as_built" in row
+
+
+def test_the_published_inclusion_rule_is_the_one_the_variants_measure(
+    published_artifact: dict[str, Any],
+) -> None:
+    block = published_artifact["sensitivity"]["type_inclusion"]
+    assert block["rule_as_built"] == ["CO-OP", "IOU", "POU", "Tribal"]
+    assert block["unexpected_published_types"] == [], (
+        "the publisher shipped a Type this project has never reviewed"
+    )
+    assert set(block["published_types_present_in_this_retrieval"]) >= {
+        "CCA",
+        "CO-OP",
+        "IOU",
+        "POU",
+        "Tribal",
+    }
+
+
+def test_the_repair_comparison_is_a_census_over_the_record_set(
+    published_artifact: dict[str, Any],
+) -> None:
+    block = published_artifact["sensitivity"]["repair_strategy"]
+    total = published_artifact["placement_coverage"]["fire_records"]
+    changed = block["records_with_a_different_outcome"]
+    assert changed["denominator"] == total
+    assert sum(row["records"] for row in block["transitions"]) == changed["numerator"]
+    assert (
+        block["placed_under_the_chosen_repair"]["numerator"]
+        == (
+            published_artifact["placement_coverage"]["counts"][
+                "placed_in_exactly_one_territory"
+            ]
+        )
+    )
+
+
+def test_the_published_repair_delta_is_measured_rather_than_estimated(
+    published_artifact: dict[str, Any],
+) -> None:
+    difference = published_artifact["sensitivity"]["repair_strategy"][
+        "placed_difference"
+    ]
+    assert difference["state"] == "measured"
+    assert difference["interval_method"] == "newcombe-score-95"
+    assert difference["interval_low"] <= difference["difference"]
+    assert difference["difference"] <= difference["interval_high"]
+
+
+def test_the_incident_and_year_cuts_stay_inside_the_record_set(
+    published_artifact: dict[str, Any],
+) -> None:
+    block = published_artifact["attributability_by_fire"]
+    counts = published_artifact["placement_coverage"]["counts"]
+    classified = (
+        counts["placed_in_exactly_one_territory"]
+        + counts["contested_between_two_or_more"]
+        + counts["covered_by_no_published_territory"]
+    )
+    assert sum(r["records_classified"] for r in block["by_incident_year"]) <= classified
+    assert block["by_incident"]["records_carrying_an_incident_name"] <= classified
+    years = [row["year"] for row in block["by_incident_year"]]
+    assert years == sorted(years)
+
+
+def test_no_year_row_is_compared_against_another_year(
+    published_artifact: dict[str, Any],
+) -> None:
+    """Each year carries its own interval and no difference between years is published."""
+    for row in published_artifact["attributability_by_fire"]["by_incident_year"]:
+        assert "difference" not in row
+        assert row["contested"]["interval_method"] in ("wilson-score-95", "none")
+
+
 def test_every_measured_rate_has_a_denominator_that_contains_it(
     published_artifact: dict[str, Any],
 ) -> None:

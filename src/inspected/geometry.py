@@ -22,6 +22,13 @@ carries whether its geometry was repaired. A reader who wants to discount the re
 ones can see which they are. A repair that does not produce a polygonal result at all
 removes the territory from the index and is reported as unusable, because a territory
 this project cannot test containment against is not a territory it can report zero for.
+
+The repair is a parameter rather than a constant, and both strategies are kept working.
+``make_valid`` is what the published figures use; ``buffer_zero`` is the other repair in
+common use, and :mod:`inspected.sensitivity` runs the whole placement under each of them
+so the difference between the two is published as a measurement instead of as an
+estimate. A strategy that only exists in an old draft cannot be run against the current
+one, which is how the size of that choice went unmeasured in the first place.
 """
 
 from __future__ import annotations
@@ -50,6 +57,11 @@ ALBERS_PIPELINE: Final[str] = (
 REPAIRED: Final[str] = "repaired"
 AS_PUBLISHED: Final[str] = "as_published"
 UNUSABLE: Final[str] = "unusable"
+
+MAKE_VALID: Final[str] = "make_valid"
+BUFFER_ZERO: Final[str] = "buffer_zero"
+REPAIR_STRATEGIES: Final[tuple[str, ...]] = (MAKE_VALID, BUFFER_ZERO)
+"""The two repairs. ``make_valid`` produces the published figures; see ADR 0007."""
 
 
 class TerritoryLoadError(ValueError):
@@ -88,6 +100,25 @@ def _polygonal(geom: BaseGeometry) -> BaseGeometry | None:
     return MultiPolygon(parts) if len(parts) > 1 else parts[0]
 
 
+def repair(geom: BaseGeometry, strategy: str) -> BaseGeometry | None:
+    """Apply one named repair, returning its polygonal part or None.
+
+    ``buffer_zero`` is kept alongside ``make_valid`` because it is the repair an earlier
+    draft of this project used and the repair a reader is most likely to reach for. Both
+    are run over the whole record set, and the difference is published rather than
+    described.
+    """
+    if strategy == MAKE_VALID:
+        return _polygonal(make_valid(geom))
+    if strategy == BUFFER_ZERO:
+        return _polygonal(geom.buffer(0))
+    raise TerritoryLoadError(
+        f"{strategy!r} is not a repair this project knows. Add it to REPAIR_STRATEGIES "
+        "and to the sensitivity run, or the published figures will rest on a repair "
+        "nothing was compared against."
+    )
+
+
 @dataclass(frozen=True)
 class Territory:
     """One published service territory outline, projected and validity-checked."""
@@ -121,16 +152,66 @@ def _feature_fields(feature: dict[str, Any]) -> tuple[str, str, int]:
     return name.strip(), kind.strip(), oid
 
 
+def _build_territory(
+    feature: dict[str, Any],
+    fields: tuple[str, str, int],
+    source_key: str,
+    strategy: str,
+) -> Territory:
+    """One published feature, projected, and repaired if the publisher shipped it broken."""
+    name, kind, oid = fields
+    raw = feature.get("geometry")
+    if raw is None:
+        return Territory(
+            name,
+            kind,
+            oid,
+            source_key,
+            Polygon(),
+            UNUSABLE,
+            "the published feature carries no geometry",
+        )
+    geom = _project_geometry(shapely.geometry.shape(raw))
+    if geom.is_valid:
+        return Territory(name, kind, oid, source_key, geom, AS_PUBLISHED, "")
+    fixed = repair(geom, strategy)
+    if fixed is None:
+        return Territory(
+            name,
+            kind,
+            oid,
+            source_key,
+            Polygon(),
+            UNUSABLE,
+            f"{strategy} produced no polygonal geometry to test against",
+        )
+    return Territory(
+        name,
+        kind,
+        oid,
+        source_key,
+        fixed,
+        REPAIRED,
+        f"published geometry failed an OGC validity check and was repaired with "
+        f"{strategy}",
+    )
+
+
 def load_territories(
     collections: dict[str, dict[str, Any]],
     *,
     keep_types: tuple[str, ...] = WIRES_TYPES,
+    strategy: str = MAKE_VALID,
 ) -> tuple[tuple[Territory, ...], tuple[Territory, ...]]:
     """Read the published layers into projected territories.
 
     ``collections`` maps a source key to a GeoJSON FeatureCollection. Returns the
     usable territories and, separately, the ones whose geometry could not be repaired
     into anything containment can be tested against.
+
+    ``keep_types`` and ``strategy`` are both parameters so that the two choices this
+    project makes here can be re-run and compared rather than argued about. Neither
+    default changes without an ADR.
 
     Territories come back sorted by name. Nothing downstream sorts by a measured value,
     and this is where that starts.
@@ -143,45 +224,14 @@ def load_territories(
         if not isinstance(features, list):
             raise TerritoryLoadError(f"{source_key} is not a FeatureCollection")
         for feature in features:
-            name, kind, oid = _feature_fields(feature)
-            if kind not in keep_types:
+            fields = _feature_fields(feature)
+            if fields[1] not in keep_types:
                 continue
-            raw = feature.get("geometry")
-            if raw is None:
-                unusable.append(
-                    Territory(
-                        name,
-                        kind,
-                        oid,
-                        source_key,
-                        Polygon(),
-                        UNUSABLE,
-                        "the published feature carries no geometry",
-                    )
-                )
-                continue
-            geom = _project_geometry(shapely.geometry.shape(raw))
-            state, note = AS_PUBLISHED, ""
-            if not geom.is_valid:
-                repaired = _polygonal(make_valid(geom))
-                if repaired is None:
-                    unusable.append(
-                        Territory(
-                            name,
-                            kind,
-                            oid,
-                            source_key,
-                            Polygon(),
-                            UNUSABLE,
-                            "repair produced no polygonal geometry to test against",
-                        )
-                    )
-                    continue
-                geom, state = repaired, REPAIRED
-                note = (
-                    "published geometry failed an OGC validity check and was repaired"
-                )
-            usable.append(Territory(name, kind, oid, source_key, geom, state, note))
+            territory = _build_territory(feature, fields, source_key, strategy)
+            if territory.geometry_state == UNUSABLE:
+                unusable.append(territory)
+            else:
+                usable.append(territory)
     usable.sort(key=lambda t: (t.name, t.object_id))
     unusable.sort(key=lambda t: (t.name, t.object_id))
     return tuple(usable), tuple(unusable)

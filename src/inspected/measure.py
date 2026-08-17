@@ -18,6 +18,13 @@ What is published
 4. **Per territory, how much of it sits near a published edge.** The publisher says the
    boundaries are approximate. This says how much would move if they are off by 100,
    250, 500 or 1000 metres.
+5. **Whether being unattributable is a property of the data or of the fire.** The share
+   of incidents whose classified records fall entirely on one side of the contested
+   line, and the contested share within each incident year, each with its own
+   denominator. Denominators: the incident set, and the classified records of one year.
+6. **What the two judgment calls are worth**, in :mod:`inspected.sensitivity`: the whole
+   placement re-run under each alternative reading of the publisher's ``Type`` field,
+   and under the other geometry repair.
 
 What is not published, and why
 ------------------------------
@@ -37,6 +44,17 @@ housing units, not customers, not meters, not parcels. The numerator here is a
 population defined by where fires burned and which land is in the state responsibility
 area, and dividing it by a population defined some other way produces a number whose
 denominator does not contain its numerator.
+
+**No trend over time.** The contested share is published per incident year and no
+direction is drawn through it. The territory layer is a single retrieval, so every year
+in the table is measured against the same boundaries, and a rise across years would be a
+statement about where those years' fires burned dressed up as a statement about the data
+improving or degrading.
+
+**Nothing is broken out by county.** It would be a defensible cut, and the county field
+is published by CAL FIRE, but it is not one of the seven columns this project fetches.
+Adding it means a fresh acquisition and a fresh pin, which moves every figure here, so it
+is named in the README as an open item rather than half-built.
 """
 
 from __future__ import annotations
@@ -254,3 +272,100 @@ def years(placement: Placement) -> list[dict[str, int]]:
         {"year": year, "records": count}
         for year, count in sorted(placement.years.items())
     ]
+
+
+def _incident_split(placement: Placement) -> dict[str, Any]:
+    """How many incidents are wholly contested, wholly uncontested, or split."""
+    totals = placement.incident_classified
+    contested = placement.incident_contested
+    distinct = len(totals)
+    all_contested = [name for name, n in totals.items() if contested[name] == n]
+    none_contested = [name for name, n in totals.items() if contested[name] == 0]
+    settled = len(all_contested) + len(none_contested)
+    in_settled = sum(totals[name] for name in all_contested + none_contested)
+    classified = sum(totals.values())
+    return {
+        "distinct_incidents": distinct,
+        "records_carrying_an_incident_name": classified,
+        "every_record_contested": Rate.of(
+            "incidents whose every classified record is contested",
+            len(all_contested),
+            distinct,
+        ).as_dict(),
+        "no_record_contested": Rate.of(
+            "incidents no record of which is contested", len(none_contested), distinct
+        ).as_dict(),
+        "split_both_ways": Rate.of(
+            "incidents with records on both sides", distinct - settled, distinct
+        ).as_dict(),
+        "one_way_or_the_other": Rate.of(
+            "incidents that fall entirely on one side", settled, distinct
+        ).as_dict(),
+        "records_in_an_incident_that_falls_entirely_on_one_side": Rate.of(
+            "records belonging to an incident that falls entirely on one side",
+            in_settled,
+            classified,
+        ).as_dict(),
+    }
+
+
+def _by_year(placement: Placement) -> list[dict[str, Any]]:
+    """The span of the record set, and the contested share within each year.
+
+    ``records`` is every fire record carrying that incident year. ``records_classified``
+    is the subset that had a usable coordinate and therefore an outcome, and it is the
+    denominator of the share, so a year of records that could not be placed reads as not
+    measured rather than as a year with no overlap.
+    """
+    rows: list[dict[str, Any]] = []
+    for row in years(placement):
+        year = row["year"]
+        classified = placement.year_classified[year]
+        rows.append(
+            {
+                "year": year,
+                "records": row["records"],
+                "records_classified": classified,
+                "contested": Rate.of(
+                    "inside two or more published territories, this year",
+                    placement.year_contested[year],
+                    classified,
+                ).as_dict(),
+            }
+        )
+    return rows
+
+
+def attributability_by_fire(placement: Placement) -> dict[str, Any]:
+    """Is the unattributable share a property of the record set or of the fire?
+
+    The headline figure is one number over the whole record set, which invites reading
+    it as a property of the two datasets. It is not. The published outlines overlap in
+    particular places, so whether a record is contested is mostly settled by where its
+    fire burned, and this measures how strongly.
+
+    Two cuts, both with the record set as their denominator or the incident set as
+    theirs. No trend is published across the years and none can be: the territory layer
+    is a single retrieval, so a year-over-year change in the contested share is a change
+    in where fires burned against fixed boundaries, not a change in the boundaries. The
+    dispersion is the finding; a direction over time would be an artefact.
+    """
+    return {
+        "question": (
+            "Is being inside more than one published outline a property of the record "
+            "set, or a property of where a particular fire burned?"
+        ),
+        "by_incident": _incident_split(placement),
+        "by_incident_year": _by_year(placement),
+        "no_trend_is_published": (
+            "The territory layer is one retrieval, so the boundaries are identical for "
+            "every year in the table. A rise or fall across years would describe where "
+            "that year's fires burned, not a change in the published boundaries, and it "
+            "is not published as a trend."
+        ),
+        "note": (
+            "Incident names come from the published INCIDENTNAME field and are counted "
+            "as published. A record with no incident name is left out of the incident "
+            "cut and stays in every other denominator in this project."
+        ),
+    }

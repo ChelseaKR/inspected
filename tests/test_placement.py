@@ -4,9 +4,11 @@ from __future__ import annotations
 
 from typing import Any
 
+import numpy as np
 import pytest
+import shapely
 
-from inspected.geometry import Territory
+from inspected.geometry import Territory, load_territories, project_lonlat
 from inspected.placement import (
     BOUNDARY_BANDS_M,
     Placement,
@@ -14,6 +16,7 @@ from inspected.placement import (
     SchemaError,
     assert_columns,
     classify,
+    containment_signatures,
     measure_boundary_distances,
     read_records,
 )
@@ -155,6 +158,101 @@ def test_a_territory_with_no_incidents_reports_none(
 def test_years_are_counted_from_the_published_start_date(placement: Placement) -> None:
     assert placement.years[2020] == 3
     assert sum(placement.years.values()) == placement.fire_records
+
+
+def test_the_year_split_counts_only_records_that_got_an_outcome(
+    placement: Placement,
+) -> None:
+    """A record with no usable coordinate has a year and no contested answer."""
+    classified = sum(placement.year_classified.values())
+    assert classified == placement.fire_records - placement.not_measured
+    for year, contested in placement.year_contested.items():
+        assert contested <= placement.year_classified[year]
+
+
+def test_the_incident_split_counts_only_records_that_got_an_outcome(
+    placement: Placement,
+) -> None:
+    for name, contested in placement.incident_contested.items():
+        assert contested <= placement.incident_classified[name]
+    assert sum(placement.incident_classified.values()) <= placement.classified
+
+
+def test_the_faster_containment_route_answers_what_the_predicate_form_answers(
+    territories: tuple[Territory, ...], records: tuple[tuple[Record, ...], int]
+) -> None:
+    """The two-step query is an optimisation, so it has to be exactly equivalent.
+
+    ``STRtree.query(predicate="intersects")`` re-walks every ring on every test and
+    costs about forty seconds over the real record set. The tree-then-prepared-test form
+    costs a tenth of a second. This asserts the two agree rather than assuming it, over
+    a grid dense enough to land points inside, outside, and on the shared edges.
+    """
+    grid = tuple(
+        Record(
+            object_id=i,
+            damage=None,
+            incident=None,
+            year=None,
+            lon=-121.2 + 0.05 * (i % 30),
+            lat=37.9 + 0.05 * (i // 30),
+        )
+        for i in range(900)
+    )
+    usable = [r for r in grid if r.has_usable_coordinate]
+    xs, ys = project_lonlat(
+        np.array([r.lon for r in usable], dtype="float64"),
+        np.array([r.lat for r in usable], dtype="float64"),
+    )
+    points = shapely.points(xs, ys)
+    pairs = shapely.STRtree([t.geometry for t in territories]).query(
+        points, predicate="intersects"
+    )
+    expected: list[list[str]] = [[] for _ in range(len(points))]
+    for point_index, hit_index in zip(pairs[0], pairs[1], strict=True):
+        expected[int(point_index)].append(territories[int(hit_index)].name)
+
+    signatures = [s for s in containment_signatures(grid, territories) if s is not None]
+    assert signatures == [tuple(sorted(names)) for names in expected]
+    assert any(signatures), (
+        "the grid must land inside something for this to mean anything"
+    )
+
+
+def test_a_record_set_with_no_usable_coordinate_has_no_signature() -> None:
+    off_map = (
+        Record(object_id=1, damage=None, incident=None, year=None, lon=10.0, lat=50.0),
+    )
+    territories, _ = load_territories(
+        {
+            "a": {
+                "type": "FeatureCollection",
+                "features": [
+                    {
+                        "type": "Feature",
+                        "properties": {
+                            "OBJECTID": 1,
+                            "Utility": "Somewhere Electric",
+                            "Type": "IOU",
+                        },
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [-121.0, 38.0],
+                                    [-120.0, 38.0],
+                                    [-120.0, 39.0],
+                                    [-121.0, 39.0],
+                                    [-121.0, 38.0],
+                                ]
+                            ],
+                        },
+                    }
+                ],
+            }
+        }
+    )
+    assert containment_signatures(off_map, territories) == (None,)
 
 
 def test_a_row_missing_a_column_is_refused_not_read_as_a_value() -> None:

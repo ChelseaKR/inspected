@@ -180,6 +180,10 @@ class Placement:
     tallies: dict[str, TerritoryTally] = field(default_factory=dict)
     contested_groups: Counter[tuple[str, ...]] = field(default_factory=Counter)
     years: Counter[int] = field(default_factory=Counter)
+    year_classified: Counter[int] = field(default_factory=Counter)
+    year_contested: Counter[int] = field(default_factory=Counter)
+    incident_classified: Counter[str] = field(default_factory=Counter)
+    incident_contested: Counter[str] = field(default_factory=Counter)
 
     @property
     def classified(self) -> int:
@@ -198,13 +202,51 @@ def _empty_tallies(territories: tuple[Territory, ...]) -> dict[str, TerritoryTal
 def _hits_by_record(
     territories: tuple[Territory, ...], xs: np.ndarray, ys: np.ndarray
 ) -> list[list[int]]:
-    """For each point, the indices of every territory whose outline it meets."""
+    """For each point, the indices of every territory whose outline it meets.
+
+    Two steps rather than ``STRtree.query(..., predicate="intersects")``, which does not
+    use a prepared geometry and re-walks the full ring on every test. The largest
+    territory here carries over a hundred thousand vertices, so that form spends about
+    forty seconds on this record set where the two-step form spends a tenth of a second.
+    The tree narrows by bounding box, then a prepared containment test decides. The pairs
+    are identical, including their order; a test asserts that against the predicate form
+    rather than taking it on trust.
+    """
     tree = build_index(territories)
-    pairs = tree.query(shapely.points(xs, ys), predicate="intersects")
+    geometries = np.asarray([t.geometry for t in territories], dtype=object)
+    shapely.prepare(geometries)
+    points = shapely.points(xs, ys)
+    candidates = tree.query(points)
+    inside = shapely.intersects(geometries[candidates[1]], points[candidates[0]])
     hits: list[list[int]] = [[] for _ in range(len(xs))]
-    for point_index, hit_index in zip(pairs[0], pairs[1], strict=True):
+    for point_index, hit_index in zip(
+        candidates[0][inside], candidates[1][inside], strict=True
+    ):
         hits[int(point_index)].append(int(hit_index))
     return hits
+
+
+def containment_signatures(
+    records: tuple[Record, ...], territories: tuple[Territory, ...]
+) -> tuple[tuple[str, ...] | None, ...]:
+    """Per record, the names of every outline it falls inside, or None for no coordinate.
+
+    An empty tuple means the record is inside no published outline. This is the form two
+    runs are compared in: the same records under two different repairs, or under two
+    different inclusion rules, so that a change can be counted per record rather than
+    inferred from two totals that happen to differ.
+    """
+    signatures: list[tuple[str, ...] | None] = [None] * len(records)
+    usable, lons, lats = _usable_positions(records)
+    if not usable:
+        return tuple(signatures)
+    xs, ys = project_lonlat(lons, lats)
+    hits = _hits_by_record(territories, xs, ys)
+    for position, record_index in enumerate(usable):
+        signatures[record_index] = tuple(
+            sorted(territories[i].name for i in hits[position])
+        )
+    return tuple(signatures)
 
 
 def _usable_positions(
@@ -248,6 +290,25 @@ def _tally_contested(
                 tally.contested_with[other] += 1
 
 
+def _tally_dispersion(result: Placement, record: Record, contested: bool) -> None:
+    """Count each classified record against its year and its incident.
+
+    These two are kept separately from the running totals because they answer a
+    different question: whether being inside more than one published outline is a
+    property of the record set or a property of where a particular fire burned. Only
+    records that could be classified are counted, so the denominator of any share taken
+    over them is the population that had an outcome, not the population that has a row.
+    """
+    if record.year is not None:
+        result.year_classified[record.year] += 1
+        if contested:
+            result.year_contested[record.year] += 1
+    if record.incident:
+        result.incident_classified[record.incident] += 1
+        if contested:
+            result.incident_contested[record.incident] += 1
+
+
 def classify(
     records: tuple[Record, ...],
     territories: tuple[Territory, ...],
@@ -284,6 +345,7 @@ def classify(
             )
         else:
             _tally_contested(result, territories, found, record)
+        _tally_dispersion(result, record, contested=len(found) > 1)
     return result
 
 

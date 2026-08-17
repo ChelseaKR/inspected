@@ -5,7 +5,48 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-Nothing yet.
+### Added
+
+- `inspected.sensitivity`: the two judgment calls in this project, re-run over the whole
+  record set and published with their denominators and intervals rather than argued for.
+  - **The inclusion rule.** Seven readings of the publisher's `Type` field, each one the
+    entire record set placed again. Reading `CO-OP` and `Tribal` as service territories,
+    the unreviewed half of the rule, is worth 0.065 percentage points on the headline;
+    dropping `Tribal` changes nothing at all; dropping `CO-OP` would publish 1,406
+    records as inside no published territory. Reading `CCA` as a territory would take the
+    contested share to 56.3% and `ADMIN` to 74.4%. The rule is unchanged. See
+    `docs/adr/0006`.
+  - **The geometry repair.** `make_valid` and `buffer(0)` both run to completion. 927
+    records, 0.70% of the record set with an interval of 0.66% to 0.75%, come out
+    differently; 770 move from placed to contested and 157 are contested under both but
+    between a different pair of outlines. The 0.1.0 note that the two disagreed on
+    "roughly 770 placements" was a recollection and it missed those 157. See
+    `docs/adr/0007`.
+- Whether being unattributable is a property of the data or of the fire. 94.3% of the
+  405 incidents in the record set fall entirely on one side of the contested line, with
+  the contested share by incident year running from 0.0% to 92.5%. No trend is drawn
+  through the years and the artifact says why: the territory layer is a single retrieval,
+  so every year is measured against identical boundaries. See `docs/adr/0008`.
+- That CEC documents none of the six `Type` values is stated in the output and in
+  `PROVENANCE.md`, checked against the layer metadata, the FGDC record and the item
+  resources on the retrieval date.
+
+### Changed
+
+- Containment narrows by bounding box and then tests against a prepared geometry, rather
+  than calling `STRtree.query(predicate="intersects")`, which does not use a prepared
+  geometry and re-walks every ring on every test. The full build runs in about 17 seconds
+  doing nine placements of the record set where it took about 50 doing one. A test holds
+  the two forms to identical answers, and every published figure is unchanged.
+- An interval whose two ends round to the same string is now printed at more decimal
+  places until they differ. `0.7% to 0.7%` reads as certainty.
+- The repair strategy and the set of included types are parameters on
+  `geometry.load_territories`. `geometry.repair` refuses a strategy that is not in
+  `REPAIR_STRATEGIES`, so a new repair cannot be used before it has been compared against
+  the one in force.
+- The per-year record counts moved from a standalone `years` block into the new
+  measurement, where each year carries both its record count and the classified count
+  that is the denominator of its share.
 
 ## [0.1.0] - 2026-08-17
 

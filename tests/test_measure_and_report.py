@@ -141,6 +141,65 @@ def test_years_are_ordered_and_complete(placement: Placement) -> None:
     assert sum(r["records"] for r in rows) == placement.fire_records
 
 
+def test_the_incident_split_accounts_for_every_incident(placement: Placement) -> None:
+    block = measure.attributability_by_fire(placement)["by_incident"]
+    distinct = block["distinct_incidents"]
+    counted = (
+        block["every_record_contested"]["numerator"]
+        + block["no_record_contested"]["numerator"]
+        + block["split_both_ways"]["numerator"]
+    )
+    assert counted == distinct
+    assert block["one_way_or_the_other"]["numerator"] == (
+        block["every_record_contested"]["numerator"]
+        + block["no_record_contested"]["numerator"]
+    )
+    for key in ("every_record_contested", "no_record_contested", "split_both_ways"):
+        assert block[key]["denominator"] == distinct
+
+
+def test_a_year_whose_records_could_not_be_placed_is_not_measured(
+    placement: Placement,
+) -> None:
+    """The fixture holds a year of records with unusable coordinates."""
+    rows = measure.attributability_by_fire(placement)["by_incident_year"]
+    unplaceable = [r for r in rows if r["records_classified"] == 0]
+    assert unplaceable, "the fixture must carry a year with nothing classified"
+    for row in unplaceable:
+        assert row["contested"]["state"] == "not_measured"
+        assert row["contested"]["rate"] is None
+        assert row["records"] > 0
+
+
+def test_the_year_rows_carry_both_denominators(placement: Placement) -> None:
+    for row in measure.attributability_by_fire(placement)["by_incident_year"]:
+        assert row["records_classified"] <= row["records"]
+        if row["contested"]["state"] == "measured":
+            assert row["contested"]["denominator"] == row["records_classified"]
+
+
+def test_no_trend_is_drawn_through_the_years(placement: Placement) -> None:
+    """A direction over time would be a claim the single boundary snapshot cannot make."""
+    block = measure.attributability_by_fire(placement)
+    assert "one retrieval" in block["no_trend_is_published"]
+    banned = {"trend", "slope", "direction", "improving", "worsening"}
+    for row in block["by_incident_year"]:
+        for key in _all_keys(row):
+            assert not any(word in key.lower() for word in banned), key
+
+
+def test_an_interval_never_prints_its_two_ends_as_the_same_number() -> None:
+    """`0.7% to 0.7%` reads as certainty. The precision rises until the ends differ."""
+    assert report.span(0.006555, 0.007464) == "0.66% to 0.75%"
+    assert report.span(0.619, 0.624) == "61.9% to 62.4%"
+    assert report.span(0.0, 0.000029) == "0.000% to 0.003%"
+    assert report.span(0.0, 0.0000041) == "0.0000% to 0.0004%"
+
+
+def test_two_ends_that_really_are_the_same_still_print() -> None:
+    assert report.span(1.0, 1.0) == "100.0% to 100.0%"
+
+
 def test_a_measurement_that_could_not_be_made_never_prints_as_a_percentage() -> None:
     assert pct(None) == NOT_MEASURED
 
@@ -161,9 +220,12 @@ def test_a_not_measured_rate_renders_as_words_in_a_table_row() -> None:
     [
         "Can the join be made at all",
         "Do the records that can be attributed look like the ones that cannot",
+        "Is the unattributable share a property of the data or of the fire",
         "Every published territory, in name order",
         "Where the published boundaries overlap",
         "The published polygons, as they arrived",
+        "What the repair is worth",
+        "What the inclusion rule is worth",
         "What this does not measure",
     ],
 )

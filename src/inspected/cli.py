@@ -11,7 +11,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from inspected import artifacts, measure, report
+from inspected import artifacts, measure, report, sensitivity
 from inspected.geometry import load_territories
 from inspected.placement import classify, measure_boundary_distances, read_records
 from inspected.sources import DINS, ELSE_IOU_POU, ELSE_OTHER, RETRIEVED
@@ -33,12 +33,11 @@ def build(
     is_fixture: bool,
 ) -> tuple[Path, Path]:
     """Measure, check, and write both artifacts. Nothing is written if a check fails."""
-    territories, unusable = load_territories(
-        {
-            ELSE_IOU_POU.key: _read_json(iou_pou_path),
-            ELSE_OTHER.key: _read_json(other_path),
-        }
-    )
+    collections = {
+        ELSE_IOU_POU.key: _read_json(iou_pou_path),
+        ELSE_OTHER.key: _read_json(other_path),
+    }
+    territories, unusable = load_territories(collections)
     records, excluded = read_records(_read_json(dins_path))
     placement = classify(records, territories, excluded)
     measure_boundary_distances(placement, territories)
@@ -58,11 +57,19 @@ def build(
         },
         "placement_coverage": measure.placement_coverage(placement),
         "representativeness": measure.representativeness(placement),
+        "attributability_by_fire": measure.attributability_by_fire(placement),
         "territories": measure.territory_rows(placement, territories),
         "contested_groups": measure.contested_groups(placement),
         "geometry_ledger": measure.geometry_ledger(placement, territories, unusable),
+        "sensitivity": {
+            "type_inclusion": sensitivity.type_inclusion(
+                collections, records, excluded
+            ),
+            "repair_strategy": sensitivity.repair_comparison(
+                collections, records, territories
+            ),
+        },
         "excluded_types": measure.excluded_type_note(),
-        "years": measure.years(placement),
     }
 
     ceiling = max(len(territories) + len(unusable), 32)

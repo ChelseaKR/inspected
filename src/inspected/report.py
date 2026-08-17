@@ -36,10 +36,30 @@ def count(value: int) -> str:
     return f"{value:,}"
 
 
+def span(low: float, high: float) -> str:
+    """Both ends of an interval, at enough precision to tell them apart.
+
+    :func:`pct` prints one decimal place. Over a six-figure denominator two genuinely
+    different bounds round to the same string, and an interval printed as `0.7% to 0.7%`
+    reads as certainty, which is the opposite of what an interval is there to say. The
+    precision rises until the two ends differ, or until four places has shown that they
+    really do not.
+    """
+    rendered = [
+        (f"{low * 100:.{places}f}%", f"{high * 100:.{places}f}%")
+        for places in (1, 2, 3, 4)
+    ]
+    for lower, upper in rendered:
+        if lower != upper:
+            return f"{lower} to {upper}"
+    lower, upper = rendered[0]
+    return f"{lower} to {upper}"
+
+
 def interval(node: dict[str, Any]) -> str:
     if node.get("state") != "measured":
         return NOT_MEASURED
-    return f"{pct(node['interval_low'])} to {pct(node['interval_high'])}"
+    return span(node["interval_low"], node["interval_high"])
 
 
 def rate_line(node: dict[str, Any]) -> str:
@@ -217,17 +237,140 @@ def _ledger(tree: dict[str, Any]) -> list[str]:
     return lines
 
 
-def _years(tree: dict[str, Any]) -> list[str]:
+def _by_fire(tree: dict[str, Any]) -> list[str]:
+    block = tree["attributability_by_fire"]
+    incidents = block["by_incident"]
     lines = [
-        "## The span of the record set",
+        "## Is the unattributable share a property of the data or of the fire",
         "",
-        "| Incident year | Records |",
-        "|---:|---:|",
+        "The headline is one number over the whole record set, which reads as a property",
+        "of the two datasets. It is mostly not. The published outlines overlap in",
+        "particular places, so whether a record is contested is largely settled by where",
+        "its fire burned.",
+        "",
+        f"Of {count(incidents['distinct_incidents'])} distinct incidents in the record set,",
+        f"{pct(incidents['one_way_or_the_other']['rate'])} "
+        f"({interval(incidents['one_way_or_the_other'])}) fall entirely on one side: every",
+        "classified record contested, or none of them. Those incidents hold",
+        f"{pct(incidents['records_in_an_incident_that_falls_entirely_on_one_side']['rate'])}",
+        "of the records that carry an incident name.",
+        "",
+        "| Incidents | Share | Incidents | Of | 95% interval |",
+        "|---|---:|---:|---:|---|",
+        rate_line(incidents["every_record_contested"]),
+        rate_line(incidents["no_record_contested"]),
+        rate_line(incidents["split_both_ways"]),
+        "",
+        "The same thing seen by year. The boundaries are one retrieval and are identical",
+        "for every row, so the movement down this column is where each year's fires",
+        "burned and not a change in the published boundaries. No trend is published.",
+        "",
+        "| Incident year | Records | Classified | Contested share | 95% interval |",
+        "|---:|---:|---:|---:|---|",
     ]
-    lines.extend(
-        f"| {row['year']} | {count(row['records'])} |" for row in tree["years"]
-    )
+    for row in block["by_incident_year"]:
+        node = row["contested"]
+        lines.append(
+            f"| {row['year']} | {count(row['records'])} | "
+            f"{count(row['records_classified'])} | "
+            f"{pct(node['rate']) if node['state'] == 'measured' else NOT_MEASURED} | "
+            f"{interval(node)} |"
+        )
     lines.append("")
+    return lines
+
+
+def _sensitivity_types(tree: dict[str, Any]) -> list[str]:
+    block = tree["sensitivity"]["type_inclusion"]
+    lines = [
+        "## What the inclusion rule is worth",
+        "",
+        "Which published outlines count as a service territory is a judgment, and this is",
+        "the whole record set placed again under each way that judgment could have gone.",
+        "The first row is the rule this project uses. Nothing here chooses between them,",
+        "and the difference column is the conservative bound rather than the tight one,",
+        "because the same records are being measured twice.",
+        "",
+        block["the_published_type_field_is_undocumented"],
+        "",
+        "| Inclusion rule | Outlines | Contested | Contested share | 95% interval |"
+        " Difference from the rule as built | Inside no published territory |",
+        "|---|---:|---:|---:|---|---|---:|",
+    ]
+    for row in block["variants"]:
+        node = row["contested"]
+        difference = row.get("contested_difference_from_the_rule_as_built")
+        moved = (
+            "reference"
+            if difference is None
+            else f"{pct(difference['difference'])} ({interval(difference)})"
+        )
+        lines.append(
+            f"| {row['variant']} | {row['territories_indexed']} | "
+            f"{count(node['numerator'])} | {pct(node['rate'])} | "
+            f"{interval(node)} | {moved} | "
+            f"{count(row['counts']['covered_by_no_published_territory'])} |"
+        )
+    lines.extend(
+        [
+            "",
+            "A rule that drops an included type does not only move records out of the",
+            "contested column. It moves them into the last one, where they are published",
+            "as inside no published territory, which is a statement about coverage that",
+            "the dropped entity's own published polygon contradicts.",
+            "",
+        ]
+    )
+    return lines
+
+
+def _sensitivity_repair(tree: dict[str, Any]) -> list[str]:
+    block = tree["sensitivity"]["repair_strategy"]
+    changed = block["records_with_a_different_outcome"]
+    lines = [
+        "## What the repair is worth",
+        "",
+        f"Both repairs run to completion over the same records. {count(changed['numerator'])}",
+        f"of {count(changed['denominator'])} records, {pct(changed['rate'])}",
+        f"({interval(changed)}), come out differently under `{block['alternative']}` than",
+        f"under `{block['chosen']}`. That count is a census of the disagreement and not an",
+        "estimate of it.",
+        "",
+    ]
+    if block["transitions"]:
+        lines.extend(
+            [
+                "| Under the repair used here | Under the alternative | Records |",
+                "|---|---|---:|",
+            ]
+        )
+        lines.extend(
+            f"| {row['under_the_chosen_repair'].replace('_', ' ')} | "
+            f"{row['under_the_alternative'].replace('_', ' ')} | "
+            f"{count(row['records'])} |"
+            for row in block["transitions"]
+        )
+    else:
+        lines.append("The two repairs place every record the same way.")
+    difference = block["placed_difference"]
+    lines.extend(
+        [
+            "",
+            "| Repair | Placed share | Placed | Of | 95% interval |",
+            "|---|---:|---:|---:|---|",
+            rate_line(block["placed_under_the_chosen_repair"]),
+            rate_line(block["placed_under_the_alternative"]),
+            "",
+            f"Difference in the placed share: {pct(difference['difference'])} "
+            f"({interval(difference)}, Newcombe score). The same records are placed twice,",
+            "so that interval is the conservative bound.",
+            "",
+            "Neither repair is correct. Both are answers to a question the published",
+            "polygon does not answer, and the gap between them is the size of the",
+            "ambiguity the invalid geometry leaves behind.",
+            "",
+        ]
+    )
     return lines
 
 
@@ -259,10 +402,12 @@ def render(tree: dict[str, Any]) -> str:
         _header(tree),
         _coverage(tree),
         _representativeness(tree),
+        _by_fire(tree),
         _territories(tree),
         _contested(tree),
         _ledger(tree),
-        _years(tree),
+        _sensitivity_repair(tree),
+        _sensitivity_types(tree),
         _limits(),
     ):
         lines.extend(section)
