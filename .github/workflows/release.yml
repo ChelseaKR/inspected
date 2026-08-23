@@ -168,6 +168,24 @@ jobs:
 
       - run: uv build
 
+      # The SBOM records what this release was built and verified against: the locked,
+      # synced environment `make verify` just checked, dev tooling included, because the
+      # build-time supply chain is part of the supply chain. The tool version is pinned
+      # inline the way semgrep and zizmor are in ci.yml, and --output-reproducible strips
+      # timestamps so two builds of the same commit write byte-identical bills of
+      # materials. It lands in dist/ next to the wheels, so the artifact upload, the
+      # provenance attestation over dist/*, and the release attachment all carry it
+      # without a second path to maintain.
+      - name: CycloneDX SBOM over the locked build environment
+        run: |
+          uvx --from cyclonedx-bom==7.3.1 cyclonedx-py environment \
+            .venv/bin/python \
+            --pyproject pyproject.toml \
+            --mc-type application \
+            --output-reproducible \
+            --of json \
+            -o dist/sbom.cdx.json
+
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: dist
