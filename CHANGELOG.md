@@ -7,6 +7,14 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- The governance documents from Phase 1 of the roadmap:
+  `docs/RESPONSIBLE-TECH.md` (dated ethics statement and residual-risk table),
+  `docs/DEFINITION_OF_DONE.md` (done by kind of change),
+  `docs/METRICS_LEDGER.md` (baseline and outcome per development stream, gaps
+  recorded as unmeasured rather than reconstructed), and `docs/ACR.md` (a static
+  accessibility conformance review of the generated output that says plainly it was
+  not performed with assistive technology). `SECURITY.md` gains severity levels fitted
+  to what a defect could publish or sign, plus the secret-leak procedure.
 - ADR 0012, written before the data exists: when the second territory-layer
   retrieval lands, comparisons against the first are paired per-value diffs and
   per-record transition counts, never a modelled direction. Each snapshot keeps its
