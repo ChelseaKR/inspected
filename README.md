@@ -210,7 +210,9 @@ docs/adr/        the decisions, with their reasoning
   whose values are defined nowhere by the party that publishes them.
 - **The overlap finding has not been raised with the publisher.** CEC's metadata invites
   reports of missing territories at the address in its own text; whether the overlaps are
-  intended is not established here, and nothing has been sent.
+  intended is not established here. Drafts for both that report and a request for the
+  undocumented `Type` domain now exist under `docs/outreach/`; nothing has been sent, and
+  when one is, the date and the outcome go into `PROVENANCE.md`.
 - **Nothing has been checked against a county's own records.** The county cut is CAL
   FIRE's county field taken as published. Where a record's coordinate and its county
   disagree, this project reports the county the publisher recorded and does not correct
