@@ -7,6 +7,12 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- ADR 0012, written before the data exists: when the second territory-layer
+  retrieval lands, comparisons against the first are paired per-value diffs and
+  per-record transition counts, never a modelled direction. Each snapshot keeps its
+  own denominator, nothing is differenced into a single headline, and any figure
+  spanning both retrievals dates its rows. The by-year cut keeps ADR 0008's no-trend
+  rule unchanged within each snapshot.
 - A third geometry repair in the sensitivity run. GEOS' structure-preserving
   `make_valid` joins `make_valid` and `buffer(0)` in `REPAIR_STRATEGIES`, the whole
   record set is placed under each, and the comparison publishes a pairwise
