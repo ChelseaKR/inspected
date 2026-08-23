@@ -12,6 +12,8 @@ from inspected.geometry import (
     AS_PUBLISHED,
     BUFFER_ZERO,
     MAKE_VALID,
+    MAKE_VALID_STRUCTURE,
+    REPAIR_STRATEGIES,
     REPAIRED,
     Territory,
     TerritoryLoadError,
@@ -269,3 +271,39 @@ def test_a_repair_returning_a_mixed_collection_keeps_only_the_polygons() -> None
 def test_an_outline_with_no_edges_is_refused() -> None:
     with pytest.raises(TerritoryLoadError, match="no edges"):
         boundary_segments(Polygon())
+
+
+def test_the_structure_repair_is_a_known_strategy() -> None:
+    assert MAKE_VALID_STRUCTURE in REPAIR_STRATEGIES
+    fixed = repair(Polygon(BOWTIE), MAKE_VALID_STRUCTURE)
+    assert fixed is not None
+    assert fixed.is_valid
+    assert fixed.geom_type in ("Polygon", "MultiPolygon")
+
+
+def test_the_structure_repair_answers_overlaps_differently_from_noding() -> None:
+    """Where a hole overlaps the shell, the two make_valid readings part ways.
+
+    The noding repair re-nodes the overlap into extra lobes; the structure repair
+    keeps one polygon and resolves the ring against it. The areas differ, which is
+    the whole reason the third strategy is measured rather than assumed equivalent.
+    """
+    overlapped = Polygon(
+        square(0, 0, 10, 10),
+        holes=[square(5, 2, 15, 8)],
+    )
+    linework = repair(overlapped, MAKE_VALID)
+    structure = repair(overlapped, MAKE_VALID_STRUCTURE)
+    assert linework is not None and structure is not None
+    assert linework.is_valid and structure.is_valid
+    assert abs(linework.area - structure.area) > 1e-6
+
+
+def test_the_structure_repair_is_reachable_through_the_loader() -> None:
+    usable, _ = load_territories(
+        {"a": collection(feature(1, "Bowtie Co", "CO-OP", BOWTIE))},
+        strategy=MAKE_VALID_STRUCTURE,
+    )
+    assert usable[0].geometry_state == REPAIRED
+    assert MAKE_VALID_STRUCTURE in usable[0].geometry_note
+    assert usable[0].geometry.is_valid

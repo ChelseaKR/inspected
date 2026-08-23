@@ -355,16 +355,62 @@ def _sensitivity_types(tree: dict[str, Any]) -> list[str]:
 def _sensitivity_repair(tree: dict[str, Any]) -> list[str]:
     block = tree["sensitivity"]["repair_strategy"]
     changed = block["records_with_a_different_outcome"]
+    # Two renderings, chosen by what the artifact carries rather than by a version
+    # number. A tree built before the third repair joined carries no census keys, and
+    # its committed REPORT.md must keep matching exactly what its own run wrote. The
+    # branch goes away at the next deliberate refresh, when every published tree is
+    # three-repair; until then both readings are kept honest.
+    widened = "strategies_compared" in block
     lines = [
         "## What the repair is worth",
         "",
-        f"Both repairs run to completion over the same records. {count(changed['numerator'])}",
-        f"of {count(changed['denominator'])} records, {pct(changed['rate'])}",
-        f"({interval(changed)}), come out differently under `{block['alternative']}` than",
-        f"under `{block['chosen']}`. That count is a census of the disagreement and not an",
-        "estimate of it.",
-        "",
     ]
+    if widened:
+        union = block["records_where_any_two_repairs_disagree"]
+        strategies = block["strategies_compared"]
+        lines.extend(
+            [
+                f"All {len(strategies)} repairs "
+                f"({', '.join(f'`{s}`' for s in strategies)}) run to completion over",
+                f"the same records. {count(union['numerator'])} of "
+                f"{count(union['denominator'])} records, {pct(union['rate'])}",
+                f"({interval(union)}), come out differently under at least one pair of",
+                "them. That count is a census of the disagreement and not an estimate",
+                "of it, and it bounds how much of the result the choice of repair can",
+                "move. The pairwise counts:",
+                "",
+                "| Between | Records |",
+                "|---|---:|",
+            ]
+        )
+        lines.extend(
+            f"| `{row['between'][0]}` and `{row['between'][1]}` | {count(row['records'])} |"
+            for row in block["pairwise_disagreements"]
+        )
+        lines.extend(
+            [
+                "",
+                f"The pair ADR 0007 documents in detail: {count(changed['numerator'])}",
+                f"of {count(changed['denominator'])} records, {pct(changed['rate'])}",
+                f"({interval(changed)}), come out differently under "
+                f"`{block['alternative']}` than under `{block['chosen']}`.",
+                "",
+            ]
+        )
+    else:
+        lines.extend(
+            [
+                "Both repairs run to completion over the same records. "
+                f"{count(changed['numerator'])}",
+                f"of {count(changed['denominator'])} records, {pct(changed['rate'])}",
+                f"({interval(changed)}), come out differently under "
+                f"`{block['alternative']}` than",
+                f"under `{block['chosen']}`. That count is a census of the disagreement "
+                "and not an",
+                "estimate of it.",
+                "",
+            ]
+        )
     if block["transitions"]:
         lines.extend(
             [
@@ -379,7 +425,11 @@ def _sensitivity_repair(tree: dict[str, Any]) -> list[str]:
             for row in block["transitions"]
         )
     else:
-        lines.append("The two repairs place every record the same way.")
+        lines.append(
+            "The repairs place every record the same way."
+            if widened
+            else "The two repairs place every record the same way."
+        )
     difference = block["placed_difference"]
     lines.extend(
         [
@@ -393,12 +443,27 @@ def _sensitivity_repair(tree: dict[str, Any]) -> list[str]:
             f"({interval(difference)}, Newcombe score). The same records are placed twice,",
             "so that interval is the conservative bound.",
             "",
-            "Neither repair is correct. Both are answers to a question the published",
-            "polygon does not answer, and the gap between them is the size of the",
-            "ambiguity the invalid geometry leaves behind.",
-            "",
         ]
     )
+    if widened:
+        lines.extend(
+            [
+                "No repair is correct. Each is an answer to a question the published",
+                "polygon does not answer, and the disagreement between them is the size of",
+                "the ambiguity the invalid geometry leaves behind. The default did not",
+                "move to gain this measurement; it was already `make_valid` under ADR 0007.",
+                "",
+            ]
+        )
+    else:
+        lines.extend(
+            [
+                "Neither repair is correct. Both are answers to a question the published",
+                "polygon does not answer, and the gap between them is the size of the",
+                "ambiguity the invalid geometry leaves behind.",
+                "",
+            ]
+        )
     return lines
 
 

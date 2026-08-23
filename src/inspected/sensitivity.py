@@ -14,9 +14,11 @@ reasoning on trust and the author had to take the size of the exposure on trust 
 ``repair_comparison``
     ADR 0005 repairs an invalid published polygon with ``make_valid``. An earlier draft
     used ``buffer(0)``, and the note that survived said the two disagreed on "roughly
-    770 placements", which is a recollection rather than a measurement. This runs both
-    to completion over the same records, counts the records whose outcome changes, and
-    names the direction of the change.
+    770 placements", which is a recollection rather than a measurement. This runs every
+    repair in :data:`inspected.geometry.REPAIR_STRATEGIES` to completion over the same
+    records, counts the records whose outcome changes under each pair and under any
+    pair, and names the direction of the change. The default does not move; what moves
+    is measured.
 
 ``untouched_outlines``
     ADR 0002 declines to decide whether any named entity in the layer operates a
@@ -34,12 +36,14 @@ in the same shapes the rest of the output uses, so the publication rules in
 
 from __future__ import annotations
 
+import itertools
 from collections import Counter
 from typing import Any
 
 from inspected.geometry import (
     BUFFER_ZERO,
     MAKE_VALID,
+    REPAIR_STRATEGIES,
     Territory,
     load_territories,
 )
@@ -213,23 +217,69 @@ def repair_comparison(
     records: tuple[Record, ...],
     chosen: tuple[Territory, ...],
 ) -> dict[str, Any]:
-    """Place every record twice, once under each repair, and count the disagreement."""
-    alternative_territories, alternative_unusable = load_territories(
-        collections, strategy=BUFFER_ZERO
+    """Place every record under every repair, and count the disagreement.
+
+    The published pair is ``make_valid`` against ``buffer_zero``, which is the
+    comparison ADR 0007 was written around. The structure-preserving repair joins as a
+    third reading of the same invalid geometry: it is placed over the whole record set
+    too, and the pairwise and union disagreement counts below are what bound the
+    ambiguity the publisher's invalid polygons leave behind. The default does not move.
+    """
+    strategies = [MAKE_VALID]
+    territories_by_strategy = {MAKE_VALID: chosen}
+    signatures_by_strategy = {MAKE_VALID: containment_signatures(records, chosen)}
+    unusable_by_strategy: dict[str, int] = {}
+    for strategy in REPAIR_STRATEGIES:
+        if strategy == MAKE_VALID:
+            continue
+        alternative_territories, alternative_unusable = load_territories(
+            collections, strategy=strategy
+        )
+        strategies.append(strategy)
+        territories_by_strategy[strategy] = alternative_territories
+        signatures_by_strategy[strategy] = containment_signatures(
+            records, alternative_territories
+        )
+        unusable_by_strategy[strategy] = len(alternative_unusable)
+
+    total = len(records)
+    pairwise = [
+        {
+            "between": [left, right],
+            "records": sum(
+                1
+                for one, two in zip(
+                    signatures_by_strategy[left],
+                    signatures_by_strategy[right],
+                    strict=True,
+                )
+                if one != two
+            ),
+        }
+        for left, right in itertools.combinations(strategies, 2)
+    ]
+    any_disagree = sum(
+        1
+        for index in range(total)
+        if len({signatures[index] for signatures in signatures_by_strategy.values()})
+        > 1
     )
-    chosen_signatures = containment_signatures(records, chosen)
-    alternative_signatures = containment_signatures(records, alternative_territories)
+
+    # The detailed census stays on the pair ADR 0007 documents, so the report section
+    # keeps one transitions table rather than one per pair. The full set is above.
+    alternative = BUFFER_ZERO
+    chosen_signatures = signatures_by_strategy[MAKE_VALID]
+    alternative_signatures = signatures_by_strategy[alternative]
     moves, changed, same_outcome = _transitions(
         chosen_signatures, alternative_signatures
     )
-    total = len(records)
     chosen_placed = Rate.of(
         f"placed in exactly one published territory, under {MAKE_VALID}",
         _placed_count(chosen_signatures),
         total,
     )
     alternative_placed = Rate.of(
-        f"placed in exactly one published territory, under {BUFFER_ZERO}",
+        f"placed in exactly one published territory, under {alternative}",
         _placed_count(alternative_signatures),
         total,
     )
@@ -239,14 +289,17 @@ def repair_comparison(
             "the publisher ships invalid?"
         ),
         "chosen": MAKE_VALID,
-        "alternative": BUFFER_ZERO,
+        "alternative": alternative,
+        "strategies_compared": strategies,
         "territories_indexed": {
-            MAKE_VALID: len(chosen),
-            BUFFER_ZERO: len(alternative_territories),
+            strategy: len(territories_by_strategy[strategy]) for strategy in strategies
         },
-        "territories_unusable_under_the_alternative": len(alternative_unusable),
+        "territories_unusable_under_the_alternative": unusable_by_strategy.get(
+            alternative, 0
+        ),
+        "territories_unusable_under_each_strategy": unusable_by_strategy,
         "records_with_a_different_outcome": Rate.of(
-            "records the two repairs disagree about",
+            f"records {MAKE_VALID} and {alternative} disagree about",
             changed,
             total,
             note=(
@@ -255,6 +308,17 @@ def repair_comparison(
                 "repairs, including when both repairs agree on the kind of outcome."
             ),
         ).as_dict(),
+        "records_where_any_two_repairs_disagree": Rate.of(
+            "records where at least one pair of repairs disagrees",
+            any_disagree,
+            total,
+            note=(
+                "The union over every pair of the strategies compared. It is at least "
+                "as large as any single pairwise count, and it is the number that "
+                "bounds how much of the result the choice of repair can move."
+            ),
+        ).as_dict(),
+        "pairwise_disagreements": sorted(pairwise, key=lambda row: row["between"]),
         "records_with_the_same_outcome_but_different_outlines": same_outcome,
         "transitions": [
             {"under_the_chosen_repair": a, "under_the_alternative": b, "records": n}
@@ -263,7 +327,7 @@ def repair_comparison(
         "placed_under_the_chosen_repair": chosen_placed.as_dict(),
         "placed_under_the_alternative": alternative_placed.as_dict(),
         "placed_difference": Difference.between(
-            f"{MAKE_VALID} minus {BUFFER_ZERO}, placed share",
+            f"{MAKE_VALID} minus {alternative}, placed share",
             chosen_placed,
             alternative_placed,
             note=(
@@ -275,8 +339,8 @@ def repair_comparison(
             ),
         ).as_dict(),
         "note": (
-            "Neither repair is correct. Both are answers to a question the published "
-            "polygon does not answer, and the difference between them is the size of "
+            "No repair is correct. Each is an answer to a question the published "
+            "polygon does not answer, and the disagreement between them is the size of "
             "the ambiguity the publisher's invalid geometry leaves behind."
         ),
     }
