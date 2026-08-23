@@ -33,7 +33,7 @@ audit:
 # Build the published tree from locally acquired files. data/raw/ is never in git and
 # never in CI, so this target only runs on a machine that has run `make acquire`.
 report:
-	uv run python -m inspected.cli \
+	uv run python -m wildfire_service_territory_overlap.cli \
 		--dins data/raw/dins_postfire.json \
 		--iou-pou data/raw/else_iou_pou.geojson \
 		--other data/raw/else_other.geojson \
@@ -42,7 +42,7 @@ report:
 
 # The same pipeline over committed fixtures: runs anywhere, output flagged is_fixture.
 report-offline:
-	uv run python -m inspected.cli --fixture \
+	uv run python -m wildfire_service_territory_overlap.cli --fixture \
 		--dins fixtures/dins_sample.json \
 		--iou-pou fixtures/else_iou_pou_sample.geojson \
 		--other fixtures/else_other_sample.geojson \
@@ -55,13 +55,13 @@ report-offline:
 # it, so this gate is known to be able to fail.
 determinism:
 	rm -rf build/run-one build/run-two
-	uv run python -m inspected.cli --fixture \
+	uv run python -m wildfire_service_territory_overlap.cli --fixture \
 		--dins fixtures/dins_sample.json \
 		--iou-pou fixtures/else_iou_pou_sample.geojson \
 		--other fixtures/else_other_sample.geojson \
 		--counties fixtures/county_boundaries_sample.geojson \
 		--out build/run-one
-	uv run python -m inspected.cli --fixture \
+	uv run python -m wildfire_service_territory_overlap.cli --fixture \
 		--dins fixtures/dins_sample.json \
 		--iou-pou fixtures/else_iou_pou_sample.geojson \
 		--other fixtures/else_other_sample.geojson \
@@ -71,4 +71,4 @@ determinism:
 
 # Network. Run by hand, never from a build. See PROVENANCE.md.
 acquire:
-	uv run python -m inspected.acquire --out data/raw
+	uv run python -m wildfire_service_territory_overlap.acquire --out data/raw

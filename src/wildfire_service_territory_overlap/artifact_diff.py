@@ -8,7 +8,7 @@ so the next refresh cannot skip it by being tedious.
 
 Usage::
 
-    python -m inspected.artifact_diff OLD.json NEW.json [--allow-removals]
+    python -m wildfire_service_territory_overlap.artifact_diff OLD.json NEW.json [--allow-removals]
 
 Semantics
 ---------
@@ -258,7 +258,7 @@ def render(result: DiffResult, *, allow_removals: bool) -> str:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        prog="python -m inspected.artifact_diff",
+        prog="python -m wildfire_service_territory_overlap.artifact_diff",
         description=(
             "Compare two measurements.json artifacts value by value, so a refresh "
             "cannot change the published figures quietly."

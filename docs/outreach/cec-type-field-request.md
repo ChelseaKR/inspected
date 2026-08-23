@@ -14,7 +14,7 @@ Serving Entities item 30410214d637434ba1003cbdcc32cf55
 Hello,
 
 I maintain an unofficial open-source project,
-https://github.com/ChelseaKR/inspected, which measures how much of CAL FIRE's wildfire
+https://github.com/ChelseaKR/wildfire-service-territory-overlap, which measures how much of CAL FIRE's wildfire
 damage-inspection record set falls inside the service territory outlines your agency
 publishes. One field of that layer decides most of my methodology, and I cannot find
 any place where its values are defined by the party that publishes them.

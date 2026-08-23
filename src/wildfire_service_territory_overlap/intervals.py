@@ -3,7 +3,7 @@
 A count without a denominator is not a rate, and a rate without an interval is not a
 comparison. Both rules are enforced here rather than remembered: :class:`Rate` is the
 only way a proportion reaches an artifact in this project, it cannot be constructed
-without its denominator, and :func:`inspected.artifacts.assert_rates_are_denominated`
+without its denominator, and :func:`wildfire_service_territory_overlap.artifacts.assert_rates_are_denominated`
 refuses to serialise a rate-shaped object that is missing either.
 
 The interval is Wilson's score interval, which is used here rather than the normal

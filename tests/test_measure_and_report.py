@@ -8,12 +8,12 @@ from typing import Any
 
 import pytest
 
-from inspected import measure, report
-from inspected.artifacts import check_all
-from inspected.cli import build
-from inspected.geometry import Territory
-from inspected.placement import Placement, Record, classify
-from inspected.report import NOT_MEASURED, pct
+from wildfire_service_territory_overlap import measure, report
+from wildfire_service_territory_overlap.artifacts import check_all
+from wildfire_service_territory_overlap.cli import build
+from wildfire_service_territory_overlap.geometry import Territory
+from wildfire_service_territory_overlap.placement import Placement, Record, classify
+from wildfire_service_territory_overlap.report import NOT_MEASURED, pct
 
 ROOT = Path(__file__).resolve().parents[1]
 

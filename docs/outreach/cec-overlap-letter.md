@@ -14,7 +14,7 @@ Subject: Overlapping electric load serving entity boundaries in item
 Hello,
 
 I maintain an unofficial, open-source measurement project,
-https://github.com/ChelseaKR/inspected, which places CAL FIRE's postfire
+https://github.com/ChelseaKR/wildfire-service-territory-overlap, which places CAL FIRE's postfire
 damage-inspection records (DINS, POSTFIRE_MASTER_DATA_SHARE layer 0, retrieved
 2026-08-17) inside your published Electric Load Serving Entities outlines (items
 30410214d637434ba1003cbdcc32cf55 and 07224640a2fe42f89399be796e7b8810, last modified

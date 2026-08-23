@@ -5,6 +5,15 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Renamed the project to `wildfire-service-territory-overlap` across the distribution, the package, and every
+  command reference. The old PyPI name is held by an unrelated tool, which blocked the
+  roadmap's distribution item independently of the `perimeter` pin; see
+  `docs/adr/0014`. The v0.1.0 tag and release keep their original names and artifacts.
+  No measurement changed: the published pair is byte-for-byte what the refresh of
+  2026-08-23 wrote.
+
 ### Added
 
 - **The coordinate-county comparison** (`docs/adr/0013`). CAL FIRE's `COUNTY` field is

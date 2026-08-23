@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-title: inspected
+title: wildfire-service-territory-overlap
 message: "If you use this work, please cite it."
 authors:
   - family-names: Kelly-Reif
@@ -7,7 +7,7 @@ authors:
 version: 0.1.0
 date-released: "2026-08-18"  # bump on every tagged release
 license: Apache-2.0
-repository-code: "https://github.com/ChelseaKR/inspected"
+repository-code: "https://github.com/ChelseaKR/wildfire-service-territory-overlap"
 abstract: >-
   A measurement of how much of California's public wildfire damage-inspection record set
   can be attributed to a published electric service territory boundary, and how much

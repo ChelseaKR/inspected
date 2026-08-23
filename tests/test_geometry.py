@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 from shapely.geometry import LineString, MultiPolygon, Polygon
 
-from inspected.geometry import (
+from wildfire_service_territory_overlap.geometry import (
     AS_PUBLISHED,
     BUFFER_ZERO,
     MAKE_VALID,

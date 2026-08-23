@@ -31,7 +31,7 @@ and every figure in this repository is a function of those signatures.
 
 ## Decision
 
-Publish the count. `inspected.sensitivity.untouched_outlines` reports which of the
+Publish the count. `wildfire_service_territory_overlap.sensitivity.untouched_outlines` reports which of the
 indexed outlines hold no record, how many records fall inside any of them, and what
 happens to the record set when all of them are removed at once. The last of those is not
 reasoned about: the whole record set is placed again against the reduced index and the

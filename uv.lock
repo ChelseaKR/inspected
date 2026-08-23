@@ -407,7 +407,7 @@ wheels = [
 ]
 
 [[package]]
-name = "inspected"
+name = "wildfire-service-territory-overlap"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [

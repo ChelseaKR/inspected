@@ -1,4 +1,4 @@
-# inspected
+# wildfire-service-territory-overlap
 
 **Can a California wildfire damage inspection be attributed to a published electric
 service territory? For 37.9% of the record set, using public data alone, no.**
@@ -160,7 +160,7 @@ these checks are applied to its output rather than assumed of it.
 published number changing is fine. A published number changing quietly is not, and the
 only difference between the two is whether anybody measured it. The comparison is a
 command now rather than an act of care:
-`python -m inspected.artifact_diff OLD.json NEW.json` walks every leaf of both
+`python -m wildfire_service_territory_overlap.artifact_diff OLD.json NEW.json` walks every leaf of both
 artifacts, reports what moved with its path and its old value, and refuses to pass if
 published values disappeared unless `--allow-removals` names the removal deliberate.
 The refresh of 2026-08-17, which added the county field, was compared this way by hand
@@ -178,7 +178,7 @@ measurement published there.
 ## Layout
 
 ```
-src/inspected/
+src/wildfire_service_territory_overlap/
   sources.py     provenance and the publishers' own caveats, quoted
   acquire.py     the only module that opens a socket; run by hand, never in CI
   geometry.py    the pinned projection, the validity ledger, boundary distances

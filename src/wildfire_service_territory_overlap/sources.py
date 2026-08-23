@@ -275,7 +275,7 @@ PUBLISHED_TYPES: tuple[str, ...] = ("ADMIN", "CCA", "CO-OP", "IOU", "POU", "Trib
 
 Held here so the inclusion rule below can be re-run against its own alternatives. A type
 that appears in a future retrieval and not in this tuple is a change in the publisher's
-data, and :mod:`inspected.sensitivity` reports it rather than absorbing it.
+data, and :mod:`wildfire_service_territory_overlap.sensitivity` reports it rather than absorbing it.
 """
 
 WIRES_TYPES: tuple[str, ...] = ("CO-OP", "IOU", "POU", "Tribal")
@@ -310,7 +310,7 @@ TYPE_FIELD_IS_UNDOCUMENTED: str = (
 )
 """Checked against the published metadata on the retrieval date, and recorded as a fact
 about the source rather than as a complaint. The measurement built from it is
-:mod:`inspected.sensitivity`, which reports what the rule is worth in records."""
+:mod:`wildfire_service_territory_overlap.sensitivity`, which reports what the rule is worth in records."""
 
 CALIFORNIA_BBOX: tuple[float, float, float, float] = (-124.5, 32.4, -114.0, 42.1)
 """Longitude and latitude bounds used only to refuse a coordinate, never to correct one.

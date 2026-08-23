@@ -10,17 +10,17 @@ report.
 
 An offline command-line tool over two public datasets. It has no server, no accounts, no
 network listener, and no runtime that anyone else operates. It opens a socket in exactly
-one place, `src/inspected/acquire.py`, which is run by hand and never from a build or CI.
+one place, `src/wildfire_service_territory_overlap/acquire.py`, which is run by hand and never from a build or CI.
 
 ## The parts worth attacking
 
-- **`src/inspected/acquire.py`** is the only code that reads a remote host. It pins the
+- **`src/wildfire_service_territory_overlap/acquire.py`** is the only code that reads a remote host. It pins the
   scheme to HTTPS, sends a User-Agent naming the project, stops on 401, 403 and 429
   rather than routing around them, and refuses a response that is not JSON. There is no
   fallback path and no retry under a different identity.
-- **`src/inspected/artifacts.py`** decides what is allowed to be written. A change that
+- **`src/wildfire_service_territory_overlap/artifacts.py`** decides what is allowed to be written. A change that
   weakens a rule there is a change to what this project will publish about somebody.
-- **`src/inspected/sources.py`** holds the reviewed endpoints. A change to a URL there
+- **`src/wildfire_service_territory_overlap/sources.py`** holds the reviewed endpoints. A change to a URL there
   points the acquisition somewhere new.
 
 `.github/CODEOWNERS` routes all three.
@@ -52,7 +52,7 @@ parcel numbers, assessed values, or any per-record listing. Also: anything that 
 release tag verification against `.github/allowed_signers`.
 
 **High**
-A bypass of a publication rule in `src/inspected/artifacts.py`; acquisition code that
+A bypass of a publication rule in `src/wildfire_service_territory_overlap/artifacts.py`; acquisition code that
 retries under another identity or routes around an access control; a workflow that
 writes credentials somewhere pull-request builds can read.
 

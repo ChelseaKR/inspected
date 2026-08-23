@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from inspected.artifact_diff import diff_trees, main
+from wildfire_service_territory_overlap.artifact_diff import diff_trees, main
 
 
 def sample_tree() -> dict:

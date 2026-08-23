@@ -11,6 +11,6 @@
 /SECURITY.md            @ChelseaKR
 
 # The three files that decide what this project says about somebody.
-/src/inspected/artifacts.py  @ChelseaKR   # the publication rules
-/src/inspected/intervals.py  @ChelseaKR   # the only route a proportion takes to output
-/src/inspected/sources.py    @ChelseaKR   # reviewed endpoints and quoted caveats
+/src/wildfire_service_territory_overlap/artifacts.py  @ChelseaKR   # the publication rules
+/src/wildfire_service_territory_overlap/intervals.py  @ChelseaKR   # the only route a proportion takes to output
+/src/wildfire_service_territory_overlap/sources.py    @ChelseaKR   # reviewed endpoints and quoted caveats

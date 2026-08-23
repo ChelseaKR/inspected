@@ -97,7 +97,7 @@ The findings are locatable in the publisher's data; the publishers have not hear
 |---|---|---|
 | 4.1 | **Archive and DOI** (e.g. Zenodo) for tagged releases; `CITATION.cff` already exists and should gain the DOI | Makes the negative result citable |
 | 4.2 | **Spanish edition of `REPORT.md`**, generated from `measurements.json` with a reviewed string catalog; figures render identically in both languages | California's other language; requires an ADR amending the English-only declaration in `docs/I18N.md`. Numbers are never re-formatted per locale inside one artifact, and the determinism gate must hold across both editions |
-| 4.3 | **PyPI distribution of `inspected`**: blocked until `perimeter` has a PyPI release to depend on instead of a git pin; the Dependabot name collision shows why the pin exists | Sequence: publish `perimeter` first (its repo's call), then revisit; otherwise skip |
+| 4.3 | **PyPI distribution**: unblocked on the name side by the rename to `wildfire-service-territory-overlap`; still waits for `perimeter` to have a PyPI release to depend on instead of a git pin, because dropping the URL would resolve somebody else's package | Sequence: publish `perimeter` first (its repo's call), then this ships as `0.2.0` or later |
 | 4.4 | **Upstream contributions to `perimeter`** where acquisition gaps surface here | The relationship is already "consume, don't re-implement"; contributing fixes keeps it that way |
 
 ## Explicit non-goals

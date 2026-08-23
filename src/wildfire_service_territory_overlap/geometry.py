@@ -26,7 +26,7 @@ this project cannot test containment against is not a territory it can report ze
 The repair is a parameter rather than a constant, and all three strategies are kept
 working. ``make_valid`` is what the published figures use; ``buffer_zero`` and the
 structure-preserving ``make_valid_structure`` are the alternatives it is measured
-against, and :mod:`inspected.sensitivity` runs the whole placement under each of them so
+against, and :mod:`wildfire_service_territory_overlap.sensitivity` runs the whole placement under each of them so
 the disagreement between them is published as a measurement instead of as an estimate.
 A strategy that only exists in an old draft cannot be run against the current one, which
 is how the size of that choice went unmeasured in the first place.
@@ -45,7 +45,7 @@ from shapely.geometry.base import BaseGeometry
 from shapely.strtree import STRtree
 from shapely.validation import make_valid
 
-from inspected.sources import WIRES_TYPES
+from wildfire_service_territory_overlap.sources import WIRES_TYPES
 
 ALBERS_PIPELINE: Final[str] = (
     "+proj=pipeline "
@@ -117,7 +117,7 @@ def repair(geom: BaseGeometry, strategy: str) -> BaseGeometry | None:
     ``make_valid_structure`` asks GEOS for its structure-preserving repair, which
     answers invalidity differently where rings overlap or nest: the two ``make_valid``
     readings disagree there, and that disagreement is exactly what the sensitivity run
-    in :mod:`inspected.sensitivity` is for.
+    in :mod:`wildfire_service_territory_overlap.sensitivity` is for.
     """
     if strategy == MAKE_VALID:
         return _polygonal(make_valid(geom))

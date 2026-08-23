@@ -25,18 +25,18 @@ installs the stale set.
 
 ## What needs care
 
-**`src/inspected/artifacts.py`.** These are the rules about what this project will say
+**`src/wildfire_service_territory_overlap/artifacts.py`.** These are the rules about what this project will say
 about a named company. Weakening one is not a refactor. Every rule has a test that feeds
 it something it must refuse; keep that pairing.
 
-**`src/inspected/intervals.py`.** The only route a proportion takes to an artifact. If you
+**`src/wildfire_service_territory_overlap/intervals.py`.** The only route a proportion takes to an artifact. If you
 find yourself dividing two integers anywhere else, that is the bug.
 
-**`src/inspected/sources.py`.** Reviewed endpoints and quoted publisher caveats. A change
+**`src/wildfire_service_territory_overlap/sources.py`.** Reviewed endpoints and quoted publisher caveats. A change
 here moves published numbers or points the acquisition somewhere new. `PROVENANCE.md`
 must be updated in the same change; a test compares them.
 
-**`src/inspected/acquire.py`.** Run by hand, never in CI. It must never gain a retry under
+**`src/wildfire_service_territory_overlap/acquire.py`.** Run by hand, never in CI. It must never gain a retry under
 a different identity, a browser-shaped User-Agent, or a path that writes a partial walk.
 
 ## Things this project will not do
@@ -59,7 +59,7 @@ make report         # rebuild published/ from data/raw/
 ```
 
 Then copy the new feature counts, byte counts and hashes from `data/raw/acquisition.json`
-into `src/inspected/sources.py`, update `PROVENANCE.md` and the figures in `README.md`,
+into `src/wildfire_service_territory_overlap/sources.py`, update `PROVENANCE.md` and the figures in `README.md`,
 and commit the new `published/` tree. `data/raw/` stays out of git.
 
 ## Style
