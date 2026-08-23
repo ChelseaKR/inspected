@@ -7,6 +7,14 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- A third geometry repair in the sensitivity run. GEOS' structure-preserving
+  `make_valid` joins `make_valid` and `buffer(0)` in `REPAIR_STRATEGIES`, the whole
+  record set is placed under each, and the comparison publishes a pairwise
+  disagreement count for every pair plus a union count bounding how much of the result
+  the choice of repair can move. The default does not move; see `docs/adr/0011`. The
+  committed `published/` tree still describes the two-repair run against the
+  2026-08-17 pin and keeps rendering exactly as written; the three-repair census
+  reaches it at the next deliberate refresh.
 - A performance budget with a gate on it. `tests/test_performance_budget.py` runs
   the offline fixture build against a recorded 30 second ceiling, generous by design:
   wall clock does not compare across machines, so the budget catches order-of-magnitude

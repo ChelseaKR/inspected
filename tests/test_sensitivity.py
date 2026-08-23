@@ -11,7 +11,12 @@ from typing import Any
 
 import pytest
 
-from inspected.geometry import BUFFER_ZERO, MAKE_VALID, load_territories
+from inspected.geometry import (
+    BUFFER_ZERO,
+    MAKE_VALID,
+    MAKE_VALID_STRUCTURE,
+    load_territories,
+)
 from inspected.placement import Placement, Record, classify, containment_signatures
 from inspected.sensitivity import (
     TYPE_VARIANTS,
@@ -221,6 +226,63 @@ def test_the_disagreement_count_is_a_census_not_a_difference_of_totals() -> None
         - block["placed_under_the_alternative"]["numerator"]
     )
     assert changed >= placed_gap
+
+
+def test_all_three_repairs_are_compared_and_the_union_bounds_each_pair() -> None:
+    """The third repair widens the census; the union count is at least every pair."""
+    collections = collection(
+        feature(1, "Bowtie Utility", "IOU", bowtie(-121.0, 38.0, -120.0, 39.0))
+    )
+    chosen, _ = load_territories(collections)
+    grid = tuple(
+        record(i, -121.0 + 0.05 * (i % 20), 38.0 + 0.05 * (i // 20))
+        for i in range(1, 400)
+    )
+    block = repair_comparison(collections, grid, chosen)
+    assert block["strategies_compared"] == [
+        MAKE_VALID,
+        BUFFER_ZERO,
+        MAKE_VALID_STRUCTURE,
+    ]
+    pairs = {
+        tuple(row["between"]): row["records"] for row in block["pairwise_disagreements"]
+    }
+    assert ("make_valid", "buffer_zero") in pairs
+    union = block["records_where_any_two_repairs_disagree"]
+    assert union["denominator"] == len(grid)
+    assert union["numerator"] >= max(pairs.values())
+    # The pairwise counts must agree with the transitions table on the documented pair.
+    assert (
+        pairs[("make_valid", "buffer_zero")]
+        == block["records_with_a_different_outcome"]["numerator"]
+    )
+
+
+def test_a_structure_repair_that_collapses_geometry_is_counted_as_unusable() -> None:
+    """A repair that produces no polygonal result removes that run's territory."""
+    collections = collection(
+        feature(1, "Bowtie Utility", "IOU", bowtie(-121.0, 38.0, -120.0, 39.0))
+    )
+    chosen, _ = load_territories(collections)
+    records = tuple(record(i, -120.9, 38.1 + i * 0.1) for i in range(1, 4))
+    block = repair_comparison(collections, records, chosen)
+    per_strategy = block["territories_unusable_under_each_strategy"]
+    assert set(per_strategy) <= set(block["strategies_compared"])
+    for strategy, unusable in per_strategy.items():
+        indexed = block["territories_indexed"][strategy]
+        assert isinstance(unusable, int) and isinstance(indexed, int)
+
+
+def test_three_identical_repairs_would_report_zero_everywhere() -> None:
+    """On valid published geometry no repair runs at all, so all readings agree."""
+    collections = collection(
+        feature(1, "Square Utility", "IOU", square(-121.0, 38.0, -120.0, 39.0))
+    )
+    records = (record(1, -120.5, 38.5), record(2, -119.5, 38.5))
+    chosen, _ = load_territories(collections)
+    block = repair_comparison(collections, records, chosen)
+    assert block["records_where_any_two_repairs_disagree"]["numerator"] == 0
+    assert all(row["records"] == 0 for row in block["pairwise_disagreements"])
 
 
 def test_a_variant_with_no_usable_geography_still_reports_a_denominator() -> None:

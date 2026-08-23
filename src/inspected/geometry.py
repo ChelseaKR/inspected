@@ -23,12 +23,13 @@ ones can see which they are. A repair that does not produce a polygonal result a
 removes the territory from the index and is reported as unusable, because a territory
 this project cannot test containment against is not a territory it can report zero for.
 
-The repair is a parameter rather than a constant, and both strategies are kept working.
-``make_valid`` is what the published figures use; ``buffer_zero`` is the other repair in
-common use, and :mod:`inspected.sensitivity` runs the whole placement under each of them
-so the difference between the two is published as a measurement instead of as an
-estimate. A strategy that only exists in an old draft cannot be run against the current
-one, which is how the size of that choice went unmeasured in the first place.
+The repair is a parameter rather than a constant, and all three strategies are kept
+working. ``make_valid`` is what the published figures use; ``buffer_zero`` and the
+structure-preserving ``make_valid_structure`` are the alternatives it is measured
+against, and :mod:`inspected.sensitivity` runs the whole placement under each of them so
+the disagreement between them is published as a measurement instead of as an estimate.
+A strategy that only exists in an old draft cannot be run against the current one, which
+is how the size of that choice went unmeasured in the first place.
 """
 
 from __future__ import annotations
@@ -60,8 +61,16 @@ UNUSABLE: Final[str] = "unusable"
 
 MAKE_VALID: Final[str] = "make_valid"
 BUFFER_ZERO: Final[str] = "buffer_zero"
-REPAIR_STRATEGIES: Final[tuple[str, ...]] = (MAKE_VALID, BUFFER_ZERO)
-"""The two repairs. ``make_valid`` produces the published figures; see ADR 0007."""
+MAKE_VALID_STRUCTURE: Final[str] = "make_valid_structure"
+REPAIR_STRATEGIES: Final[tuple[str, ...]] = (
+    MAKE_VALID,
+    BUFFER_ZERO,
+    MAKE_VALID_STRUCTURE,
+)
+"""The three repairs. ``make_valid`` produces the published figures; see ADR 0007 and
+ADR 0011. A strategy here is a candidate answer to a question the published geometry
+does not settle, not a fix: each is run over the whole record set, and the size of the
+disagreement between them is published rather than argued away."""
 
 
 class TerritoryLoadError(ValueError):
@@ -103,13 +112,17 @@ def _polygonal(geom: BaseGeometry) -> BaseGeometry | None:
 def repair(geom: BaseGeometry, strategy: str) -> BaseGeometry | None:
     """Apply one named repair, returning its polygonal part or None.
 
-    ``buffer_zero`` is kept alongside ``make_valid`` because it is the repair an earlier
-    draft of this project used and the repair a reader is most likely to reach for. Both
-    are run over the whole record set, and the difference is published rather than
-    described.
+    ``make_valid`` noding repair produces the published figures. ``buffer_zero`` is the
+    repair an earlier draft used and the one a reader is most likely to reach for.
+    ``make_valid_structure`` asks GEOS for its structure-preserving repair, which
+    answers invalidity differently where rings overlap or nest: the two ``make_valid``
+    readings disagree there, and that disagreement is exactly what the sensitivity run
+    in :mod:`inspected.sensitivity` is for.
     """
     if strategy == MAKE_VALID:
         return _polygonal(make_valid(geom))
+    if strategy == MAKE_VALID_STRUCTURE:
+        return _polygonal(shapely.make_valid(geom, method="structure"))
     if strategy == BUFFER_ZERO:
         return _polygonal(geom.buffer(0))
     raise TerritoryLoadError(
