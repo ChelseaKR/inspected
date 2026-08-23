@@ -4,6 +4,16 @@ Drafted 2026-08-22 against `0.1.0` (tagged in `CHANGELOG.md`, not yet cut as a g
 This is a plan, not a promise: items land when their gates can hold, and any item here
 that turns out to violate a rule in `docs/adr/` gets dropped rather than argued around.
 
+**Status at 2026-08-22**, same day as drafting: items 0.2, 0.3 and 0.4 shipped in #2;
+1.2 in #4; 1.4 in #5; 1.8 in #9; 1.3 in #6; 2.1 in #3; 2.5 in #7 with
+`docs/adr/0011`; 2.6 in #8; and 1.5, 1.7 and half of 1.6 in #9. Still open: 0.1 and
+0.5, which need the maintainer's signing key and a repository setting respectively;
+1.1, whose manifest lives outside this repository; 2.2, 2.3 and 2.4, which change
+measurements and wait for their next deliberate refresh or their own ADR; all of
+Phase 3, which needs people outside this repository; and Phase 4 except as noted.
+Item 1.6's remaining half, an assistive-technology pass over the generated tables,
+stays open and `docs/ACR.md` says so rather than implying otherwise.
+
 ## What constrains every item below
 
 These are settled. No roadmap item may weaken them.
