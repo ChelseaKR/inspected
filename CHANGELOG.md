@@ -7,6 +7,10 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- An operations runbook, `docs/RUNBOOK.md`: the refresh procedure start to finish,
+  what each acquisition refusal (`AcquisitionBlocked`, `AcquisitionFailed`,
+  `IncompleteAcquisition`) means and what to do, what each build-time gate failure
+  means, and the things that must never happen.
 - A refresh cadence and a staleness SLA, replacing the recorded absence of both.
   A pin is refreshed at least every twelve months and on three triggers: age of the
   retrieval against continuous fire seasons, a publisher-side last-modified date later
