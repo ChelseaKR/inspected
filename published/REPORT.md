@@ -5,8 +5,8 @@ California Energy Commission, or any electric utility. This is descriptive
 geography over two public datasets. It is not a risk rating of any company and
 it contains no information about the location of anybody's infrastructure.
 
-Damage inspections retrieved 2026-08-17. Territory boundaries
-retrieved 2026-08-17, publisher item last modified
+Damage inspections retrieved 2026-08-23. Territory boundaries
+retrieved 2026-08-23, publisher item last modified
 2026-08-12.
 
 This document is generated. Every figure below is read from
@@ -41,6 +41,23 @@ record belongs to, and this project does not decide on its behalf.
 Difference, placed minus contested: -0.4% (-1.0% to 0.1%, Newcombe score).
 
 The interval includes zero, so this comparison does not establish a difference between the two populations.
+
+## The placed and contested populations, by structure class
+
+The placed-versus-contested check from above, run again inside each structure
+class CAL FIRE publishes. A difference confined to one class would hide inside
+the aggregate; a difference spread across every class is sturdier than one
+number. Classes in name order; none is compared against another.
+
+| Structure class | Placed destroyed share | Contested destroyed share | Difference (Newcombe) |
+|---|---:|---:|---|
+| Agriculture | 42.9% | not measured | not measured |
+| Infrastructure | 15.4% | 5.8% | 9.6% (5.2% to 13.3%) |
+| Mixed Commercial/Residential | 28.0% | 25.7% | 2.3% (-9.9% to 12.4%) |
+| Multiple Residence | 43.2% | 18.7% | 24.5% (20.3% to 28.7%) |
+| Nonresidential Commercial | 41.0% | 34.9% | 6.0% (3.1% to 8.9%) |
+| Other Minor Structure | 53.7% | 57.6% | -3.8% (-4.9% to -2.7%) |
+| Single Residence | 54.3% | 54.4% | -0.1% (-0.8% to 0.5%) |
 
 ## Is the unattributable share a property of the data or of the fire
 
@@ -145,6 +162,83 @@ The county cut carries the contested share and nothing else. A county is not a s
 | Yolo | 278 | 278 | 0.0% | 0.0% to 1.4% |
 | Yuba | 324 | 324 | 0.0% | 0.0% to 1.2% |
 
+## Does the coordinate agree with the recorded county
+
+CAL FIRE records a county name on every row, and this project reports it as
+published. This section measures that field against an authoritative county
+boundary layer rather than trusting it or correcting it: how often a record's
+coordinate lands outside the county its publisher recorded. 132,490
+of 132,520 records could be compared at all; the rest had no usable
+coordinate or a county label the boundary layer does not carry, and they stay
+in every other denominator in this project.
+
+| Outcome | Share | Records | Of | 95% interval |
+|---|---:|---:|---:|---|
+| coordinate and recorded county agree | 100.0% | 132,459 | 132,490 | 99.97% to 99.98% |
+| coordinate sits outside the recorded county | 0.0234% | 31 | 132,490 | 0.02% to 0.03% |
+| comparable records whose coordinate reaches no county polygon | 0.0% | 0 | 132,490 | 0.000% to 0.003% |
+| records whose COUNTY label the boundary layer does not carry | 0.0% | 0 | 132,520 | 0.000% to 0.003% |
+
+Counted, never corrected. The boundary layer's publisher warns that its own
+boundary errors will exist, so a disagreement is evidence that two published
+sources differ and not a verdict on which one is right. No damage rate is
+published for a county here either.
+
+| County | Compared | Agreed | Matched no county | Disagreed share | 95% interval |
+|---|---:|---:|---:|---:|---|
+| Alameda | 120 | 120 | 0 | 0.0% | 0.0% to 3.1% |
+| Alpine | 415 | 415 | 0 | 0.0% | 0.0% to 0.9% |
+| Amador | 87 | 87 | 0 | 0.0% | 0.0% to 4.2% |
+| Butte | 28,747 | 28,747 | 0 | 0.0% | 0.00% to 0.01% |
+| Calaveras | 1,281 | 1,281 | 0 | 0.0% | 0.0% to 0.3% |
+| Colusa | 52 | 52 | 0 | 0.0% | 0.0% to 6.9% |
+| Contra Costa | 2 | 2 | 0 | 0.0% | 0.0% to 65.8% |
+| El Dorado | 4,668 | 4,668 | 0 | 0.0% | 0.0% to 0.1% |
+| Fresno | 2,984 | 2,984 | 0 | 0.0% | 0.0% to 0.1% |
+| Glenn | 52 | 52 | 0 | 0.0% | 0.0% to 6.9% |
+| Humboldt | 19 | 19 | 0 | 0.0% | 0.0% to 16.8% |
+| Inyo | 20 | 20 | 0 | 0.0% | 0.0% to 16.1% |
+| Kern | 1,478 | 1,478 | 0 | 0.0% | 0.0% to 0.3% |
+| Kings | 1 | 1 | 0 | 0.0% | 0.0% to 79.3% |
+| Lake | 3,215 | 3,210 | 0 | 0.2% | 0.1% to 0.4% |
+| Lassen | 1,020 | 1,020 | 0 | 0.0% | 0.0% to 0.4% |
+| Los Angeles | 34,464 | 34,464 | 0 | 0.0% | 0.00% to 0.01% |
+| Madera | 761 | 761 | 0 | 0.0% | 0.0% to 0.5% |
+| Mariposa | 1,182 | 1,181 | 0 | 0.1% | 0.0% to 0.5% |
+| Mendocino | 937 | 937 | 0 | 0.0% | 0.0% to 0.4% |
+| Merced | 3 | 3 | 0 | 0.0% | 0.0% to 56.1% |
+| Modoc | 7 | 7 | 0 | 0.0% | 0.0% to 35.4% |
+| Mono | 114 | 114 | 0 | 0.0% | 0.0% to 3.3% |
+| Monterey | 699 | 699 | 0 | 0.0% | 0.0% to 0.5% |
+| Napa | 6,320 | 6,315 | 0 | 0.1% | 0.0% to 0.2% |
+| Nevada | 344 | 344 | 0 | 0.0% | 0.0% to 1.1% |
+| Orange | 2,510 | 2,510 | 0 | 0.0% | 0.0% to 0.2% |
+| Placer | 606 | 606 | 0 | 0.0% | 0.0% to 0.6% |
+| Plumas | 3,593 | 3,593 | 0 | 0.0% | 0.0% to 0.1% |
+| Riverside | 1,379 | 1,379 | 0 | 0.0% | 0.0% to 0.3% |
+| Sacramento | 10 | 10 | 0 | 0.0% | 0.0% to 27.8% |
+| San Benito | 42 | 42 | 0 | 0.0% | 0.0% to 8.4% |
+| San Bernardino | 1,003 | 1,003 | 0 | 0.0% | 0.0% to 0.4% |
+| San Diego | 1,114 | 1,114 | 0 | 0.0% | 0.0% to 0.3% |
+| San Joaquin | 104 | 102 | 0 | 1.9% | 0.5% to 6.7% |
+| San Luis Obispo | 110 | 109 | 0 | 0.9% | 0.2% to 5.0% |
+| San Mateo | 207 | 207 | 0 | 0.0% | 0.0% to 1.8% |
+| Santa Barbara | 376 | 376 | 0 | 0.0% | 0.0% to 1.0% |
+| Santa Clara | 589 | 587 | 0 | 0.3% | 0.1% to 1.2% |
+| Santa Cruz | 4,637 | 4,636 | 0 | 0.0216% | 0.0% to 0.1% |
+| Shasta | 3,790 | 3,788 | 0 | 0.1% | 0.0% to 0.2% |
+| Siskiyou | 1,877 | 1,877 | 0 | 0.0% | 0.0% to 0.2% |
+| Solano | 2,377 | 2,377 | 0 | 0.0% | 0.0% to 0.2% |
+| Sonoma | 11,721 | 11,716 | 0 | 0.0427% | 0.0% to 0.1% |
+| Stanislaus | 243 | 241 | 0 | 0.8% | 0.2% to 3.0% |
+| Tehama | 1,212 | 1,212 | 0 | 0.0% | 0.0% to 0.3% |
+| Trinity | 572 | 572 | 0 | 0.0% | 0.0% to 0.7% |
+| Tulare | 1,036 | 1,036 | 0 | 0.0% | 0.0% to 0.4% |
+| Tuolumne | 352 | 350 | 0 | 0.6% | 0.2% to 2.0% |
+| Ventura | 3,436 | 3,433 | 0 | 0.1% | 0.0% to 0.3% |
+| Yolo | 278 | 278 | 0 | 0.0% | 0.0% to 1.4% |
+| Yuba | 324 | 324 | 0 | 0.0% | 0.0% to 1.2% |
+
 ## Every published territory, in name order
 
 Counts, and two within-territory shares. No damage rate is published for a
@@ -223,20 +317,28 @@ Counts of records falling inside each combination of published outlines. This
 is a description of the boundary layer, not of any utility. The combinations
 are listed by size because size is what is being reported.
 
-| Published outlines a record falls inside | Records |
-|---|---:|
-| Metropolitan Water District of So. Cal, Southern California Edison | 25,345 |
-| Pacific Gas & Electric Company, Power and Water Resource Pooling Authority | 12,241 |
-| Los Angeles Department of Water & Power, Metropolitan Water District of So. Cal | 9,794 |
-| Metropolitan Water District of So. Cal, Pasadena Water & Power | 1,880 |
-| Metropolitan Water District of So. Cal, San Diego Gas & Electric | 620 |
-| Lassen Municipal Utility District, Plumas-Sierra Rural Electric Cooperative | 85 |
-| City of Healdsburg Electric Department, Power and Water Resource Pooling Authority | 69 |
-| City of Anaheim Public Utilities Department, Metropolitan Water District of So. Cal | 46 |
-| City of Riverside, Metropolitan Water District of So. Cal | 42 |
-| Modesto Irrigation District, Pacific Gas & Electric Company | 40 |
-| City and County of San Francisco - Hetch Hetchy Water and Power, Pacific Gas & Electric Company | 4 |
-| PacifiCorp, Surprise Valley Electrification Corporation | 1 |
+The last column is the share of each combination's records sitting
+within 250 metres of the nearest edge among the outlines involved. A
+contested record stops being contested when any of them ceases to
+contain it, so that is the edge an approximation error moves first; a
+combination near 100% here is a thin seam between outlines, and one
+near 0% is an interior region where two published territories genuinely
+cover the same ground.
+
+| Published outlines a record falls inside | Records | Within 250 m of an edge |
+|---|---:|---:|
+| Metropolitan Water District of So. Cal, Southern California Edison | 25,345 | 13.8% (13.4% to 14.2%) |
+| Pacific Gas & Electric Company, Power and Water Resource Pooling Authority | 12,241 | 0.5% (0.4% to 0.6%) |
+| Los Angeles Department of Water & Power, Metropolitan Water District of So. Cal | 9,794 | 7.5% (7.0% to 8.0%) |
+| Metropolitan Water District of So. Cal, Pasadena Water & Power | 1,880 | 72.4% (70.4% to 74.4%) |
+| Metropolitan Water District of So. Cal, San Diego Gas & Electric | 620 | 18.4% (15.5% to 21.6%) |
+| Lassen Municipal Utility District, Plumas-Sierra Rural Electric Cooperative | 85 | 7.1% (3.3% to 14.6%) |
+| City of Healdsburg Electric Department, Power and Water Resource Pooling Authority | 69 | 100.0% (94.7% to 100.0%) |
+| City of Anaheim Public Utilities Department, Metropolitan Water District of So. Cal | 46 | 10.9% (4.7% to 23.0%) |
+| City of Riverside, Metropolitan Water District of So. Cal | 42 | 2.4% (0.4% to 12.3%) |
+| Modesto Irrigation District, Pacific Gas & Electric Company | 40 | 0.0% (0.0% to 8.8%) |
+| City and County of San Francisco - Hetch Hetchy Water and Power, Pacific Gas & Electric Company | 4 | 75.0% (30.1% to 95.4%) |
+| PacifiCorp, Surprise Valley Electrification Corporation | 1 | 0.0% (0.0% to 79.3%) |
 
 ## The published polygons, as they arrived
 
@@ -270,11 +372,22 @@ Two published entity types are not read as service territories:
 
 ## What the repair is worth
 
-Both repairs run to completion over the same records. 927
+All 3 repairs (`make_valid`, `buffer_zero`, `make_valid_structure`) run to completion over
+the same records. 927 of 132,520 records, 0.7%
+(0.66% to 0.75%), come out differently under at least one pair of
+them. That count is a census of the disagreement and not an estimate
+of it, and it bounds how much of the result the choice of repair can
+move. The pairwise counts:
+
+| Between | Records |
+|---|---:|
+| `buffer_zero` and `make_valid_structure` | 0 |
+| `make_valid` and `buffer_zero` | 927 |
+| `make_valid` and `make_valid_structure` | 927 |
+
+The pair ADR 0007 documents in detail: 927
 of 132,520 records, 0.7%
-(0.66% to 0.75%), come out differently under `buffer_zero` than
-under `make_valid`. That count is a census of the disagreement and not an
-estimate of it.
+(0.66% to 0.75%), come out differently under `buffer_zero` than under `make_valid`.
 
 | Under the repair used here | Under the alternative | Records |
 |---|---|---:|
@@ -289,9 +402,10 @@ estimate of it.
 Difference in the placed share: 0.6% (0.2% to 1.0%, Newcombe score). The same records are placed twice,
 so that interval is the conservative bound.
 
-Neither repair is correct. Both are answers to a question the published
-polygon does not answer, and the gap between them is the size of the
-ambiguity the invalid geometry leaves behind.
+No repair is correct. Each is an answer to a question the published
+polygon does not answer, and the disagreement between them is the size of
+the ambiguity the invalid geometry leaves behind. The default did not
+move to gain this measurement; it was already `make_valid` under ADR 0007.
 
 ## What the inclusion rule is worth
 

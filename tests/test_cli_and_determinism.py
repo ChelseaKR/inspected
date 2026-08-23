@@ -23,6 +23,7 @@ def build_into(out: Path) -> tuple[Path, Path]:
         dins_path=FIXTURES / "dins_sample.json",
         iou_pou_path=FIXTURES / "else_iou_pou_sample.geojson",
         other_path=FIXTURES / "else_other_sample.geojson",
+        counties_path=FIXTURES / "county_boundaries_sample.geojson",
         out_dir=out,
         is_fixture=True,
     )
@@ -60,6 +61,8 @@ def test_the_cli_returns_zero_and_names_what_it_wrote(
             str(FIXTURES / "else_iou_pou_sample.geojson"),
             "--other",
             str(FIXTURES / "else_other_sample.geojson"),
+            "--counties",
+            str(FIXTURES / "county_boundaries_sample.geojson"),
             "--out",
             str(tmp_path / "out"),
         ]

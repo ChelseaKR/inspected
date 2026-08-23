@@ -155,42 +155,29 @@ def _contested(tree: dict[str, Any]) -> list[str]:
         "are listed by size because size is what is being reported.",
         "",
     ]
-    widened = bool(rows) and "boundary_proximity" in rows[0]
-    if widened:
-        lines.extend(
-            [
-                "The last column is the share of each combination's records sitting",
-                "within 250 metres of the nearest edge among the outlines involved. A",
-                "contested record stops being contested when any of them ceases to",
-                "contain it, so that is the edge an approximation error moves first; a",
-                "combination near 100% here is a thin seam between outlines, and one",
-                "near 0% is an interior region where two published territories genuinely",
-                "cover the same ground.",
-                "",
-                "| Published outlines a record falls inside | Records | Within 250 m of an edge |",
-                "|---|---:|---:|",
-            ]
+    lines.extend(
+        [
+            "The last column is the share of each combination's records sitting",
+            "within 250 metres of the nearest edge among the outlines involved. A",
+            "contested record stops being contested when any of them ceases to",
+            "contain it, so that is the edge an approximation error moves first; a",
+            "combination near 100% here is a thin seam between outlines, and one",
+            "near 0% is an interior region where two published territories genuinely",
+            "cover the same ground.",
+            "",
+            "| Published outlines a record falls inside | Records | Within 250 m of an edge |",
+            "|---|---:|---:|",
+        ]
+    )
+    for row in rows:
+        rate_250 = _edge_band_rate(row, 250)
+        cell = (
+            NOT_MEASURED
+            if rate_250["state"] != "measured"
+            else f"{pct(rate_250['rate'])} ({interval(rate_250)})"
         )
-        for row in rows:
-            rate_250 = _edge_band_rate(row, 250)
-            cell = (
-                NOT_MEASURED
-                if rate_250["state"] != "measured"
-                else f"{pct(rate_250['rate'])} ({interval(rate_250)})"
-            )
-            lines.append(
-                f"| {', '.join(row['territories'])} | {count(row['records'])} | {cell} |"
-            )
-    else:
-        lines.extend(
-            [
-                "| Published outlines a record falls inside | Records |",
-                "|---|---:|",
-            ]
-        )
-        lines.extend(
-            f"| {', '.join(row['territories'])} | {count(row['records'])} |"
-            for row in rows
+        lines.append(
+            f"| {', '.join(row['territories'])} | {count(row['records'])} | {cell} |"
         )
     lines.append("")
     return lines
@@ -556,6 +543,82 @@ def _limits() -> list[str]:
     ]
 
 
+def _county_agreement(tree: dict[str, Any]) -> list[str]:
+    block = tree["coordinate_county_agreement"]
+    compared = block["records_compared"]
+    lines = [
+        "## Does the coordinate agree with the recorded county",
+        "",
+        "CAL FIRE records a county name on every row, and this project reports it as",
+        "published. This section measures that field against an authoritative county",
+        "boundary layer rather than trusting it or correcting it: how often a record's",
+        f"coordinate lands outside the county its publisher recorded. {count(compared['numerator'])}",
+        f"of {count(compared['denominator'])} records could be compared at all; the rest had no usable",
+        "coordinate or a county label the boundary layer does not carry, and they stay",
+        "in every other denominator in this project.",
+        "",
+        "| Outcome | Share | Records | Of | 95% interval |",
+        "|---|---:|---:|---:|---|",
+        rate_line(block["agreed"]),
+        rate_line(block["disagreed"]),
+        rate_line(block["matched_no_county"]),
+        rate_line(block["unmatchable_label"]),
+        "",
+        "Counted, never corrected. The boundary layer's publisher warns that its own",
+        "boundary errors will exist, so a disagreement is evidence that two published",
+        "sources differ and not a verdict on which one is right. No damage rate is",
+        "published for a county here either.",
+        "",
+        "| County | Compared | Agreed | Matched no county | Disagreed share | 95% interval |",
+        "|---|---:|---:|---:|---:|---|",
+    ]
+    for row in block["by_county"]:
+        node = row["disagreed"]
+        lines.append(
+            f"| {row['county']} | {count(row['resolved'])} | "
+            f"{count(row['agreed'])} | {count(row['matched_no_county'])} | "
+            f"{pct(node['rate']) if node['state'] == 'measured' else NOT_MEASURED} | "
+            f"{interval(node) if node['state'] == 'measured' else NOT_MEASURED} |"
+        )
+    lines.append("")
+    return lines
+
+
+def _by_structure_class(tree: dict[str, Any]) -> list[str]:
+    rows = tree["representativeness_by_category"]
+    lines = [
+        "## The placed and contested populations, by structure class",
+        "",
+        "The placed-versus-contested check from above, run again inside each structure",
+        "class CAL FIRE publishes. A difference confined to one class would hide inside",
+        "the aggregate; a difference spread across every class is sturdier than one",
+        "number. Classes in name order; none is compared against another.",
+        "",
+        "| Structure class | Placed destroyed share | Contested destroyed share | Difference (Newcombe) |",
+        "|---|---:|---:|---|",
+    ]
+    for row in rows:
+        placed = row["placed"]
+        contested = row["contested"]
+        if "difference" in row:
+            diff = row["difference"]
+            cell = (
+                f"{pct(diff['difference'])} ({interval(diff)})"
+                if diff["state"] == "measured"
+                else NOT_MEASURED
+            )
+        else:
+            cell = NOT_MEASURED
+        lines.append(
+            f"| {row['structure_category']} | "
+            f"{pct(placed['rate']) if placed['state'] == 'measured' else NOT_MEASURED} | "
+            f"{pct(contested['rate']) if contested['state'] == 'measured' else NOT_MEASURED} | "
+            f"{cell} |"
+        )
+    lines.append("")
+    return lines
+
+
 def render(tree: dict[str, Any]) -> str:
     """The whole document, deterministic for a given artifact."""
     lines: list[str] = []
@@ -563,7 +626,9 @@ def render(tree: dict[str, Any]) -> str:
         _header(tree),
         _coverage(tree),
         _representativeness(tree),
+        _by_structure_class(tree),
         _by_fire(tree),
+        _county_agreement(tree),
         _territories(tree),
         _contested(tree),
         _ledger(tree),

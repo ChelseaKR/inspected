@@ -12,9 +12,10 @@ from pathlib import Path
 from typing import Any
 
 from inspected import artifacts, measure, report, sensitivity
-from inspected.geometry import load_territories
+from inspected.geometry import load_counties, load_territories
 from inspected.placement import (
     classify,
+    classify_county_agreement,
     measure_boundary_distances,
     measure_contested_group_distances,
     read_records,
@@ -34,6 +35,7 @@ def build(
     dins_path: Path,
     iou_pou_path: Path,
     other_path: Path,
+    counties_path: Path,
     out_dir: Path,
     is_fixture: bool,
 ) -> tuple[Path, Path]:
@@ -43,10 +45,12 @@ def build(
         ELSE_OTHER.key: _read_json(other_path),
     }
     territories, unusable = load_territories(collections)
+    counties = load_counties(_read_json(counties_path))
     records, excluded = read_records(_read_json(dins_path))
     placement = classify(records, territories, excluded)
     measure_boundary_distances(placement, territories)
     measure_contested_group_distances(placement, territories)
+    agreement = classify_county_agreement(records, counties)
 
     tree: dict[str, Any] = {
         "is_fixture": is_fixture,
@@ -63,6 +67,12 @@ def build(
         },
         "placement_coverage": measure.placement_coverage(placement),
         "representativeness": measure.representativeness(placement),
+        "representativeness_by_category": measure.representativeness_by_category(
+            placement
+        ),
+        "coordinate_county_agreement": measure.coordinate_county_agreement(
+            agreement, len(records)
+        ),
         "attributability_by_fire": measure.attributability_by_fire(placement),
         "territories": measure.territory_rows(placement, territories),
         "contested_groups": measure.contested_groups(placement),
@@ -102,6 +112,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--dins", type=Path, required=True)
     parser.add_argument("--iou-pou", type=Path, required=True)
     parser.add_argument("--other", type=Path, required=True)
+    parser.add_argument("--counties", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument(
         "--fixture",
@@ -113,6 +124,7 @@ def main(argv: list[str] | None = None) -> int:
         dins_path=args.dins,
         iou_pou_path=args.iou_pou,
         other_path=args.other,
+        counties_path=args.counties,
         out_dir=args.out,
         is_fixture=args.fixture,
     )

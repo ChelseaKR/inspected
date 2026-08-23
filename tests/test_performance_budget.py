@@ -34,6 +34,7 @@ def test_the_offline_build_holds_its_budget(tmp_path: Path) -> None:
         dins_path=ROOT / "fixtures" / "dins_sample.json",
         iou_pou_path=ROOT / "fixtures" / "else_iou_pou_sample.geojson",
         other_path=ROOT / "fixtures" / "else_other_sample.geojson",
+        counties_path=ROOT / "fixtures" / "county_boundaries_sample.geojson",
         out_dir=tmp_path / "budget-run",
         is_fixture=True,
     )

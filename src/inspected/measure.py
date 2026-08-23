@@ -470,3 +470,152 @@ def attributability_by_fire(placement: Placement) -> dict[str, Any]:
             "published for a territory."
         ),
     }
+
+
+def representativeness_by_category(placement: Placement) -> list[dict[str, Any]]:
+    """The placed-versus-contested destroyed-share check, inside each structure class.
+
+    The headline check compares two populations across the whole record set. This runs
+    the same comparison inside each published ``STRUCTURECATEGORY``, because a
+    difference confined to one class would be hidden by the aggregate and a difference
+    spread across every class is sturdier than one number. Categories in name order;
+    no category is compared against another. A class with no contested records has no
+    difference to measure, which is published as not measured rather than as zero.
+    """
+    rows: list[dict[str, Any]] = []
+    for category in sorted(
+        set(placement.category_placed) | set(placement.category_contested)
+    ):
+        placed_n = placement.category_placed[category]
+        contested_n = placement.category_contested[category]
+        placed = Rate.of(
+            f"destroyed share among placed records, {category}",
+            placement.category_destroyed_placed[category],
+            placed_n,
+        )
+        contested = Rate.of(
+            f"destroyed share among contested records, {category}",
+            placement.category_destroyed_contested[category],
+            contested_n,
+        )
+        row: dict[str, Any] = {
+            "structure_category": category,
+            "placed": placed.as_dict(),
+            "contested": contested.as_dict(),
+        }
+        if placed_n > 0 and contested_n > 0:
+            row["difference"] = Difference.between(
+                f"placed minus contested, destroyed share, {category}",
+                placed,
+                contested,
+                note=(
+                    "The same records measured twice within one published structure "
+                    "class. The Newcombe interval is the conservative bound; the exact "
+                    "figures are the counts above."
+                ),
+            ).as_dict()
+        rows.append(row)
+    return rows
+
+
+def coordinate_county_agreement(
+    agreement: Any,
+    records_total: int,
+) -> dict[str, Any]:
+    """Does a record's coordinate sit in the county its publisher recorded?
+
+    Counted against an authoritative boundary layer, never corrected: CAL FIRE's
+    ``COUNTY`` field is reported as published everywhere else in this project, and this
+    block measures how often it and a coordinate disagree rather than adjudicating
+    between them. The boundary layer's publisher warns that its own errors will exist,
+    so a disagreement is evidence that two sources differ and not a verdict on which
+    one is right.
+    """
+
+    def _clean_share(numerator: int, denominator: int) -> dict[str, Any]:
+        if denominator <= 0:
+            return Rate.not_measured(
+                "records whose coordinate sits outside the recorded county",
+                reason="no comparable records",
+            ).as_dict()
+        return Rate.of(
+            "records whose coordinate sits outside the recorded county",
+            numerator,
+            denominator,
+        ).as_dict()
+
+    rows = [
+        {
+            "county": tally.label,
+            "resolved": tally.resolved,
+            "agreed": tally.agreed,
+            "matched_no_county": tally.matched_no_county,
+            "disagreed": _clean_share(tally.disagreed, tally.resolved),
+        }
+        for tally in sorted(agreement.per_label.values(), key=lambda t: t.label)
+    ]
+    return {
+        "question": (
+            "How often does a record's coordinate land outside the county its "
+            "publisher recorded?"
+        ),
+        "records_compared": _share_or_not_measured(
+            agreement.resolved,
+            records_total,
+            "records whose county label and coordinate could both be compared",
+            note=(
+                "The denominator is the whole wildfire record set. A record joins "
+                "this comparison only with a usable coordinate and a county label the "
+                "boundary layer carries; everything else stays counted where it "
+                "already was."
+            ),
+        ),
+        "agreed": _share_or_not_measured(
+            agreement.agreed,
+            agreement.resolved,
+            "coordinate and recorded county agree",
+            note="Denominator: the comparable records.",
+        ),
+        "disagreed": _share_or_not_measured(
+            agreement.disagreed,
+            agreement.resolved,
+            "coordinate sits outside the recorded county",
+            note=(
+                "Denominator: the comparable records above. The boundary layer's "
+                "publisher states that boundary errors will exist, so these are "
+                "counts of disagreement, not corrections."
+            ),
+        ),
+        "matched_no_county": _share_or_not_measured(
+            agreement.matched_no_county,
+            agreement.resolved,
+            "comparable records whose coordinate reaches no county polygon",
+        ),
+        "unmatchable_label": _share_or_not_measured(
+            agreement.unmatchable_label,
+            records_total,
+            "records whose COUNTY label the boundary layer does not carry",
+        ),
+        "by_county": rows,
+        "note": (
+            "Counted, never corrected. The COUNTY field is published by CAL FIRE and "
+            "is reported as published everywhere else in this project; the boundary "
+            "layer comes from the California Department of Technology, whose metadata "
+            "warns that boundary errors will exist. Where the two disagree, this "
+            "project says how often and does not say who is right."
+        ),
+    }
+
+
+def _share_or_not_measured(
+    numerator: int,
+    denominator: int,
+    label: str,
+    note: str = "",
+) -> dict[str, Any]:
+    """A rate with its denominator, or an honest not-measured when there is none."""
+    if denominator <= 0:
+        return Rate.not_measured(
+            label, reason="no records could be compared, so no share exists"
+        ).as_dict()
+    return Rate.of(label, numerator, denominator, note=note).as_dict()
