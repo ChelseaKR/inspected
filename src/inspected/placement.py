@@ -194,6 +194,14 @@ class Placement:
     destroyed_uncovered: int = 0
     tallies: dict[str, TerritoryTally] = field(default_factory=dict)
     contested_groups: Counter[tuple[str, ...]] = field(default_factory=Counter)
+    # Per combination, the projected coordinates of its contested records, kept so the
+    # distance to the nearest edge among the group's outlines can be measured after
+    # classification rather than during it.
+    contested_xy: dict[tuple[str, ...], tuple[list[float], list[float]]] = field(
+        default_factory=dict
+    )
+    contested_bands: dict[tuple[str, ...], dict[int, int]] = field(default_factory=dict)
+    contested_distance_state: dict[tuple[str, ...], str] = field(default_factory=dict)
     years: Counter[int] = field(default_factory=Counter)
     year_classified: Counter[int] = field(default_factory=Counter)
     year_contested: Counter[int] = field(default_factory=Counter)
@@ -296,11 +304,16 @@ def _tally_contested(
     territories: tuple[Territory, ...],
     found: list[int],
     record: Record,
+    x: float,
+    y: float,
 ) -> None:
     result.contested += 1
     result.destroyed_contested += int(record.destroyed)
     names = tuple(sorted(territories[i].name for i in found))
     result.contested_groups[names] += 1
+    coords = result.contested_xy.setdefault(names, ([], []))
+    coords[0].append(x)
+    coords[1].append(y)
     for name in names:
         tally = result.tallies[name]
         tally.contested += 1
@@ -371,7 +384,14 @@ def classify(
                 float(ys[position]),
             )
         else:
-            _tally_contested(result, territories, found, record)
+            _tally_contested(
+                result,
+                territories,
+                found,
+                record,
+                float(xs[position]),
+                float(ys[position]),
+            )
         _tally_dispersion(result, record, contested=len(found) > 1)
     return result
 
@@ -399,3 +419,36 @@ def measure_boundary_distances(
             band: int(np.count_nonzero(distances < band)) for band in BOUNDARY_BANDS_M
         }
         tally.distance_state = "measured"
+
+
+def measure_contested_group_distances(
+    placement: Placement, territories: tuple[Territory, ...]
+) -> None:
+    """Per combination of overlapping outlines, how near its records sit to an edge.
+
+    A contested record stops being contested when any outline in its combination
+    ceases to contain it, so the distance that matters is the smallest one: the nearest
+    edge among every outline the record falls inside. That is the edge an approximation
+    error moves first, and it is what the bands below are taken against. A combination
+    holding no record has no distances, and stays ``not_measured`` rather than becoming
+    a row of zeros.
+    """
+    by_name = {t.name: t for t in territories}
+    for names, (xs, ys) in placement.contested_xy.items():
+        if not xs:
+            placement.contested_bands[names] = {}
+            placement.contested_distance_state[names] = "not_measured"
+            continue
+        points_x = np.array(xs, dtype="float64")
+        points_y = np.array(ys, dtype="float64")
+        nearest = np.full(len(xs), np.inf)
+        for name in names:
+            territory = by_name.get(name)
+            if territory is None:  # pragma: no cover - names come from territories
+                continue
+            distances = distances_to_boundary(territory.geometry, points_x, points_y)
+            nearest = np.minimum(nearest, distances)
+        placement.contested_bands[names] = {
+            band: int(np.count_nonzero(nearest < band)) for band in BOUNDARY_BANDS_M
+        }
+        placement.contested_distance_state[names] = "measured"

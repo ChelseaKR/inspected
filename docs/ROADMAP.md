@@ -10,10 +10,13 @@ that turns out to violate a rule in `docs/adr/` gets dropped rather than argued 
 approval, 0.1 shipped the same day: signed annotated tag `v0.1.0`, verified against
 `.github/allowed_signers`, released through the three-job workflow with wheel, sdist,
 SBOM and provenance attestation attached; and 0.5 shipped as a branch ruleset on
-`main` that is PR-only behind its six checks with no bypass actors. Still open: 1.1,
-whose manifest lives outside this repository; 2.2, 2.3 and 2.4, which change
-measurements and wait for their next deliberate refresh or their own ADR; all of
-Phase 3, which needs people outside this repository; and Phase 4 except as noted.
+`main` that is PR-only behind its six checks with no bypass actors. On 2026-08-23,
+1.1 shipped as a registration in the portfolio applicability manifest, superseding
+this repository's own scoping table, and 2.4 shipped as edge bands on the contested
+groups. Still open: 2.2 and 2.3, which change what is fetched and wait for their own
+ADR plus the deliberate refresh that can carry them into `published/`; all of
+Phase 3 except the letter drafts, which exist under `docs/outreach/` and wait for a
+human to send them; and Phase 4 except as noted.
 Item 1.6's remaining half, an assistive-technology pass over the generated tables,
 stays open and `docs/ACR.md` says so rather than implying otherwise.
 

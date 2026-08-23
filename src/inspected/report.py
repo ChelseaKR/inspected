@@ -146,6 +146,7 @@ def _representativeness(tree: dict[str, Any]) -> list[str]:
 
 
 def _contested(tree: dict[str, Any]) -> list[str]:
+    rows = tree["contested_groups"]
     lines = [
         "## Where the published boundaries overlap",
         "",
@@ -153,15 +154,54 @@ def _contested(tree: dict[str, Any]) -> list[str]:
         "is a description of the boundary layer, not of any utility. The combinations",
         "are listed by size because size is what is being reported.",
         "",
-        "| Published outlines a record falls inside | Records |",
-        "|---|---:|",
     ]
-    lines.extend(
-        f"| {', '.join(row['territories'])} | {count(row['records'])} |"
-        for row in tree["contested_groups"]
-    )
+    widened = bool(rows) and "boundary_proximity" in rows[0]
+    if widened:
+        lines.extend(
+            [
+                "The last column is the share of each combination's records sitting",
+                "within 250 metres of the nearest edge among the outlines involved. A",
+                "contested record stops being contested when any of them ceases to",
+                "contain it, so that is the edge an approximation error moves first; a",
+                "combination near 100% here is a thin seam between outlines, and one",
+                "near 0% is an interior region where two published territories genuinely",
+                "cover the same ground.",
+                "",
+                "| Published outlines a record falls inside | Records | Within 250 m of an edge |",
+                "|---|---:|---:|",
+            ]
+        )
+        for row in rows:
+            rate_250 = _edge_band_rate(row, 250)
+            cell = (
+                NOT_MEASURED
+                if rate_250["state"] != "measured"
+                else f"{pct(rate_250['rate'])} ({interval(rate_250)})"
+            )
+            lines.append(
+                f"| {', '.join(row['territories'])} | {count(row['records'])} | {cell} |"
+            )
+    else:
+        lines.extend(
+            [
+                "| Published outlines a record falls inside | Records |",
+                "|---|---:|",
+            ]
+        )
+        lines.extend(
+            f"| {', '.join(row['territories'])} | {count(row['records'])} |"
+            for row in rows
+        )
     lines.append("")
     return lines
+
+
+def _edge_band_rate(row: dict[str, Any], band_m: int) -> dict[str, Any]:
+    """The one band rate a contested-group row carries for a given distance."""
+    proximity: dict[str, Any] = row["boundary_proximity"]
+    index: int = proximity["bands_m"].index(band_m)
+    rate: dict[str, Any] = proximity["rates"][index]
+    return rate
 
 
 def _territories(tree: dict[str, Any]) -> list[str]:

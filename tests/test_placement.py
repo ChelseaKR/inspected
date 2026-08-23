@@ -18,6 +18,7 @@ from inspected.placement import (
     classify,
     containment_signatures,
     measure_boundary_distances,
+    measure_contested_group_distances,
     read_records,
 )
 
@@ -376,3 +377,117 @@ def test_the_county_split_counts_only_records_that_got_an_outcome(
     assert sum(placement.county_classified.values()) <= placement.classified
     for name, classified in placement.county_classified.items():
         assert classified <= placement.counties[name]
+
+
+def _square_feature(oid: int, name: str, kind: str, ring: list[list[float]]) -> dict:
+    return {
+        "type": "Feature",
+        "properties": {"OBJECTID": oid, "Utility": name, "Type": kind},
+        "geometry": {"type": "Polygon", "coordinates": [ring]},
+    }
+
+
+def _ring(w: float, s: float, e: float, n: float) -> list[list[float]]:
+    return [[w, s], [e, s], [e, n], [w, n], [w, s]]
+
+
+def _classify_two(
+    left: dict, right: dict, points: list[tuple[float, float]]
+) -> tuple[Placement, tuple[Territory, ...]]:
+    collections = {
+        "a": {"type": "FeatureCollection", "features": [left]},
+        "b": {"type": "FeatureCollection", "features": [right]},
+    }
+    territories, _ = load_territories(collections)
+    records = tuple(
+        Record(
+            i,
+            "Destroyed (>50%)",
+            f"INC-{i}",
+            "Sample County East",
+            2025,
+            lon,
+            lat,
+        )
+        for i, (lon, lat) in enumerate(points, start=1)
+    )
+    placement = classify(records, territories, 0)
+    measure_boundary_distances(placement, territories)
+    measure_contested_group_distances(placement, territories)
+    return placement, territories
+
+
+def test_a_thin_overlap_sits_wholly_inside_the_first_band() -> None:
+    """A seam 0.001 degrees wide: every contested record is near an edge of the pair."""
+    sliver_left = _square_feature(
+        1, "Seam West", "IOU", _ring(-121.00, 38.00, -120.980, 38.02)
+    )
+    sliver_right = _square_feature(
+        2, "Seam East", "POU", _ring(-120.981, 38.00, -120.970, 38.02)
+    )
+    placement, _ = _classify_two(
+        sliver_left,
+        sliver_right,
+        [(-120.9805, 38.01), (-120.9806, 38.015)],
+    )
+    names = ("Seam East", "Seam West")
+    assert placement.contested_groups[names] == 2
+    state = placement.contested_distance_state[names]
+    bands = placement.contested_bands[names]
+    assert state == "measured"
+    # The strip is roughly 90 metres wide, so both records sit within the 100 m band
+    # of some edge in the combination.
+    assert bands[100] == 2
+    assert bands[1000] == 2
+
+
+def test_an_interior_overlap_has_records_outside_every_band() -> None:
+    """Deep overlap: a central record is over a kilometre from any edge involved."""
+    deep_left = _square_feature(
+        3, "Wide West", "IOU", _ring(-122.00, 37.00, -121.96, 37.04)
+    )
+    deep_right = _square_feature(
+        4, "Wide East", "POU", _ring(-122.00, 37.00, -121.92, 37.04)
+    )
+    placement, _ = _classify_two(
+        deep_left,
+        deep_right,
+        [(-121.98, 37.02), (-121.999, 37.02)],
+    )
+    names = ("Wide East", "Wide West")
+    assert placement.contested_groups[names] == 2
+    bands = placement.contested_bands[names]
+    # The edge-hugging record sits within 100 m of the shared western edge; the
+    # central one is more than a kilometre from every edge of either outline.
+    assert bands[100] == 1
+    assert bands[1000] == 1
+    assert placement.contested_distance_state[names] == "measured"
+
+
+def test_a_combination_holding_no_record_never_gains_a_band_row() -> None:
+    """Only combinations that actually hold records reach the distance measurement."""
+    lone = _square_feature(
+        5, "Lone Rural", "CO-OP", _ring(-119.50, 38.00, -119.40, 38.10)
+    )
+    far = _square_feature(6, "Far North", "IOU", _ring(-121.00, 39.50, -120.90, 39.60))
+    overlap_a = _square_feature(
+        7, "Pair A", "IOU", _ring(-120.60, 38.20, -120.59, 38.30)
+    )
+    overlap_b = _square_feature(
+        8, "Pair B", "POU", _ring(-120.595, 38.20, -120.58, 38.30)
+    )
+    collections = {
+        "a": {"type": "FeatureCollection", "features": [lone, overlap_a]},
+        "b": {"type": "FeatureCollection", "features": [far, overlap_b]},
+    }
+    territories, _ = load_territories(collections)
+    records = (
+        Record(1, "No Damage", "X", "Sample County East", 2025, -119.45, 38.05),
+        Record(
+            2, "Destroyed (>50%)", "Y", "Sample County East", 2025, -120.5925, 38.25
+        ),
+    )
+    placement = classify(records, territories, 0)
+    measure_contested_group_distances(placement, territories)
+    assert ("Far North", "Lone Rural") not in placement.contested_groups
+    assert set(placement.contested_bands) == {("Pair A", "Pair B")}

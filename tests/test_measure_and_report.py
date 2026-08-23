@@ -2,14 +2,20 @@
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
 from typing import Any
 
 import pytest
 
 from inspected import measure, report
+from inspected.artifacts import check_all
+from inspected.cli import build
 from inspected.geometry import Territory
 from inspected.placement import Placement, Record, classify
 from inspected.report import NOT_MEASURED, pct
+
+ROOT = Path(__file__).resolve().parents[1]
 
 ALPHA = "Alpha Electric Company"
 
@@ -284,3 +290,50 @@ def test_a_county_whose_records_could_not_be_placed_is_not_measured(
     assert row["records_classified"] == 0
     assert row["contested"]["state"] == "not_measured"
     assert row["contested"]["rate"] is None
+
+
+def _fixture_tree(tmp_path: Path) -> dict[str, Any]:
+    artifact_path, _ = build(
+        dins_path=ROOT / "fixtures" / "dins_sample.json",
+        iou_pou_path=ROOT / "fixtures" / "else_iou_pou_sample.geojson",
+        other_path=ROOT / "fixtures" / "else_other_sample.geojson",
+        out_dir=tmp_path / "out",
+        is_fixture=True,
+    )
+    return json.loads(artifact_path.read_text(encoding="utf-8"))
+
+
+def test_contested_group_rows_carry_edge_bands_passing_the_publication_rules(
+    tmp_path: Path,
+) -> None:
+    tree = _fixture_tree(tmp_path)
+    rows = tree["contested_groups"]
+    assert rows, "the fixture must produce at least one overlapping combination"
+    ceiling = max(len(tree["territories"]), 32)
+    check_all(tree, max_rows=ceiling)
+    for row in rows:
+        proximity = row["boundary_proximity"]
+        for rate in proximity["rates"]:
+            assert rate["denominator"] == row["records"]
+
+
+def test_the_report_renders_the_widened_overlap_table_when_bands_exist(
+    tmp_path: Path,
+) -> None:
+    text = report.render(_fixture_tree(tmp_path))
+    section = text.split("## Where the published boundaries overlap")[1]
+    assert "Within 250 m of an edge" in section
+    assert "thin seam" in section
+
+
+def test_the_report_still_renders_an_artifact_from_before_the_bands_existed(
+    tmp_path: Path,
+) -> None:
+    """The committed published/ pair predates this column and must keep rendering."""
+    tree = _fixture_tree(tmp_path)
+    for row in tree["contested_groups"]:
+        del row["boundary_proximity"]
+    text = report.render(tree)
+    section = text.split("## Where the published boundaries overlap")[1]
+    assert "Within 250 m of an edge" not in section
+    assert "| Published outlines a record falls inside | Records |" in section
