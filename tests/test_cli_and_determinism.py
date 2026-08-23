@@ -11,7 +11,7 @@ from pathlib import Path
 
 import pytest
 
-from inspected import cli
+from wildfire_service_territory_overlap import cli
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "fixtures"

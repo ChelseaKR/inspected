@@ -26,12 +26,12 @@ Triggers and cadence live in `PROVENANCE.md`. The procedure:
 1. Set the current artifact aside for comparison:
    `cp published/measurements.json "$OLD"` where `$OLD` lives outside the repository.
 2. Run `make acquire`. Network, by hand, never from CI. It writes `data/raw/`.
-3. Update `src/inspected/sources.py`: the new retrieval dates, SHA-256 hashes, byte
+3. Update `src/wildfire_service_territory_overlap/sources.py`: the new retrieval dates, SHA-256 hashes, byte
    counts and feature counts. The tests hold `PROVENANCE.md` and `README.md` to agree
    with that file, so the document cannot be updated without the source record, or the
    other way round.
 4. Run `make report`.
-5. Compare: `python -m inspected.artifact_diff "$OLD" published/measurements.json`.
+5. Compare: `python -m wildfire_service_territory_overlap.artifact_diff "$OLD" published/measurements.json`.
    Changed and added values are expected on a real refresh; removed values stop the
    run unless `--allow-removals` names them deliberate.
 6. Read the generated `published/REPORT.md` end to end. The figures are checked by
@@ -44,7 +44,7 @@ Triggers and cadence live in `PROVENANCE.md`. The procedure:
 
 ## When acquisition refuses
 
-All of these come from `src/inspected/acquire.py`, and all of them leave `data/raw/`
+All of these come from `src/wildfire_service_territory_overlap/acquire.py`, and all of them leave `data/raw/`
 without a file you can trust.
 
 **`AcquisitionBlocked`: a 401, 403 or 429, or an access control on the route.**

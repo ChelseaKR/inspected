@@ -6,7 +6,7 @@ import math
 
 import pytest
 
-from inspected.intervals import (
+from wildfire_service_territory_overlap.intervals import (
     MEASURED,
     NOT_MEASURED,
     Difference,

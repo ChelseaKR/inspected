@@ -23,7 +23,7 @@ What is published
    line, the contested share within each incident year, and the contested share within
    each published county, each with its own denominator. Denominators: the incident set,
    the classified records of one year, and the classified records of one county.
-6. **What the judgment calls are worth**, in :mod:`inspected.sensitivity`: the whole
+6. **What the judgment calls are worth**, in :mod:`wildfire_service_territory_overlap.sensitivity`: the whole
    placement re-run under each alternative reading of the publisher's ``Type`` field,
    under the other geometry repair, and without every outline that holds no record.
 
@@ -67,10 +67,10 @@ from __future__ import annotations
 
 from typing import Any
 
-from inspected.geometry import Territory
-from inspected.intervals import Difference, Rate
-from inspected.placement import BOUNDARY_BANDS_M, Placement
-from inspected.sources import EXCLUDED_TYPES
+from wildfire_service_territory_overlap.geometry import Territory
+from wildfire_service_territory_overlap.intervals import Difference, Rate
+from wildfire_service_territory_overlap.placement import BOUNDARY_BANDS_M, Placement
+from wildfire_service_territory_overlap.sources import EXCLUDED_TYPES
 
 
 def placement_coverage(placement: Placement) -> dict[str, Any]:

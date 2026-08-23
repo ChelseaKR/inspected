@@ -17,15 +17,15 @@ from typing import Any
 import pytest
 from perimeter.acquire import AcquisitionBlocked, AcquisitionFailed
 
-from inspected import acquire
-from inspected.acquire import (
+from wildfire_service_territory_overlap import acquire
+from wildfire_service_territory_overlap.acquire import (
     IncompleteAcquisition,
     assert_walk_is_whole,
     fetch_feature_pages,
     layer_record_count,
 )
-from inspected.placement import REQUIRED_COLUMNS
-from inspected.sources import ELSE_IOU_POU
+from wildfire_service_territory_overlap.placement import REQUIRED_COLUMNS
+from wildfire_service_territory_overlap.sources import ELSE_IOU_POU
 
 
 class FakeResponse(io.BytesIO):

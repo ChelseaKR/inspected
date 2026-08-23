@@ -1,6 +1,6 @@
 # Provenance
 
-Four files, three publishers, one retrieval date. `src/inspected/sources.py` is the
+Four files, three publishers, one retrieval date. `src/wildfire_service_territory_overlap/sources.py` is the
 reviewed record and `tests/test_provenance.py` asserts this document agrees with it, so
 the two cannot drift apart.
 
@@ -160,7 +160,7 @@ The pins move only by deliberate refresh, and a refresh is a measured event:
 - `make acquire` runs by hand, never from CI and never from a schedule. Automation
   does not republish figures unattended.
 - Before anything is committed, the new artifact is compared against the one it
-  replaces, value by value: `python -m inspected.artifact_diff OLD.json NEW.json`.
+  replaces, value by value: `python -m wildfire_service_territory_overlap.artifact_diff OLD.json NEW.json`.
   Added and changed values come back with their paths and their old values; removed
   values refuse the run unless `--allow-removals` names the removal deliberate.
 - What moved is then written into a dated section of this document, sizes included.

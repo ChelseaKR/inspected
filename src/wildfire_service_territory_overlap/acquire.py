@@ -48,9 +48,15 @@ from perimeter.acquire import AcquisitionBlocked, AcquisitionFailed
 from perimeter.acquire import fetch_layer as perimeter_fetch_layer
 from perimeter.acquire import layer_record_count as perimeter_layer_record_count
 
-from inspected.sources import COUNTIES, DINS, ELSE_IOU_POU, ELSE_OTHER, Source
+from wildfire_service_territory_overlap.sources import (
+    COUNTIES,
+    DINS,
+    ELSE_IOU_POU,
+    ELSE_OTHER,
+    Source,
+)
 
-USER_AGENT = "inspected-territory-join/0.1 (+https://github.com/ChelseaKR/inspected)"
+USER_AGENT = "wildfire-service-territory-overlap/0.1 (+https://github.com/ChelseaKR/wildfire-service-territory-overlap)"
 WHERE = "1=1"
 PAGE_SIZE = 2000
 PAUSE_SECONDS = 0.2
@@ -315,7 +321,7 @@ def acquire_counties(source: Source, out_dir: Path) -> Acquired:
 
 def main(argv: list[str] | None = None) -> int:  # pragma: no cover - network entrypoint
     parser = argparse.ArgumentParser(
-        prog="inspected-acquire",
+        prog="wildfire-service-territory-overlap-acquire",
         description=(
             "Download the public source layers into a local directory. "
             "Run by hand; never part of a build or CI."
@@ -349,7 +355,9 @@ def main(argv: list[str] | None = None) -> int:  # pragma: no cover - network en
     path = args.out / "acquisition.json"
     path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", "utf-8")
     print(f"wrote {path}")
-    print("Copy feature_count, raw_bytes and sha256 into src/inspected/sources.py")
+    print(
+        "Copy feature_count, raw_bytes and sha256 into src/wildfire_service_territory_overlap/sources.py"
+    )
     return 0
 
 

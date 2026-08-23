@@ -44,7 +44,7 @@ towards contested and none runs the other way.
 
 `make_valid` remains the repair the published figures use. `buffer(0)` stays implemented,
 stays exercised by the test suite, and is run to completion on every build by
-`inspected.sensitivity.repair_comparison`, which publishes the disagreement as a count
+`wildfire_service_territory_overlap.sensitivity.repair_comparison`, which publishes the disagreement as a count
 with its denominator and its interval and names each transition.
 
 A third repair may be added. It goes into `REPAIR_STRATEGIES` and into the comparison at

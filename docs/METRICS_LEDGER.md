@@ -21,7 +21,7 @@ flattering streams is a press release; the honest gaps stay visible here on purp
 | Lint/format | ruff, clean, complexity cap 10 |
 | Offline fixture build wall clock | about 1 second locally; budget ceiling 30 seconds, enforced by test |
 | Full real build wall clock | about 18 seconds as of the 2026-08-17 pin, twelve placements per build |
-| Published values in the current pin | 5,120 leaves in `published/measurements.json`, comparable by `inspected.artifact_diff` |
+| Published values in the current pin | 5,120 leaves in `published/measurements.json`, comparable by `wildfire_service_territory_overlap.artifact_diff` |
 | Accepted CodeQL findings with written reasoning | 2, both on the release build, both re-checked when the release runs |
 
 The leaf count above is what a refresh will be diffed against. It is recorded here so

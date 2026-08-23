@@ -11,16 +11,21 @@ import json
 from pathlib import Path
 from typing import Any
 
-from inspected import artifacts, measure, report, sensitivity
-from inspected.geometry import load_counties, load_territories
-from inspected.placement import (
+from wildfire_service_territory_overlap import artifacts, measure, report, sensitivity
+from wildfire_service_territory_overlap.geometry import load_counties, load_territories
+from wildfire_service_territory_overlap.placement import (
     classify,
     classify_county_agreement,
     measure_boundary_distances,
     measure_contested_group_distances,
     read_records,
 )
-from inspected.sources import DINS, ELSE_IOU_POU, ELSE_OTHER, RETRIEVED
+from wildfire_service_territory_overlap.sources import (
+    DINS,
+    ELSE_IOU_POU,
+    ELSE_OTHER,
+    RETRIEVED,
+)
 
 ARTIFACT_NAME = "measurements.json"
 REPORT_NAME = "REPORT.md"
@@ -105,7 +110,7 @@ def build(
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        prog="inspected",
+        prog="wildfire-service-territory-overlap",
         description="Measure how much of the DINS record set a published electric "
         "service territory boundary can account for. Reads local files only.",
     )

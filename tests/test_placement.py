@@ -8,14 +8,14 @@ import numpy as np
 import pytest
 import shapely
 
-from inspected.geometry import (
+from wildfire_service_territory_overlap.geometry import (
     Territory,
     TerritoryLoadError,
     load_counties,
     load_territories,
     project_lonlat,
 )
-from inspected.placement import (
+from wildfire_service_territory_overlap.placement import (
     BOUNDARY_BANDS_M,
     Placement,
     Record,

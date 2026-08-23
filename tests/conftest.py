@@ -8,15 +8,15 @@ from typing import Any
 
 import pytest
 
-from inspected.geometry import Territory, load_territories
-from inspected.placement import (
+from wildfire_service_territory_overlap.geometry import Territory, load_territories
+from wildfire_service_territory_overlap.placement import (
     Placement,
     Record,
     classify,
     measure_boundary_distances,
     read_records,
 )
-from inspected.sources import ELSE_IOU_POU, ELSE_OTHER
+from wildfire_service_territory_overlap.sources import ELSE_IOU_POU, ELSE_OTHER
 
 FIXTURES = Path(__file__).resolve().parents[1] / "fixtures"
 PUBLISHED = Path(__file__).resolve().parents[1] / "published"

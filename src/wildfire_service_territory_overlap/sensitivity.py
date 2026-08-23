@@ -15,7 +15,7 @@ reasoning on trust and the author had to take the size of the exposure on trust 
     ADR 0005 repairs an invalid published polygon with ``make_valid``. An earlier draft
     used ``buffer(0)``, and the note that survived said the two disagreed on "roughly
     770 placements", which is a recollection rather than a measurement. This runs every
-    repair in :data:`inspected.geometry.REPAIR_STRATEGIES` to completion over the same
+    repair in :data:`wildfire_service_territory_overlap.geometry.REPAIR_STRATEGIES` to completion over the same
     records, counts the records whose outcome changes under each pair and under any
     pair, and names the direction of the change. The default does not move; what moves
     is measured.
@@ -31,7 +31,7 @@ reasoning on trust and the author had to take the size of the exposure on trust 
 
 None of the three decides anything. All produce numbers with denominators and intervals,
 in the same shapes the rest of the output uses, so the publication rules in
-:mod:`inspected.artifacts` apply to them unchanged.
+:mod:`wildfire_service_territory_overlap.artifacts` apply to them unchanged.
 """
 
 from __future__ import annotations
@@ -40,16 +40,21 @@ import itertools
 from collections import Counter
 from typing import Any
 
-from inspected.geometry import (
+from wildfire_service_territory_overlap.geometry import (
     BUFFER_ZERO,
     MAKE_VALID,
     REPAIR_STRATEGIES,
     Territory,
     load_territories,
 )
-from inspected.intervals import Difference, Rate
-from inspected.placement import Placement, Record, classify, containment_signatures
-from inspected.sources import (
+from wildfire_service_territory_overlap.intervals import Difference, Rate
+from wildfire_service_territory_overlap.placement import (
+    Placement,
+    Record,
+    classify,
+    containment_signatures,
+)
+from wildfire_service_territory_overlap.sources import (
     PUBLISHED_TYPES,
     TYPE_FIELD_IS_UNDOCUMENTED,
     WIRES_TYPES,

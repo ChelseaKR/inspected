@@ -17,7 +17,7 @@ from pathlib import Path
 
 import pytest
 
-from inspected.cli import build
+from wildfire_service_territory_overlap.cli import build
 
 ROOT = Path(__file__).resolve().parents[1]
 

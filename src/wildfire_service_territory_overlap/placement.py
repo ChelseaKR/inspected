@@ -19,7 +19,7 @@ therefore contested. That is the conservative direction: the alternative is a ru
 silently awards edge cases to whichever polygon a floating-point comparison happens to
 favour, which is the kind of tie-break that is invisible in the output.
 
-Nothing in this module divides anything. It counts, and :mod:`inspected.measure` forms
+Nothing in this module divides anything. It counts, and :mod:`wildfire_service_territory_overlap.measure` forms
 the rates, so that every proportion in the published output goes through one place.
 """
 
@@ -33,9 +33,13 @@ from typing import Any, Final
 import numpy as np
 import shapely
 
-from inspected.geometry import Territory, distances_to_boundary, project_lonlat
-from inspected.geometry import territory_index as build_index
-from inspected.sources import CALIFORNIA_BBOX
+from wildfire_service_territory_overlap.geometry import (
+    Territory,
+    distances_to_boundary,
+    project_lonlat,
+)
+from wildfire_service_territory_overlap.geometry import territory_index as build_index
+from wildfire_service_territory_overlap.sources import CALIFORNIA_BBOX
 
 FIRE: Final[str] = "Fire"
 DESTROYED: Final[str] = "Destroyed (>50%)"

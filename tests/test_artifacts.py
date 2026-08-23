@@ -1,6 +1,6 @@
 """The publication rules, each exercised against something that should break it.
 
-A gate nobody has watched fail is not a gate. Every rule in :mod:`inspected.artifacts`
+A gate nobody has watched fail is not a gate. Every rule in :mod:`wildfire_service_territory_overlap.artifacts`
 gets an input here that must be refused, as well as one that must pass.
 """
 
@@ -11,7 +11,7 @@ from typing import Any
 
 import pytest
 
-from inspected.artifacts import (
+from wildfire_service_territory_overlap.artifacts import (
     PublicationRefused,
     assert_aggregate_only,
     assert_differences_carry_intervals,
@@ -23,7 +23,7 @@ from inspected.artifacts import (
     serialise,
     write_json,
 )
-from inspected.intervals import Rate
+from wildfire_service_territory_overlap.intervals import Rate
 
 
 def measured() -> dict[str, Any]:

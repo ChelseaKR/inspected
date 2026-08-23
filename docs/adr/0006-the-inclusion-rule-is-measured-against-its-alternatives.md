@@ -53,7 +53,7 @@ measurement that could not be made as a zero, and a narrower rule here would pub
 ## Decision
 
 The rule does not change. It is published with its sensitivity instead:
-`inspected.sensitivity.type_inclusion` re-places the whole record set under seven
+`wildfire_service_territory_overlap.sensitivity.type_inclusion` re-places the whole record set under seven
 readings of the `Type` field and publishes each with its denominator, its interval, and
 its difference from the rule as built. The undocumented state of the field is published
 alongside it.

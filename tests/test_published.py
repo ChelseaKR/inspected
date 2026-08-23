@@ -12,8 +12,8 @@ import re
 from pathlib import Path
 from typing import Any
 
-from inspected.artifacts import check_all
-from inspected.report import render
+from wildfire_service_territory_overlap.artifacts import check_all
+from wildfire_service_territory_overlap.report import render
 
 PUBLISHED = Path(__file__).resolve().parents[1] / "published"
 

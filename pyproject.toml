@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "inspected"
+name = "wildfire-service-territory-overlap"
 version = "0.1.0"
 description = "How much of California's wildfire damage-inspection record set can be attributed to a published electric service territory, measured rather than assumed"
 requires-python = ">=3.12"
@@ -33,7 +33,7 @@ dev = [
 ]
 
 [project.scripts]
-inspected = "inspected.cli:main"
+wildfire-service-territory-overlap = "wildfire_service_territory_overlap.cli:main"
 
 [tool.hatch.metadata]
 # `perimeter` is a direct reference to a pinned commit rather than a PyPI release,
@@ -42,7 +42,7 @@ inspected = "inspected.cli:main"
 allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/inspected"]
+packages = ["src/wildfire_service_territory_overlap"]
 
 # --- single-source ruff/mypy/pytest config; repos change values, not keys ---
 
@@ -75,7 +75,7 @@ ignore_missing_imports = true
 # subclass. IncompleteAcquisition is deliberately a kind of AcquisitionFailed: a caller
 # that already handles a failed acquisition should handle an incomplete one the same way.
 # Narrowed to this one module and this one rule rather than relaxed globally.
-module = ["inspected.acquire"]
+module = ["wildfire_service_territory_overlap.acquire"]
 disallow_subclassing_any = false
 
 [tool.pytest.ini_options]

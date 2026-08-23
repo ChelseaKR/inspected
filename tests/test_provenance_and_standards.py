@@ -13,8 +13,8 @@ from pathlib import Path
 
 import pytest
 
-from inspected.acquire import DINS_FIELDS
-from inspected.sources import RETRIEVED, SOURCES, WIRES_TYPES
+from wildfire_service_territory_overlap.acquire import DINS_FIELDS
+from wildfire_service_territory_overlap.sources import RETRIEVED, SOURCES, WIRES_TYPES
 
 ROOT = Path(__file__).resolve().parents[1]
 # Written as escapes so this file does not itself contain what it forbids.

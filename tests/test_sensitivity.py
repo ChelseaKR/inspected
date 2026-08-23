@@ -11,14 +11,19 @@ from typing import Any
 
 import pytest
 
-from inspected.geometry import (
+from wildfire_service_territory_overlap.geometry import (
     BUFFER_ZERO,
     MAKE_VALID,
     MAKE_VALID_STRUCTURE,
     load_territories,
 )
-from inspected.placement import Placement, Record, classify, containment_signatures
-from inspected.sensitivity import (
+from wildfire_service_territory_overlap.placement import (
+    Placement,
+    Record,
+    classify,
+    containment_signatures,
+)
+from wildfire_service_territory_overlap.sensitivity import (
     TYPE_VARIANTS,
     _transitions,
     _types_present,
