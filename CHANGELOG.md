@@ -7,6 +7,11 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Draft letters to the CEC under `docs/outreach/`: one reporting the twelve measured
+  boundary overlaps the publisher's own metadata invites feedback on, and one
+  requesting written definitions for the six `Type` values that nothing published by
+  the party using them defines. Both are marked draft and unsent; sending dates and
+  outcomes belong in `PROVENANCE.md`.
 - Edge bands for contested groups. Each overlapping combination now carries how
   much of it sits within 100, 250, 500 and 1000 metres of the nearest edge among the
   outlines involved, with its own denominator and Wilson interval: a contested record
