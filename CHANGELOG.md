@@ -5,7 +5,16 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-Nothing yet.
+### Added
+
+- An osv-scanner job in CI, reading the same `uv.lock` that `uv sync --locked`
+  installs from, against the OSV database: a second vulnerability feed beside
+  pip-audit, failing closed on any reported advisory.
+- An OpenSSF Scorecard workflow, publishing results and uploading the SARIF to code
+  scanning on a weekly schedule.
+- A reproducible CycloneDX SBOM in the release build, generated over the locked build
+  environment after `make verify`, attached to the release next to the wheels and
+  covered by the provenance attestation.
 
 ## [0.1.0] - 2026-08-18
 

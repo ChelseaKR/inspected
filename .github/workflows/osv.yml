@@ -1,0 +1,48 @@
+# Vulnerability scan over the resolved dependency set, from a second source.
+#
+# pip-audit already runs inside `make verify`, but it is one database with one
+# maintainership. This job reads the same lockfile with osv-scanner against the OSV
+# database, so an advisory that lands in one feed and not the other still stops the
+# build. Both scanners fail closed: any reported vulnerability exits non-zero here,
+# exactly as pip-audit does in the verify target.
+#
+# uv.lock is the thing scanned rather than pyproject.toml. The lockfile holds the exact
+# resolved versions that `uv sync --locked` installs; scanning requirements metadata
+# instead would answer a question about ranges, and a range is not what ships.
+#
+# Actions pinned to the full 40-char commit SHA of their tag, resolved 2026-08-22 via
+# `gh api repos/OWNER/REPO/commits/TAG`.
+name: osv
+
+on:
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "23 5 * * 4"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # A Docker action: the ref above pins which action definition runs, and the
+      # definition itself pulls the scanner image by its own tag. Findings fail the job
+      # through the action's exit status; there is no continue-on-error anywhere.
+      - uses: google/osv-scanner-action/osv-scanner-action@6e4298ebc4db23e847df9b2e2de2939d6f066c67 # v2.5.1
+        with:
+          scan-args: |-
+            --recursive
+            ./

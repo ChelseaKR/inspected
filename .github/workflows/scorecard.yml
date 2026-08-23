@@ -1,0 +1,55 @@
+# OpenSSF Scorecard, uploaded to code scanning like every other result this
+# repository produces.
+#
+# Scorecard scores the repository's own supply-chain posture from the outside: pinned
+# actions, token permissions, branch protection, dependency updates. Most of what it
+# checks is already held here deliberately; running it makes the gaps visible instead
+# of assumed, and a regression shows up in the SARIF the week it lands.
+#
+# publish_results is on, which needs id-token: write below: the action signs its
+# submission to the public Scorecard API with OIDC rather than a long-lived token. The
+# SARIF upload reuses the github/codeql-action pin already carried in codeql.yml, so
+# Dependabot moves both references together.
+#
+# Weekly schedule plus push to main. Actions pinned to the full 40-char commit SHA of
+# their tag, resolved 2026-08-22 via `gh api repos/OWNER/REPO/commits/TAG`.
+name: scorecard
+
+on:
+  branch_protection_rule:
+  schedule:
+    - cron: "40 7 * * 2"
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  analysis:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write # upload the SARIF to code scanning
+      id-token: write # keyless auth to the Scorecard publishing endpoint
+      actions: read # the Dependency-Update-Tool check reads workflow state
+      checks: read
+      issues: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: run the analysis
+        uses: ossf/scorecard-action@2d1146689b8cda280b9bc96326124645441f03bc # v2.4.4
+        with:
+          results_file: results.sarif
+          results_format: sarif
+          publish_results: true
+
+      - name: upload to code scanning
+        uses: github/codeql-action/upload-sarif@ff2f1c621b7f889edc0d3c761ac2e6a3f8cdb0dd # v4.37.7
+        with:
+          sarif_file: results.sarif
