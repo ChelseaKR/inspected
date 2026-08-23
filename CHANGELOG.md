@@ -5,7 +5,15 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-### Added
+Nothing yet.
+
+## [0.1.0] - 2026-08-18
+
+First release. One entry, because no earlier tag exists: the first measurement and the
+work recorded against it before any tag was cut all ship together. Amended 2026-08-22,
+before the tag was cut, to fold in the roadmap execution that shipped the same day.
+
+### Added on 2026-08-22, folded in before the tag was cut
 
 - The governance documents from Phase 1 of the roadmap:
   `docs/RESPONSIBLE-TECH.md` (dated ethics statement and residual-risk table),
@@ -60,11 +68,6 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - A reproducible CycloneDX SBOM in the release build, generated over the locked build
   environment after `make verify`, attached to the release next to the wheels and
   covered by the provenance attestation.
-
-## [0.1.0] - 2026-08-18
-
-First release. One entry, because no earlier tag exists: the first measurement and the
-work recorded against it before any tag was cut all ship together.
 
 ### Added
 
