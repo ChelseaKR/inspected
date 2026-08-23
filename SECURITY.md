@@ -40,3 +40,44 @@ dependency, `perimeter`, is a git reference pinned to a full commit SHA. GitHub 
 are pinned to full commit SHAs with the version in a trailing comment. Workflows declare
 `permissions: contents: read` at the top level and widen only where a job needs it.
 `pip-audit`, `gitleaks`, `semgrep`, `zizmor` and CodeQL run in CI.
+
+## Severity convention
+
+This project operates nothing, so severity here is about what a defect could publish or
+sign rather than about uptime.
+
+**Critical**
+Anything that could put structure-level data into an artifact: coordinates, addresses,
+parcel numbers, assessed values, or any per-record listing. Also: anything that weakens
+release tag verification against `.github/allowed_signers`.
+
+**High**
+A bypass of a publication rule in `src/inspected/artifacts.py`; acquisition code that
+retries under another identity or routes around an access control; a workflow that
+writes credentials somewhere pull-request builds can read.
+
+**Medium**
+A nondeterminism that could make two runs of the same inputs disagree silently; a
+weakened acquisition completeness check; a supply-chain pin downgraded to a mutable ref.
+
+**Low**
+Everything else, including tooling and documentation defects that cannot move a
+published figure.
+
+The convention exists so triage is arithmetic instead of negotiation. A report that
+does not fit a level still gets answered within the acknowledgment target above.
+
+## If a secret lands in the repository
+
+1. **Revoke and rotate first.** Treat the secret's authority as gone the moment it was
+   pushed, whatever happens to the history. Rotation is the fix; rewriting history is
+   tidying afterwards.
+2. **If it is the release-signing key**, rotate the key, update `.github/allowed_signers`
+   through review, and re-verify every existing tag before the next release dispatch.
+   The release workflow refuses a signature it cannot verify, which is the behaviour
+   you want during a rotation.
+3. **Then remove it from history** where the hosting allows, knowing forks and caches
+   may retain it anyway. This step is why step 1 comes first.
+4. **Write down what leaked, where, and when it was rotated** in the private security
+   advisory that tracked the report. If any published figure could have been produced
+   under the compromised credential, say so in `PROVENANCE.md`.
