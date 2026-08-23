@@ -6,9 +6,12 @@ that turns out to violate a rule in `docs/adr/` gets dropped rather than argued 
 
 **Status at 2026-08-22**, same day as drafting: items 0.2, 0.3 and 0.4 shipped in #2;
 1.2 in #4; 1.4 in #5; 1.8 in #9; 1.3 in #6; 2.1 in #3; 2.5 in #7 with
-`docs/adr/0011`; 2.6 in #8; and 1.5, 1.7 and half of 1.6 in #9. Still open: 0.1 and
-0.5, which need the maintainer's signing key and a repository setting respectively;
-1.1, whose manifest lives outside this repository; 2.2, 2.3 and 2.4, which change
+`docs/adr/0011`; 2.6 in #8; and 1.5, 1.7 and half of 1.6 in #9. With the owner's
+approval, 0.1 shipped the same day: signed annotated tag `v0.1.0`, verified against
+`.github/allowed_signers`, released through the three-job workflow with wheel, sdist,
+SBOM and provenance attestation attached; and 0.5 shipped as a branch ruleset on
+`main` that is PR-only behind its six checks with no bypass actors. Still open: 1.1,
+whose manifest lives outside this repository; 2.2, 2.3 and 2.4, which change
 measurements and wait for their next deliberate refresh or their own ADR; all of
 Phase 3, which needs people outside this repository; and Phase 4 except as noted.
 Item 1.6's remaining half, an assistive-technology pass over the generated tables,

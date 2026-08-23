@@ -5,7 +5,14 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-Nothing yet.
+### Changed
+
+- `main` is protected by a branch ruleset: force push and deletion refused, every
+  change arriving as a merged pull request, the six PR-facing checks required green,
+  no bypass actors. The ci.yml header paragraph that recorded the gates as reporting
+  without blocking is rewritten to match.
+
+Nothing else yet under Unreleased.
 
 ## [0.1.0] - 2026-08-18
 

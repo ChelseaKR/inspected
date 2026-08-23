@@ -2,10 +2,11 @@
 # request: `make verify`, a secret scan, semgrep, and workflow static analysis. CodeQL
 # runs from codeql.yml.
 #
-# These gates report. As of 2026-08-17 they block nothing: `main` carries no ruleset and
-# no branch protection, so it can be force-pushed, deleted, or pushed to with every check
-# on this page red. Turning that on is a live repository setting and the owner's call.
-# This paragraph is edited when the protection goes on, not before.
+# These gates block now. A branch ruleset on `main` (active 2026-08-22) refuses force
+# pushes and deletions, requires every change to arrive as a merged pull request, and
+# requires this workflow's four jobs plus osv-scanner's `scan` and CodeQL green before
+# anything lands, with no bypass actors. Until then they reported and blocked nothing;
+# this paragraph said so, because a gate that cannot go red is not a gate.
 #
 # Every action is pinned to the full 40-char commit SHA of its tag, resolved 2026-08-17
 # via `gh api repos/OWNER/REPO/commits/TAG`. The pins stay `@<sha> # vX.Y.Z` so the
