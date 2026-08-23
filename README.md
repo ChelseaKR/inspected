@@ -11,6 +11,8 @@ contains no information about the location of anybody's infrastructure.
 **Status:** Beta, version `0.1.0`. Measured against pinned retrievals of
 CAL FIRE DINS and the CEC Electric Load Serving Entities layers, all three retrieved
 2026-08-17. The figures move only when those retrievals are deliberately refreshed.
+A pin goes stale at twelve months, when the publisher modifies a layer, or when this
+pipeline changes shape; the triggers and the refresh procedure are in `PROVENANCE.md`.
 
 ## Quick start
 
@@ -249,7 +251,7 @@ standards bind it. The scoping below was derived here and a manifest entry super
 | Responsible-Tech Framework | Applies: Unofficial framing on the README and on the generated report, no claim about any utility's posture, no address, parcel number, assessed value or coordinate republished, no ranking of any named company, and an acquisition that stops rather than routing around an access control. Not met: no dated ethics or residual-risk artifacts |
 | Performance | Applies (not met): A CLI over local files. The full build runs in about 18 seconds, and now does twelve placements of the record set rather than one. It was about 50 seconds doing one, before the containment query was changed to narrow by bounding box and then test against a prepared geometry, which a test holds to answering exactly what the predicate form answers. No budget is recorded |
 | Incident Response | Applies: `SECURITY.md` routes reports to GitHub private vulnerability reporting with a 72-hour acknowledgment target. Not met: no severity convention, no secret-leak runbook |
-| Data Governance | Applies (L1, handled above the tier): Openly licensed public civic data, republished only as counts. `data/raw/` is gitignored, the address and parcel columns are never fetched, fixtures are hand-written rather than sampled, and a test refuses a published artifact carrying a coordinate. Not met: no refresh cadence or staleness SLA |
+| Data Governance | Applies (L1, handled above the tier): Openly licensed public civic data, republished only as counts. `data/raw/` is gitignored, the address and parcel columns are never fetched, fixtures are hand-written rather than sampled, and a test refuses a published artifact carrying a coordinate. Refreshes are deliberate and hand-run, at least annually and on three triggers written out in `PROVENANCE.md`, each compared against the artifact it replaces before anything is committed. Not met: nothing recorded |
 | AI Development Measurement | Applies (not met): No baseline and no outcome metrics recorded for this repository's development stream |
 
 ## Licence

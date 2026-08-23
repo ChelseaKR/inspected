@@ -7,6 +7,14 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- A refresh cadence and a staleness SLA, replacing the recorded absence of both.
+  A pin is refreshed at least every twelve months and on three triggers: age of the
+  retrieval against continuous fire seasons, a publisher-side last-modified date later
+  than the pin on either territory layer, and any change to this pipeline itself,
+  which cannot reach an old pin because `data/raw/` is never committed. Every refresh
+  stays hand-run, is compared against the artifact it replaces with
+  `python -m inspected.artifact_diff` before anything is committed, and writes what
+  moved into `PROVENANCE.md`.
 - `inspected.artifact_diff`: the leaf-by-leaf refresh comparison from
   `PROVENANCE.md`, promoted from a hand-run exercise into a command.
   `python -m inspected.artifact_diff OLD NEW` reports every added, changed and removed

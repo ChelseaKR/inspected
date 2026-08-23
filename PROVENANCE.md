@@ -110,6 +110,30 @@ still the publisher's to say.
 
 ## Refresh
 
-There is no cadence and no staleness SLA. The figures move when someone re-runs
-`make acquire` by hand and commits the new `published/` tree, and the retrieval date on
-every page says when that last happened.
+The pins move only by deliberate refresh, and a refresh is a measured event:
+
+- `make acquire` runs by hand, never from CI and never from a schedule. Automation
+  does not republish figures unattended.
+- Before anything is committed, the new artifact is compared against the one it
+  replaces, value by value: `python -m inspected.artifact_diff OLD.json NEW.json`.
+  Added and changed values come back with their paths and their old values; removed
+  values refuse the run unless `--allow-removals` names the removal deliberate.
+- What moved is then written into a dated section of this document, sizes included.
+  The 2026-08-17 section above is the pattern: 4,370 values compared, none removed,
+  none changed.
+
+Cadence: at least once every twelve months, and sooner when any of these fires:
+
+1. **Age.** The record set grows through every fire season, so a year-old pin
+   describes a year that has since been appended to it.
+2. **The publisher moved first.** Either territory layer carries a last-modified date
+   later than the retrieval date. The boundaries are what this project measures
+   against; when they change, the measurement starts over rather than being patched.
+3. **This pipeline changed shape.** A new measurement cannot reach an old pin,
+   because `data/raw/` is never committed: regenerating `published/` requires the
+   files the pin was built from, so shipping a new cut means re-acquiring.
+
+Staleness is a fact about a pin's age, not a correction of its figures. Every page
+states the retrieval date it describes. Nothing here republishes itself quietly to
+stay young, and nothing published under an older pin is withdrawn when a newer one
+lands: both remain exactly what they were measured against.
