@@ -9,10 +9,12 @@ two public datasets. It is not a risk rating of any company, it ranks nobody, an
 contains no information about the location of anybody's infrastructure.
 
 **Status:** Beta, version `0.1.0`. Measured against pinned retrievals of
-CAL FIRE DINS and the CEC Electric Load Serving Entities layers, all three retrieved
-2026-08-17. The figures move only when those retrievals are deliberately refreshed.
-A pin goes stale at twelve months, when the publisher modifies a layer, or when this
-pipeline changes shape; the triggers and the refresh procedure are in `PROVENANCE.md`.
+CAL FIRE DINS (retrieved 2026-08-23), the CEC Electric Load Serving Entities layers
+(retrieved 2026-08-23; items last modified 2026-08-12), and the CDT county boundary
+layer (retrieved 2026-08-23). The figures move only when those retrievals are
+deliberately refreshed. A pin goes stale at twelve months, when the publisher modifies
+a layer, or when this pipeline changes shape; the triggers and the refresh procedure
+are in `PROVENANCE.md`.
 
 ## Quick start
 

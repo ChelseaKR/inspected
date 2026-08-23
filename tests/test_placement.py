@@ -8,7 +8,13 @@ import numpy as np
 import pytest
 import shapely
 
-from inspected.geometry import Territory, load_territories, project_lonlat
+from inspected.geometry import (
+    Territory,
+    TerritoryLoadError,
+    load_counties,
+    load_territories,
+    project_lonlat,
+)
 from inspected.placement import (
     BOUNDARY_BANDS_M,
     Placement,
@@ -16,6 +22,7 @@ from inspected.placement import (
     SchemaError,
     assert_columns,
     classify,
+    classify_county_agreement,
     containment_signatures,
     measure_boundary_distances,
     measure_contested_group_distances,
@@ -307,6 +314,7 @@ def test_a_non_numeric_coordinate_is_refused_rather_than_coerced() -> None:
             "COUNTY": "Sample County East",
             "DAMAGE": "No Damage",
             "HAZARDTYPE": "Fire",
+            "STRUCTURECATEGORY": "Single Residence",
             "INCIDENTNAME": "X",
             "INCIDENTSTARTDATE": 1_600_000_000_000,
             "LATITUDE": "38.0",
@@ -325,6 +333,7 @@ def test_a_missing_start_date_leaves_the_year_unknown_rather_than_guessed() -> N
             "COUNTY": "Sample County East",
             "DAMAGE": "No Damage",
             "HAZARDTYPE": "Fire",
+            "STRUCTURECATEGORY": "Single Residence",
             "INCIDENTNAME": "X",
             "INCIDENTSTARTDATE": None,
             "LATITUDE": 38.0,
@@ -358,6 +367,7 @@ def test_an_empty_county_cell_is_absent_rather_than_a_county_called_nothing() ->
             "COUNTY": value,
             "DAMAGE": "No Damage",
             "HAZARDTYPE": "Fire",
+            "STRUCTURECATEGORY": "Single Residence",
             "INCIDENTNAME": "X",
             "INCIDENTSTARTDATE": 0,
             "LATITUDE": 38.0,
@@ -491,3 +501,70 @@ def test_a_combination_holding_no_record_never_gains_a_band_row() -> None:
     measure_contested_group_distances(placement, territories)
     assert ("Far North", "Lone Rural") not in placement.contested_groups
     assert set(placement.contested_bands) == {("Pair A", "Pair B")}
+
+
+def _county(oid: int, name: str, ring: list[list[float]]):
+    collection = {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "properties": {"OBJECTID": oid, "CDT_NAME_SHORT": name},
+                "geometry": {"type": "Polygon", "coordinates": [ring]},
+            }
+        ],
+    }
+    return load_counties(collection)
+
+
+def test_county_agreement_counts_agree_disagree_and_none() -> None:
+    counties = _county(1, "East County", _ring(-120.5, 38.0, -119.7, 39.0))
+    records = (
+        Record(1, "No Damage", "X", None, 2025, -120.0, 38.4),
+        Record(2, "No Damage", "X", "East County", 2025, -120.0, 38.4),
+        Record(3, "No Damage", "X", "West County", 2025, -120.0, 38.4),
+        Record(4, "No Damage", "X", "East County", 2025, -118.0, 38.4),
+        Record(5, "No Damage", "X", "Ghost County", 2025, -120.0, 38.4),
+        Record(6, "No Damage", "X", "East County", 2025, None, None),
+    )
+    result = classify_county_agreement(records, counties)
+    # West County is a label the one-county layer does not carry, so it is counted as
+    # unmatchable rather than guessed into an outcome.
+    assert (result.resolved, result.agreed, result.disagreed) == (2, 1, 0)
+    assert result.matched_no_county == 1
+    assert result.unmatchable_label == 2
+    tally = result.per_label["East County"]
+    assert (
+        tally.resolved,
+        tally.agreed,
+        tally.disagreed,
+        tally.matched_no_county,
+    ) == (2, 1, 0, 1)
+
+
+def test_county_agreement_with_no_usable_records_is_all_zero() -> None:
+    counties = _county(1, "East County", _ring(-120.5, 38.0, -119.7, 39.0))
+    records = (Record(1, "No Damage", "X", "East County", 2025, None, None),)
+    result = classify_county_agreement(records, counties)
+    assert result.resolved == 0 and not result.per_label
+
+
+def test_a_county_feature_without_geometry_or_name_is_refused() -> None:
+    broken = {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "properties": {"OBJECTID": 1, "CDT_NAME_SHORT": "X"},
+                "geometry": None,
+            }
+        ],
+    }
+    with pytest.raises(TerritoryLoadError, match="no geometry"):
+        load_counties(broken)
+    unnamed = {
+        "type": "FeatureCollection",
+        "features": [{"type": "Feature", "properties": {"OBJECTID": 1}}],
+    }
+    with pytest.raises(TerritoryLoadError, match="CDT_NAME_SHORT"):
+        load_counties(unnamed)

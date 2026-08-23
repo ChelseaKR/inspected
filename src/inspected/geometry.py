@@ -250,6 +250,48 @@ def load_territories(
     return tuple(usable), tuple(unusable)
 
 
+@dataclass(frozen=True)
+class County:
+    """One published county outline, projected, with its bare name."""
+
+    name: str
+    object_id: int
+    geometry: BaseGeometry
+
+
+def load_counties(
+    collection: dict[str, Any],
+    *,
+    name_field: str = "CDT_NAME_SHORT",
+) -> tuple[County, ...]:
+    """Read the county boundary layer into projected counties, sorted by name.
+
+    The layer is read as published. A feature without a usable name or geometry is a
+    broken retrieval rather than a county to skip silently, so it refuses.
+    """
+    features = collection.get("features")
+    if not isinstance(features, list):
+        raise TerritoryLoadError("the county layer is not a FeatureCollection")
+    counties: list[County] = []
+    for feature in features:
+        props = feature.get("properties")
+        if not isinstance(props, dict):
+            raise TerritoryLoadError("a county feature carries no properties object")
+        raw_name = props.get(name_field)
+        oid = props.get("OBJECTID")
+        if not isinstance(raw_name, str) or not raw_name.strip():
+            raise TerritoryLoadError(f"a county feature carries no {name_field}")
+        if not isinstance(oid, int):
+            raise TerritoryLoadError("a county feature carries no integer OBJECTID")
+        raw_geometry = feature.get("geometry")
+        if raw_geometry is None:
+            raise TerritoryLoadError(f"county {raw_name.strip()} carries no geometry")
+        geometry = _project_geometry(shapely.geometry.shape(raw_geometry))
+        counties.append(County(raw_name.strip(), oid, geometry))
+    counties.sort(key=lambda c: (c.name, c.object_id))
+    return tuple(counties)
+
+
 def territory_index(territories: tuple[Territory, ...]) -> STRtree:
     """A spatial index over the territory outlines, in the order given."""
     if not territories:

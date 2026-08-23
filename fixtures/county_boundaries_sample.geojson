@@ -1,0 +1,20 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {"OBJECTID": 244, "CDT_NAME_SHORT": "Sample County East", "CDTFA_COUNTY": "Sample County East County", "OFFSHORE": null},
+      "geometry": {"type": "Polygon", "coordinates": [[[-120.75, 38.0], [-119.7, 38.0], [-119.7, 39.0], [-120.75, 39.0], [-120.75, 38.0]]]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"OBJECTID": 245, "CDT_NAME_SHORT": "Sample County West", "CDTFA_COUNTY": "Sample County West County", "OFFSHORE": null},
+      "geometry": {"type": "Polygon", "coordinates": [[[-122.0, 37.5], [-120.9, 37.5], [-120.9, 41.0], [-122.0, 41.0], [-122.0, 37.5]]]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"OBJECTID": 246, "CDT_NAME_SHORT": "Sample County North", "CDTFA_COUNTY": "Sample County North County", "OFFSHORE": null},
+      "geometry": {"type": "Polygon", "coordinates": [[[-121.0, 39.02], [-120.0, 39.02], [-120.0, 40.0], [-121.0, 40.0], [-121.0, 39.02]]]}
+    }
+  ]
+}

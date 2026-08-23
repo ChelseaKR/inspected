@@ -297,6 +297,7 @@ def _fixture_tree(tmp_path: Path) -> dict[str, Any]:
         dins_path=ROOT / "fixtures" / "dins_sample.json",
         iou_pou_path=ROOT / "fixtures" / "else_iou_pou_sample.geojson",
         other_path=ROOT / "fixtures" / "else_other_sample.geojson",
+        counties_path=ROOT / "fixtures" / "county_boundaries_sample.geojson",
         out_dir=tmp_path / "out",
         is_fixture=True,
     )
@@ -326,14 +327,39 @@ def test_the_report_renders_the_widened_overlap_table_when_bands_exist(
     assert "thin seam" in section
 
 
-def test_the_report_still_renders_an_artifact_from_before_the_bands_existed(
-    tmp_path: Path,
-) -> None:
-    """The committed published/ pair predates this column and must keep rendering."""
+def test_the_artifact_carries_both_new_measurement_blocks(tmp_path: Path) -> None:
     tree = _fixture_tree(tmp_path)
-    for row in tree["contested_groups"]:
-        del row["boundary_proximity"]
-    text = report.render(tree)
-    section = text.split("## Where the published boundaries overlap")[1]
-    assert "Within 250 m of an edge" not in section
-    assert "| Published outlines a record falls inside | Records |" in section
+    agreement = tree["coordinate_county_agreement"]
+    assert "question" in agreement
+    for key in (
+        "records_compared",
+        "agreed",
+        "disagreed",
+        "matched_no_county",
+        "unmatchable_label",
+    ):
+        node = agreement[key]
+        assert {"numerator", "denominator", "state"} <= set(node), key
+    categories = tree["representativeness_by_category"]
+    assert categories, "the fixture carries STRUCTURECATEGORY values"
+    names = [row["structure_category"] for row in categories]
+    assert names == sorted(names)
+
+
+def test_the_report_renders_the_new_sections(tmp_path: Path) -> None:
+    text = report.render(_fixture_tree(tmp_path))
+    assert "## Does the coordinate agree with the recorded county" in text
+    assert "Counted, never corrected." in text
+    assert "## The placed and contested populations, by structure class" in text
+
+
+def test_a_county_disagreement_is_measured_not_corrected(tmp_path: Path) -> None:
+    """The fixture holds a record whose label says West and whose coordinate is East."""
+    tree = _fixture_tree(tmp_path)
+    block = tree["coordinate_county_agreement"]
+    by_county = {row["county"]: row for row in block["by_county"]}
+    west = by_county["Sample County West"]
+    east = by_county["Sample County East"]
+    assert east["disagreed"]["state"] == "measured"
+    assert west["disagreed"]["state"] == "measured"
+    assert block["unmatchable_label"]["numerator"] == 0

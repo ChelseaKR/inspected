@@ -4,21 +4,22 @@ Drafted 2026-08-22 against `0.1.0` (tagged in `CHANGELOG.md`, not yet cut as a g
 This is a plan, not a promise: items land when their gates can hold, and any item here
 that turns out to violate a rule in `docs/adr/` gets dropped rather than argued around.
 
-**Status at 2026-08-22**, same day as drafting: items 0.2, 0.3 and 0.4 shipped in #2;
-1.2 in #4; 1.4 in #5; 1.8 in #9; 1.3 in #6; 2.1 in #3; 2.5 in #7 with
-`docs/adr/0011`; 2.6 in #8; and 1.5, 1.7 and half of 1.6 in #9. With the owner's
-approval, 0.1 shipped the same day: signed annotated tag `v0.1.0`, verified against
+**Status at 2026-08-23**: Phase 0 through Phase 2 are shipped except as noted. Items
+0.2, 0.3 and 0.4 shipped in #2; 1.2 in #4; 1.4 in #5; 1.8 in #9; 1.3 in #6; 2.1 in #3;
+2.5 in #7 with `docs/adr/0011`; 2.6 in #8; and 1.5, 1.7 and half of 1.6 in #9. With
+the owner's approval, 0.1 shipped: signed annotated tag `v0.1.0`, verified against
 `.github/allowed_signers`, released through the three-job workflow with wheel, sdist,
 SBOM and provenance attestation attached; and 0.5 shipped as a branch ruleset on
 `main` that is PR-only behind its six checks with no bypass actors. On 2026-08-23,
 1.1 shipped as a registration in the portfolio applicability manifest, superseding
-this repository's own scoping table, and 2.4 shipped as edge bands on the contested
-groups. Still open: 2.2 and 2.3, which change what is fetched and wait for their own
-ADR plus the deliberate refresh that can carry them into `published/`; all of
-Phase 3 except the letter drafts, which exist under `docs/outreach/` and wait for a
-human to send them; and Phase 4 except as noted.
-Item 1.6's remaining half, an assistive-technology pass over the generated tables,
-stays open and `docs/ACR.md` says so rather than implying otherwise.
+this repository's own scoping table; 2.4 shipped as edge bands on the contested
+groups; and the deliberate refresh carried 2.2 (`docs/adr/0013`, the coordinate-county
+comparison over the new CDT source) and 2.3 (`STRUCTURECATEGORY`, representativeness by
+structure class) into the published figures, diffed leaf by leaf against the pin they
+replaced: nothing removed, nothing measured moved. Still open: all of Phase 3 except
+the letter drafts under `docs/outreach/`, which wait for a human to send them, and
+Phase 4 as written. Item 1.6's remaining half, an assistive-technology pass over the
+generated tables, stays open and `docs/ACR.md` says so rather than implying otherwise.
 
 ## What constrains every item below
 

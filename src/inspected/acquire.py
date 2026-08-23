@@ -48,7 +48,7 @@ from perimeter.acquire import AcquisitionBlocked, AcquisitionFailed
 from perimeter.acquire import fetch_layer as perimeter_fetch_layer
 from perimeter.acquire import layer_record_count as perimeter_layer_record_count
 
-from inspected.sources import DINS, ELSE_IOU_POU, ELSE_OTHER, Source
+from inspected.sources import COUNTIES, DINS, ELSE_IOU_POU, ELSE_OTHER, Source
 
 USER_AGENT = "inspected-territory-join/0.1 (+https://github.com/ChelseaKR/inspected)"
 WHERE = "1=1"
@@ -65,21 +65,31 @@ DINS_FIELDS: tuple[str, ...] = (
     "INCIDENTSTARTDATE",
     "LATITUDE",
     "LONGITUDE",
+    "STRUCTURECATEGORY",
 )
-"""The eight fields this project reads.
+"""The nine fields this project reads.
 
 ``COUNTY`` is the publisher's own county name, an administrative area of the same kind
 as an incident name and a great deal coarser than a coordinate this project already
 holds. It was added in the retrieval of 2026-08-17 so that the overlap can be cut by
 county; see ``docs/adr/0009``.
 
+``STRUCTURECATEGORY`` was added in the retrieval of 2026-08-23 so the placed-versus-
+contested representativeness check can be run inside each published structure class
+rather than only across the whole record set.
+
 Deliberately not fetched: SITEADDRESS, APN, STREETNUMBER, STREETNAME, ZIPCODE,
-ASSESSEDIMPROVEDVALUE. They are published by CAL FIRE and none of them is needed to
-answer which polygon a point is in, so they are never downloaded and cannot be
+ASSESSEDIMPROVEDVALUE, CITY. They are published by CAL FIRE and none of them is needed
+to answer which polygon a point is in, so they are never downloaded and cannot be
 republished by accident.
 """
 
 TERRITORY_FIELDS: tuple[str, ...] = ("OBJECTID", "Acronym", "Utility", "Type")
+
+COUNTY_FIELDS: tuple[str, ...] = (
+    "OBJECTID",
+    "CDT_NAME_SHORT",
+)
 
 
 class IncompleteAcquisition(AcquisitionFailed):
@@ -275,11 +285,39 @@ def acquire_dins(out_dir: Path) -> Acquired:
     )
 
 
+def acquire_counties(source: Source, out_dir: Path) -> Acquired:
+    """Read the county boundary layer whole, with geometry, or write nothing."""
+    before = layer_record_count(source.endpoint)
+    features = fetch_feature_pages(source.endpoint, COUNTY_FIELDS, with_geometry=True)
+    after = layer_record_count(source.endpoint)
+    if before != after:
+        raise IncompleteAcquisition(
+            f"{source.key}: the layer reported {before} records before the walk and "
+            f"{after} after it. It was republished mid-walk; re-run the acquisition."
+        )
+    identifiers = [int(f["properties"]["OBJECTID"]) for f in features]
+    assert_walk_is_whole(identifiers, before, layer=source.key)
+    collection = {
+        "type": "FeatureCollection",
+        "features": sorted(features, key=lambda f: int(f["properties"]["OBJECTID"])),
+    }
+    acquired = _write(out_dir / source.raw_file, collection)
+    return Acquired(
+        source_key=source.key,
+        path=acquired.path,
+        feature_count=acquired.feature_count,
+        raw_bytes=acquired.raw_bytes,
+        sha256=acquired.sha256,
+        retrieved=acquired.retrieved,
+        endpoint=source.endpoint,
+    )
+
+
 def main(argv: list[str] | None = None) -> int:  # pragma: no cover - network entrypoint
     parser = argparse.ArgumentParser(
         prog="inspected-acquire",
         description=(
-            "Download the three public source layers into a local directory. "
+            "Download the public source layers into a local directory. "
             "Run by hand; never part of a build or CI."
         ),
     )
@@ -290,6 +328,7 @@ def main(argv: list[str] | None = None) -> int:  # pragma: no cover - network en
         acquire_dins(args.out),
         acquire_territories(ELSE_IOU_POU, args.out),
         acquire_territories(ELSE_OTHER, args.out),
+        acquire_counties(COUNTIES, args.out),
     ]
     for result in results:
         print(

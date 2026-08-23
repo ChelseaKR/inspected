@@ -7,6 +7,20 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **The coordinate-county comparison** (`docs/adr/0013`). CAL FIRE's `COUNTY` field is
+  now measured, not just trusted: 132,490 records carry both a usable coordinate and a
+  label the new CDT county layer carries, 132,459 agree, and 31 (0.023%) sit outside
+  the recorded county. None reaches no polygon and no label went unmatched. Counted,
+  never corrected, with the boundary publisher's own warning about its errors quoted
+  beside the numbers.
+- **Representativeness by structure class.** The ninth fetched field,
+  `STRUCTURECATEGORY`, runs the placed-versus-contested destroyed-share check inside
+  each published class instead of only across the record set. No address-adjacent
+  field was touched; the fetched-fields disclosure moved together with the schema
+  guard, as the rules require.
+- **The three-repair census over the real record set.** The structure repair sides
+  exactly with linework: both differ from `buffer(0)` on the same 927 records, and
+  structure against `buffer(0)` on none. The union bound did not move from 927.
 - Draft letters to the CEC under `docs/outreach/`: one reporting the twelve measured
   boundary overlaps the publisher's own metadata invites feedback on, and one
   requesting written definitions for the six `Type` values that nothing published by

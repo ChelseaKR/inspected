@@ -37,6 +37,7 @@ report:
 		--dins data/raw/dins_postfire.json \
 		--iou-pou data/raw/else_iou_pou.geojson \
 		--other data/raw/else_other.geojson \
+		--counties data/raw/county_boundaries.geojson \
 		--out published
 
 # The same pipeline over committed fixtures: runs anywhere, output flagged is_fixture.
@@ -45,6 +46,7 @@ report-offline:
 		--dins fixtures/dins_sample.json \
 		--iou-pou fixtures/else_iou_pou_sample.geojson \
 		--other fixtures/else_other_sample.geojson \
+		--counties fixtures/county_boundaries_sample.geojson \
 		--out build/offline
 
 # The gate behind the byte-identical claim. Two builds into two directories, compared by
@@ -57,11 +59,13 @@ determinism:
 		--dins fixtures/dins_sample.json \
 		--iou-pou fixtures/else_iou_pou_sample.geojson \
 		--other fixtures/else_other_sample.geojson \
+		--counties fixtures/county_boundaries_sample.geojson \
 		--out build/run-one
 	uv run python -m inspected.cli --fixture \
 		--dins fixtures/dins_sample.json \
 		--iou-pou fixtures/else_iou_pou_sample.geojson \
 		--other fixtures/else_other_sample.geojson \
+		--counties fixtures/county_boundaries_sample.geojson \
 		--out build/run-two
 	tools/determinism.sh build/run-one build/run-two
 

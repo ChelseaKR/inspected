@@ -26,5 +26,11 @@ publisher's county cell is empty on, so the branch that keeps a record with no c
 name out of the county cut and inside every other denominator is exercised by a build
 rather than only by a unit test.
 
+`county_boundaries_sample.geojson` is the same kind of invention: three square counties,
+drawn so the coordinate-county comparison has an agreement, a disagreement, and a record
+whose coordinate reaches no county at all. It feeds only that comparison; nothing here is
+a boundary of any real county, and the real layer this fixture stands in for is named in
+`PROVENANCE.md`.
+
 `make report-offline` builds the whole pipeline over these files, and `make determinism`
 builds it twice and compares the trees byte for byte.

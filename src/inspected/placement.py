@@ -55,6 +55,7 @@ class Record:
     year: int | None
     lon: float | None
     lat: float | None
+    category: str | None = None
 
     @property
     def destroyed(self) -> bool:
@@ -101,6 +102,7 @@ REQUIRED_COLUMNS: Final[tuple[str, ...]] = (
     "LATITUDE",
     "LONGITUDE",
     "OBJECTID",
+    "STRUCTURECATEGORY",
 )
 
 
@@ -146,6 +148,7 @@ def read_records(rows: list[dict[str, Any]]) -> tuple[tuple[Record, ...], int]:
                 damage=row.get("DAMAGE"),
                 incident=row.get("INCIDENTNAME"),
                 county=_name(row.get("COUNTY")),
+                category=_name(row.get("STRUCTURECATEGORY")),
                 year=_year_of(row.get("INCIDENTSTARTDATE")),
                 lon=_coordinate(row.get("LONGITUDE")),
                 lat=_coordinate(row.get("LATITUDE")),
@@ -211,6 +214,10 @@ class Placement:
     county_classified: Counter[str] = field(default_factory=Counter)
     county_contested: Counter[str] = field(default_factory=Counter)
     records_with_no_county: int = 0
+    category_placed: Counter[str] = field(default_factory=Counter)
+    category_contested: Counter[str] = field(default_factory=Counter)
+    category_destroyed_placed: Counter[str] = field(default_factory=Counter)
+    category_destroyed_contested: Counter[str] = field(default_factory=Counter)
 
     @property
     def classified(self) -> int:
@@ -297,6 +304,9 @@ def _tally_placed(
         tally.incidents[record.incident] += 1
     tally.placed_x.append(x)
     tally.placed_y.append(y)
+    if record.category:
+        result.category_placed[record.category] += 1
+        result.category_destroyed_placed[record.category] += int(record.destroyed)
 
 
 def _tally_contested(
@@ -314,6 +324,9 @@ def _tally_contested(
     coords = result.contested_xy.setdefault(names, ([], []))
     coords[0].append(x)
     coords[1].append(y)
+    if record.category:
+        result.category_contested[record.category] += 1
+        result.category_destroyed_contested[record.category] += int(record.destroyed)
     for name in names:
         tally = result.tallies[name]
         tally.contested += 1
@@ -452,3 +465,82 @@ def measure_contested_group_distances(
             band: int(np.count_nonzero(nearest < band)) for band in BOUNDARY_BANDS_M
         }
         placement.contested_distance_state[names] = "measured"
+
+
+@dataclass
+class LabelAgreement:
+    """The agreement tally for one county label the publisher recorded."""
+
+    label: str
+    resolved: int = 0
+    agreed: int = 0
+    disagreed: int = 0
+    matched_no_county: int = 0
+
+
+@dataclass
+class CountyAgreement:
+    """Does the coordinate sit in the county the publisher recorded?
+
+    Counted, never corrected. A disagreement is not a correction of CAL FIRE's field:
+    it is a count of how often two published sources answer one question differently.
+    """
+
+    resolved: int = 0
+    agreed: int = 0
+    disagreed: int = 0
+    matched_no_county: int = 0
+    unmatchable_label: int = 0
+    per_label: dict[str, LabelAgreement] = field(default_factory=dict)
+
+
+def classify_county_agreement(
+    records: tuple[Record, ...], counties: tuple[Any, ...]
+) -> CountyAgreement:
+    """Compare each record's coordinate against its own recorded county.
+
+    Only records that could be compared are counted: a record needs a usable
+    coordinate and a county label the boundary layer actually carries. Everything else
+    stays in every other denominator in this project and none here. A record whose
+    coordinate reaches no county polygon is counted as matched no county rather than
+    being called a disagreement, because a hole at the edge of a generalized polygon
+    is a different fact from a name that does not match.
+    """
+    result = CountyAgreement()
+    if not counties:
+        return result
+    layer_names: dict[str, str] = {}
+    for county in counties:
+        layer_names[_key(county.name)] = county.name
+    usable, lons, lats = _usable_positions(records)
+    if not usable:
+        return result
+    xs, ys = project_lonlat(lons, lats)
+    hits = _hits_by_record(counties, xs, ys)
+    for position, record_index in enumerate(usable):
+        record = records[record_index]
+        if not record.county:
+            continue
+        key = _key(record.county)
+        if key not in layer_names:
+            result.unmatchable_label += 1
+            continue
+        label = layer_names[key]
+        tally = result.per_label.setdefault(label, LabelAgreement(label=label))
+        matched_names = {counties[i].name for i in hits[position]}
+        result.resolved += 1
+        tally.resolved += 1
+        if not matched_names:
+            result.matched_no_county += 1
+            tally.matched_no_county += 1
+        elif any(_key(name) == key for name in matched_names):
+            result.agreed += 1
+            tally.agreed += 1
+        else:
+            result.disagreed += 1
+            tally.disagreed += 1
+    return result
+
+
+def _key(name: str) -> str:
+    return " ".join(name.split()).casefold()

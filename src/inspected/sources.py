@@ -4,10 +4,12 @@ This module is the single reviewed record of provenance. PROVENANCE.md restates 
 reader and a test asserts the two agree, so the document cannot drift away from the
 numbers the report prints.
 
-Three sources, two publishers. The damage inspections come from CAL FIRE. The service
+Four sources, three publishers. The damage inspections come from CAL FIRE. The service
 territory boundaries come from the California Energy Commission, in two layers. The
-quotes below are those publishers' own words, copied from the dataset metadata on the
-retrieval date, and every measurement in this project is tied back to one of them.
+county boundaries used only to check the publisher's own county labels come from the
+California Department of Technology. The quotes below are those publishers' own words,
+copied from the dataset metadata on the retrieval date, and every measurement in this
+project is tied back to one of them.
 
 Nothing here is affiliated with, endorsed by, or approved by CAL FIRE, the California
 Energy Commission, or any electric utility.
@@ -17,8 +19,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-RETRIEVED = "2026-08-17"
-"""The date the territory layers were downloaded. Mirrored in PROVENANCE.md, tested."""
+RETRIEVED = "2026-08-23"
+"""The date the layers were downloaded. Mirrored in PROVENANCE.md, tested."""
 
 
 @dataclass(frozen=True)
@@ -155,8 +157,8 @@ DINS = Source(
     item_modified="",
     retrieved=RETRIEVED,
     feature_count=132522,
-    raw_bytes=26505764,
-    sha256="fd6c77ca5c7b680b56e5f82afbcd04f24ce248eec996b964c35cea353dcca467",
+    raw_bytes=31908735,
+    sha256="28a0bedfc74616281febc2268f40a40304c96c2eb0414e9b04b10f5318f2c496",
     raw_file="dins_postfire.json",
     caveats=(
         Caveat(
@@ -209,7 +211,63 @@ DINS = Source(
     ),
 )
 
-SOURCES: tuple[Source, ...] = (DINS, ELSE_IOU_POU, ELSE_OTHER)
+COUNTIES = Source(
+    key="county_boundaries",
+    title="California County Boundaries and Identifiers",
+    publisher="California Department of Technology",
+    landing_page=(
+        "https://gis.data.ca.gov/datasets/"
+        "California::california-county-boundaries-and-identifiers/about"
+    ),
+    endpoint=(
+        "https://services3.arcgis.com/uknczv4rpevve42E/arcgis/rest/services/"
+        "California_County_Boundaries_and_Identifiers_Blue_Version_view/"
+        "FeatureServer/1/query"
+    ),
+    terms="State of California terms of use",
+    terms_url="https://www.ca.gov/use/terms/",
+    item_id="60b7e0f3d33b4064a4b43bf14589bfe3",
+    item_modified="",
+    retrieved=RETRIEVED,
+    feature_count=58,
+    raw_bytes=28406231,
+    sha256="52cb40c1db91b1a566683a4a6d39d2fad362df6b654e9d4b602bbbfe29601908",
+    raw_file="county_boundaries.geojson",
+    caveats=(
+        Caveat(
+            topic="Schema stability",
+            quote=(
+                "Note: The schema changed in February 2025 - please see below. We will "
+                "post a roadmap of upcoming changes, but service URLs and schema are "
+                "now stable."
+            ),
+            measured_as=(
+                "Only two fields are read from this layer, OBJECTID and CDT_NAME_SHORT "
+                "beside the geometry, and the layer's own record count is checked "
+                "against the walk before anything downstream runs. A schema change "
+                "would surface as a refused acquisition rather than as silently wrong "
+                "county names."
+            ),
+        ),
+        Caveat(
+            topic="Boundary accuracy",
+            quote=(
+                "Boundary accuracy is *not* guaranteed, and though CDTFA works to "
+                "align boundaries based on historical records and local changes, "
+                "errors will exist."
+            ),
+            measured_as=(
+                "This layer answers one question: does a record's coordinate sit in "
+                "the county its publisher recorded, counted and never corrected. The "
+                "publisher's own warning that boundary errors will exist is the reason "
+                "the comparison is published as counts with intervals rather than as "
+                "a list of which record is right."
+            ),
+        ),
+    ),
+)
+
+SOURCES: tuple[Source, ...] = (DINS, ELSE_IOU_POU, ELSE_OTHER, COUNTIES)
 
 
 PUBLISHED_TYPES: tuple[str, ...] = ("ADMIN", "CCA", "CO-OP", "IOU", "POU", "Tribal")

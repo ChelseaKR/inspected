@@ -1112,6 +1112,61 @@
   },
   "contested_groups": [
     {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 25345,
+            "interval_high": 0.06328551509954983,
+            "interval_low": 0.05742380661802927,
+            "interval_method": "wilson-score-95",
+            "label": "within 100 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 1528,
+            "rate": 0.060288025251528904,
+            "state": "measured"
+          },
+          {
+            "denominator": 25345,
+            "interval_high": 0.14227666426585148,
+            "interval_low": 0.13378492498621428,
+            "interval_method": "wilson-score-95",
+            "label": "within 250 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 3497,
+            "rate": 0.13797593213651607,
+            "state": "measured"
+          },
+          {
+            "denominator": 25345,
+            "interval_high": 0.28875145930493934,
+            "interval_low": 0.27765870512585217,
+            "interval_method": "wilson-score-95",
+            "label": "within 500 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 7177,
+            "rate": 0.28317222331820874,
+            "state": "measured"
+          },
+          {
+            "denominator": 25345,
+            "interval_high": 0.5966884750441886,
+            "interval_low": 0.5845821367691598,
+            "interval_method": "wilson-score-95",
+            "label": "within 1000 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 14970,
+            "rate": 0.5906490432037877,
+            "state": "measured"
+          }
+        ],
+        "state": "measured"
+      },
       "records": 25345,
       "territories": [
         "Metropolitan Water District of So. Cal",
@@ -1119,6 +1174,61 @@
       ]
     },
     {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 12241,
+            "interval_high": 0.004257788454725282,
+            "interval_low": 0.002262627435443679,
+            "interval_method": "wilson-score-95",
+            "label": "within 100 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 38,
+            "rate": 0.0031043215423576507,
+            "state": "measured"
+          },
+          {
+            "denominator": 12241,
+            "interval_high": 0.00611974656872495,
+            "interval_low": 0.0036673510612215045,
+            "interval_method": "wilson-score-95",
+            "label": "within 250 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 58,
+            "rate": 0.004738174985703782,
+            "state": "measured"
+          },
+          {
+            "denominator": 12241,
+            "interval_high": 0.012861163817567665,
+            "interval_low": 0.009175990336544402,
+            "interval_method": "wilson-score-95",
+            "label": "within 500 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 133,
+            "rate": 0.010865125398251777,
+            "state": "measured"
+          },
+          {
+            "denominator": 12241,
+            "interval_high": 0.031095470293554507,
+            "interval_low": 0.025241842128221267,
+            "interval_method": "wilson-score-95",
+            "label": "within 1000 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 343,
+            "rate": 0.02802058655338616,
+            "state": "measured"
+          }
+        ],
+        "state": "measured"
+      },
       "records": 12241,
       "territories": [
         "Pacific Gas & Electric Company",
@@ -1126,6 +1236,61 @@
       ]
     },
     {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 9794,
+            "interval_high": 0.02167069176137343,
+            "interval_low": 0.016280673382010953,
+            "interval_method": "wilson-score-95",
+            "label": "within 100 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 184,
+            "rate": 0.018787012456606085,
+            "state": "measured"
+          },
+          {
+            "denominator": 9794,
+            "interval_high": 0.08011607125592766,
+            "interval_low": 0.06969666708954146,
+            "interval_method": "wilson-score-95",
+            "label": "within 250 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 732,
+            "rate": 0.07473963651215029,
+            "state": "measured"
+          },
+          {
+            "denominator": 9794,
+            "interval_high": 0.22896658372740655,
+            "interval_low": 0.21254305663590764,
+            "interval_method": "wilson-score-95",
+            "label": "within 500 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 2161,
+            "rate": 0.220645293036553,
+            "state": "measured"
+          },
+          {
+            "denominator": 9794,
+            "interval_high": 0.5127580139519632,
+            "interval_low": 0.4929575306642015,
+            "interval_method": "wilson-score-95",
+            "label": "within 1000 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 4925,
+            "rate": 0.5028588931999183,
+            "state": "measured"
+          }
+        ],
+        "state": "measured"
+      },
       "records": 9794,
       "territories": [
         "Los Angeles Department of Water & Power",
@@ -1133,6 +1298,61 @@
       ]
     },
     {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 1880,
+            "interval_high": 0.3729232809311132,
+            "interval_low": 0.3298117887437168,
+            "interval_method": "wilson-score-95",
+            "label": "within 100 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 660,
+            "rate": 0.35106382978723405,
+            "state": "measured"
+          },
+          {
+            "denominator": 1880,
+            "interval_high": 0.7441909194942488,
+            "interval_low": 0.7038297969244,
+            "interval_method": "wilson-score-95",
+            "label": "within 250 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 1362,
+            "rate": 0.7244680851063829,
+            "state": "measured"
+          },
+          {
+            "denominator": 1880,
+            "interval_high": 0.9704240293641608,
+            "interval_low": 0.9532205755747598,
+            "interval_method": "wilson-score-95",
+            "label": "within 500 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 1810,
+            "rate": 0.9627659574468085,
+            "state": "measured"
+          },
+          {
+            "denominator": 1880,
+            "interval_high": 1.0,
+            "interval_low": 0.9979608375202131,
+            "interval_method": "wilson-score-95",
+            "label": "within 1000 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 1880,
+            "rate": 1.0,
+            "state": "measured"
+          }
+        ],
+        "state": "measured"
+      },
       "records": 1880,
       "territories": [
         "Metropolitan Water District of So. Cal",
@@ -1140,6 +1360,61 @@
       ]
     },
     {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 620,
+            "interval_high": 0.08666140024154136,
+            "interval_low": 0.04773405814813904,
+            "interval_method": "wilson-score-95",
+            "label": "within 100 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 40,
+            "rate": 0.06451612903225806,
+            "state": "measured"
+          },
+          {
+            "denominator": 620,
+            "interval_high": 0.2162780139113924,
+            "interval_low": 0.1553572077344496,
+            "interval_method": "wilson-score-95",
+            "label": "within 250 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 114,
+            "rate": 0.18387096774193548,
+            "state": "measured"
+          },
+          {
+            "denominator": 620,
+            "interval_high": 0.2332901674853925,
+            "interval_low": 0.17040448162749844,
+            "interval_method": "wilson-score-95",
+            "label": "within 500 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 124,
+            "rate": 0.2,
+            "state": "measured"
+          },
+          {
+            "denominator": 620,
+            "interval_high": 0.3338959800613377,
+            "interval_low": 0.2621552338538464,
+            "interval_method": "wilson-score-95",
+            "label": "within 1000 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 184,
+            "rate": 0.2967741935483871,
+            "state": "measured"
+          }
+        ],
+        "state": "measured"
+      },
       "records": 620,
       "territories": [
         "Metropolitan Water District of So. Cal",
@@ -1147,6 +1422,61 @@
       ]
     },
     {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 85,
+            "interval_high": 0.06367170882493911,
+            "interval_low": 0.002079787134664092,
+            "interval_method": "wilson-score-95",
+            "label": "within 100 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 1,
+            "rate": 0.011764705882352941,
+            "state": "measured"
+          },
+          {
+            "denominator": 85,
+            "interval_high": 0.14556059357469509,
+            "interval_low": 0.032750963112666766,
+            "interval_method": "wilson-score-95",
+            "label": "within 250 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 6,
+            "rate": 0.07058823529411765,
+            "state": "measured"
+          },
+          {
+            "denominator": 85,
+            "interval_high": 0.2576830331978105,
+            "interval_low": 0.10072462065396519,
+            "interval_method": "wilson-score-95",
+            "label": "within 500 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 14,
+            "rate": 0.16470588235294117,
+            "state": "measured"
+          },
+          {
+            "denominator": 85,
+            "interval_high": 0.5527593884280239,
+            "interval_low": 0.3459365569169934,
+            "interval_method": "wilson-score-95",
+            "label": "within 1000 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 38,
+            "rate": 0.4470588235294118,
+            "state": "measured"
+          }
+        ],
+        "state": "measured"
+      },
       "records": 85,
       "territories": [
         "Lassen Municipal Utility District",
@@ -1154,6 +1484,61 @@
       ]
     },
     {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 69,
+            "interval_high": 0.6623114437075628,
+            "interval_low": 0.43378767502688115,
+            "interval_method": "wilson-score-95",
+            "label": "within 100 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 38,
+            "rate": 0.5507246376811594,
+            "state": "measured"
+          },
+          {
+            "denominator": 69,
+            "interval_high": 1.0,
+            "interval_low": 0.9472627418109483,
+            "interval_method": "wilson-score-95",
+            "label": "within 250 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 69,
+            "rate": 1.0,
+            "state": "measured"
+          },
+          {
+            "denominator": 69,
+            "interval_high": 1.0,
+            "interval_low": 0.9472627418109483,
+            "interval_method": "wilson-score-95",
+            "label": "within 500 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 69,
+            "rate": 1.0,
+            "state": "measured"
+          },
+          {
+            "denominator": 69,
+            "interval_high": 1.0,
+            "interval_low": 0.9472627418109483,
+            "interval_method": "wilson-score-95",
+            "label": "within 1000 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 69,
+            "rate": 1.0,
+            "state": "measured"
+          }
+        ],
+        "state": "measured"
+      },
       "records": 69,
       "territories": [
         "City of Healdsburg Electric Department",
@@ -1161,6 +1546,61 @@
       ]
     },
     {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 46,
+            "interval_high": 0.1453225902621907,
+            "interval_low": 0.012005445598556624,
+            "interval_method": "wilson-score-95",
+            "label": "within 100 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 2,
+            "rate": 0.043478260869565216,
+            "state": "measured"
+          },
+          {
+            "denominator": 46,
+            "interval_high": 0.2303782864425083,
+            "interval_low": 0.04733145858098943,
+            "interval_method": "wilson-score-95",
+            "label": "within 250 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 5,
+            "rate": 0.10869565217391304,
+            "state": "measured"
+          },
+          {
+            "denominator": 46,
+            "interval_high": 0.6587531056595433,
+            "interval_low": 0.3813741307280403,
+            "interval_method": "wilson-score-95",
+            "label": "within 500 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 24,
+            "rate": 0.5217391304347826,
+            "state": "measured"
+          },
+          {
+            "denominator": 46,
+            "interval_high": 0.9961521457419497,
+            "interval_low": 0.8866470547848865,
+            "interval_method": "wilson-score-95",
+            "label": "within 1000 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 45,
+            "rate": 0.9782608695652174,
+            "state": "measured"
+          }
+        ],
+        "state": "measured"
+      },
       "records": 46,
       "territories": [
         "City of Anaheim Public Utilities Department",
@@ -1168,6 +1608,61 @@
       ]
     },
     {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 42,
+            "interval_high": 0.08379879086570391,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "within 100 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          },
+          {
+            "denominator": 42,
+            "interval_high": 0.12321201573766646,
+            "interval_low": 0.004215404134432499,
+            "interval_method": "wilson-score-95",
+            "label": "within 250 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 1,
+            "rate": 0.023809523809523808,
+            "state": "measured"
+          },
+          {
+            "denominator": 42,
+            "interval_high": 0.7701081168438123,
+            "interval_low": 0.4916636571945582,
+            "interval_method": "wilson-score-95",
+            "label": "within 500 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 27,
+            "rate": 0.6428571428571429,
+            "state": "measured"
+          },
+          {
+            "denominator": 42,
+            "interval_high": 1.0,
+            "interval_low": 0.916201209134296,
+            "interval_method": "wilson-score-95",
+            "label": "within 1000 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 42,
+            "rate": 1.0,
+            "state": "measured"
+          }
+        ],
+        "state": "measured"
+      },
       "records": 42,
       "territories": [
         "City of Riverside",
@@ -1175,6 +1670,61 @@
       ]
     },
     {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 40,
+            "interval_high": 0.08762160119728665,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "within 100 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          },
+          {
+            "denominator": 40,
+            "interval_high": 0.08762160119728665,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "within 250 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          },
+          {
+            "denominator": 40,
+            "interval_high": 0.08762160119728665,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "within 500 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          },
+          {
+            "denominator": 40,
+            "interval_high": 0.08762160119728665,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "within 1000 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          }
+        ],
+        "state": "measured"
+      },
       "records": 40,
       "territories": [
         "Modesto Irrigation District",
@@ -1182,6 +1732,61 @@
       ]
     },
     {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 4,
+            "interval_high": 0.9544127391902995,
+            "interval_low": 0.30064184258240184,
+            "interval_method": "wilson-score-95",
+            "label": "within 100 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 3,
+            "rate": 0.75,
+            "state": "measured"
+          },
+          {
+            "denominator": 4,
+            "interval_high": 0.9544127391902995,
+            "interval_low": 0.30064184258240184,
+            "interval_method": "wilson-score-95",
+            "label": "within 250 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 3,
+            "rate": 0.75,
+            "state": "measured"
+          },
+          {
+            "denominator": 4,
+            "interval_high": 0.9544127391902995,
+            "interval_low": 0.30064184258240184,
+            "interval_method": "wilson-score-95",
+            "label": "within 500 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 3,
+            "rate": 0.75,
+            "state": "measured"
+          },
+          {
+            "denominator": 4,
+            "interval_high": 1.0,
+            "interval_low": 0.5101091635454027,
+            "interval_method": "wilson-score-95",
+            "label": "within 1000 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 4,
+            "rate": 1.0,
+            "state": "measured"
+          }
+        ],
+        "state": "measured"
+      },
       "records": 4,
       "territories": [
         "City and County of San Francisco - Hetch Hetchy Water and Power",
@@ -1189,6 +1794,61 @@
       ]
     },
     {
+      "boundary_proximity": {
+        "bands_m": [
+          100,
+          250,
+          500,
+          1000
+        ],
+        "rates": [
+          {
+            "denominator": 1,
+            "interval_high": 0.7934506856227626,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "within 100 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          },
+          {
+            "denominator": 1,
+            "interval_high": 0.7934506856227626,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "within 250 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          },
+          {
+            "denominator": 1,
+            "interval_high": 0.7934506856227626,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "within 500 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          },
+          {
+            "denominator": 1,
+            "interval_high": 0.7934506856227626,
+            "interval_low": 0.0,
+            "interval_method": "wilson-score-95",
+            "label": "within 1000 m of an edge in this combination",
+            "note": "Distance to the nearest edge among every outline in the combination. A contested record stops being contested when any of them ceases to contain it, so the nearest edge is the one an approximation error moves first.",
+            "numerator": 0,
+            "rate": 0.0,
+            "state": "measured"
+          }
+        ],
+        "state": "measured"
+      },
       "records": 1,
       "territories": [
         "PacifiCorp",
@@ -1196,6 +1856,951 @@
       ]
     }
   ],
+  "coordinate_county_agreement": {
+    "agreed": {
+      "denominator": 132490,
+      "interval_high": 0.9998351498873336,
+      "interval_low": 0.9996679103447818,
+      "interval_method": "wilson-score-95",
+      "label": "coordinate and recorded county agree",
+      "note": "Denominator: the comparable records.",
+      "numerator": 132459,
+      "rate": 0.9997660200769869,
+      "state": "measured"
+    },
+    "by_county": [
+      {
+        "agreed": 120,
+        "county": "Alameda",
+        "disagreed": {
+          "denominator": 120,
+          "interval_high": 0.031019166418703486,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 120
+      },
+      {
+        "agreed": 415,
+        "county": "Alpine",
+        "disagreed": {
+          "denominator": 415,
+          "interval_high": 0.009171629837003916,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 415
+      },
+      {
+        "agreed": 87,
+        "county": "Amador",
+        "disagreed": {
+          "denominator": 87,
+          "interval_high": 0.04228750694412034,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 87
+      },
+      {
+        "agreed": 28747,
+        "county": "Butte",
+        "disagreed": {
+          "denominator": 28747,
+          "interval_high": 0.0001336120484054763,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 28747
+      },
+      {
+        "agreed": 1281,
+        "county": "Calaveras",
+        "disagreed": {
+          "denominator": 1281,
+          "interval_high": 0.002989830997685933,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 1281
+      },
+      {
+        "agreed": 52,
+        "county": "Colusa",
+        "disagreed": {
+          "denominator": 52,
+          "interval_high": 0.06879223612386234,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 52
+      },
+      {
+        "agreed": 2,
+        "county": "Contra Costa",
+        "disagreed": {
+          "denominator": 2,
+          "interval_high": 0.6576197724933469,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 2
+      },
+      {
+        "agreed": 4668,
+        "county": "El Dorado",
+        "disagreed": {
+          "denominator": 4668,
+          "interval_high": 0.0008222579585703276,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 4668
+      },
+      {
+        "agreed": 2984,
+        "county": "Fresno",
+        "disagreed": {
+          "denominator": 2984,
+          "interval_high": 0.0012856970068988718,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 2984
+      },
+      {
+        "agreed": 52,
+        "county": "Glenn",
+        "disagreed": {
+          "denominator": 52,
+          "interval_high": 0.06879223612386234,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 52
+      },
+      {
+        "agreed": 19,
+        "county": "Humboldt",
+        "disagreed": {
+          "denominator": 19,
+          "interval_high": 0.16817922405261626,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 19
+      },
+      {
+        "agreed": 20,
+        "county": "Inyo",
+        "disagreed": {
+          "denominator": 20,
+          "interval_high": 0.16112515805281938,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 20
+      },
+      {
+        "agreed": 1478,
+        "county": "Kern",
+        "disagreed": {
+          "denominator": 1478,
+          "interval_high": 0.0025923548014045337,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 1478
+      },
+      {
+        "agreed": 1,
+        "county": "Kings",
+        "disagreed": {
+          "denominator": 1,
+          "interval_high": 0.7934506856227626,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 1
+      },
+      {
+        "agreed": 3210,
+        "county": "Lake",
+        "disagreed": {
+          "denominator": 3215,
+          "interval_high": 0.0036356668934373953,
+          "interval_low": 0.0006644699718822472,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 5,
+          "rate": 0.0015552099533437014,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 3215
+      },
+      {
+        "agreed": 1020,
+        "county": "Lassen",
+        "disagreed": {
+          "denominator": 1020,
+          "interval_high": 0.0037520055352309014,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 1020
+      },
+      {
+        "agreed": 34464,
+        "county": "Los Angeles",
+        "disagreed": {
+          "denominator": 34464,
+          "interval_high": 0.00011145051903768272,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 34464
+      },
+      {
+        "agreed": 761,
+        "county": "Madera",
+        "disagreed": {
+          "denominator": 761,
+          "interval_high": 0.0050225556896683595,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 761
+      },
+      {
+        "agreed": 1181,
+        "county": "Mariposa",
+        "disagreed": {
+          "denominator": 1182,
+          "interval_high": 0.004776643630658646,
+          "interval_low": 0.00014935956921546768,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 1,
+          "rate": 0.0008460236886632825,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 1182
+      },
+      {
+        "agreed": 937,
+        "county": "Mendocino",
+        "disagreed": {
+          "denominator": 937,
+          "interval_high": 0.004083003342039407,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 937
+      },
+      {
+        "agreed": 3,
+        "county": "Merced",
+        "disagreed": {
+          "denominator": 3,
+          "interval_high": 0.5614970317550455,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 3
+      },
+      {
+        "agreed": 7,
+        "county": "Modoc",
+        "disagreed": {
+          "denominator": 7,
+          "interval_high": 0.3543304350666875,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 7
+      },
+      {
+        "agreed": 114,
+        "county": "Mono",
+        "disagreed": {
+          "denominator": 114,
+          "interval_high": 0.03259853415884162,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 114
+      },
+      {
+        "agreed": 699,
+        "county": "Monterey",
+        "disagreed": {
+          "denominator": 699,
+          "interval_high": 0.005465612155463559,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 699
+      },
+      {
+        "agreed": 6315,
+        "county": "Napa",
+        "disagreed": {
+          "denominator": 6320,
+          "interval_high": 0.0018508006033336535,
+          "interval_low": 0.0003379732473117674,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 5,
+          "rate": 0.0007911392405063291,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 6320
+      },
+      {
+        "agreed": 344,
+        "county": "Nevada",
+        "disagreed": {
+          "denominator": 344,
+          "interval_high": 0.01104370604274152,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 344
+      },
+      {
+        "agreed": 2510,
+        "county": "Orange",
+        "disagreed": {
+          "denominator": 2510,
+          "interval_high": 0.0015281229479349305,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 2510
+      },
+      {
+        "agreed": 606,
+        "county": "Placer",
+        "disagreed": {
+          "denominator": 606,
+          "interval_high": 0.006299110637906946,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 606
+      },
+      {
+        "agreed": 3593,
+        "county": "Plumas",
+        "disagreed": {
+          "denominator": 3593,
+          "interval_high": 0.0010680089363609689,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 3593
+      },
+      {
+        "agreed": 1379,
+        "county": "Riverside",
+        "disagreed": {
+          "denominator": 1379,
+          "interval_high": 0.002777945943253808,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 1379
+      },
+      {
+        "agreed": 10,
+        "county": "Sacramento",
+        "disagreed": {
+          "denominator": 10,
+          "interval_high": 0.2775327998628892,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 10
+      },
+      {
+        "agreed": 42,
+        "county": "San Benito",
+        "disagreed": {
+          "denominator": 42,
+          "interval_high": 0.08379879086570391,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 42
+      },
+      {
+        "agreed": 1003,
+        "county": "San Bernardino",
+        "disagreed": {
+          "denominator": 1003,
+          "interval_high": 0.003815356218240752,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 1003
+      },
+      {
+        "agreed": 1114,
+        "county": "San Diego",
+        "disagreed": {
+          "denominator": 1114,
+          "interval_high": 0.003436497000877751,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 1114
+      },
+      {
+        "agreed": 102,
+        "county": "San Joaquin",
+        "disagreed": {
+          "denominator": 104,
+          "interval_high": 0.06742312915767822,
+          "interval_low": 0.005289711585064017,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 2,
+          "rate": 0.019230769230769232,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 104
+      },
+      {
+        "agreed": 109,
+        "county": "San Luis Obispo",
+        "disagreed": {
+          "denominator": 110,
+          "interval_high": 0.0497056520793305,
+          "interval_low": 0.001606575304321605,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 1,
+          "rate": 0.00909090909090909,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 110
+      },
+      {
+        "agreed": 207,
+        "county": "San Mateo",
+        "disagreed": {
+          "denominator": 207,
+          "interval_high": 0.018219655859813683,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 207
+      },
+      {
+        "agreed": 376,
+        "county": "Santa Barbara",
+        "disagreed": {
+          "denominator": 376,
+          "interval_high": 0.010113321575324678,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 376
+      },
+      {
+        "agreed": 587,
+        "county": "Santa Clara",
+        "disagreed": {
+          "denominator": 589,
+          "interval_high": 0.012295220450555908,
+          "interval_low": 0.0009316865142381765,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 2,
+          "rate": 0.003395585738539898,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 589
+      },
+      {
+        "agreed": 4636,
+        "county": "Santa Cruz",
+        "disagreed": {
+          "denominator": 4637,
+          "interval_high": 0.0012206371126910554,
+          "interval_low": 3.80697128979675e-05,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 1,
+          "rate": 0.00021565667457407807,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 4637
+      },
+      {
+        "agreed": 3788,
+        "county": "Shasta",
+        "disagreed": {
+          "denominator": 3790,
+          "interval_high": 0.0019221640073675962,
+          "interval_low": 0.0001447275340442643,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 2,
+          "rate": 0.0005277044854881266,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 3790
+      },
+      {
+        "agreed": 1877,
+        "county": "Siskiyou",
+        "disagreed": {
+          "denominator": 1877,
+          "interval_high": 0.002042415006686825,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 1877
+      },
+      {
+        "agreed": 2377,
+        "county": "Solano",
+        "disagreed": {
+          "denominator": 2377,
+          "interval_high": 0.001613487872727536,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 2377
+      },
+      {
+        "agreed": 11716,
+        "county": "Sonoma",
+        "disagreed": {
+          "denominator": 11721,
+          "interval_high": 0.0009982993359446736,
+          "interval_low": 0.00018222484165783737,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 5,
+          "rate": 0.00042658476239228736,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 11721
+      },
+      {
+        "agreed": 241,
+        "county": "Stanislaus",
+        "disagreed": {
+          "denominator": 243,
+          "interval_high": 0.02950719074860303,
+          "interval_low": 0.0022599964093296607,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 2,
+          "rate": 0.00823045267489712,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 243
+      },
+      {
+        "agreed": 1212,
+        "county": "Tehama",
+        "disagreed": {
+          "denominator": 1212,
+          "interval_high": 0.003159506359011766,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 1212
+      },
+      {
+        "agreed": 572,
+        "county": "Trinity",
+        "disagreed": {
+          "denominator": 572,
+          "interval_high": 0.006671035511339035,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 572
+      },
+      {
+        "agreed": 1036,
+        "county": "Tulare",
+        "disagreed": {
+          "denominator": 1036,
+          "interval_high": 0.0036942735722913025,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 1036
+      },
+      {
+        "agreed": 350,
+        "county": "Tuolumne",
+        "disagreed": {
+          "denominator": 352,
+          "interval_high": 0.020476838537086428,
+          "interval_low": 0.0015595448755765084,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 2,
+          "rate": 0.005681818181818182,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 352
+      },
+      {
+        "agreed": 3433,
+        "county": "Ventura",
+        "disagreed": {
+          "denominator": 3436,
+          "interval_high": 0.00256404201549385,
+          "interval_low": 0.00029697903402514333,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 3,
+          "rate": 0.0008731082654249127,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 3436
+      },
+      {
+        "agreed": 278,
+        "county": "Yolo",
+        "disagreed": {
+          "denominator": 278,
+          "interval_high": 0.013629857142976395,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 278
+      },
+      {
+        "agreed": 324,
+        "county": "Yuba",
+        "disagreed": {
+          "denominator": 324,
+          "interval_high": 0.01171742840125394,
+          "interval_low": 0.0,
+          "interval_method": "wilson-score-95",
+          "label": "records whose coordinate sits outside the recorded county",
+          "note": "",
+          "numerator": 0,
+          "rate": 0.0,
+          "state": "measured"
+        },
+        "matched_no_county": 0,
+        "resolved": 324
+      }
+    ],
+    "disagreed": {
+      "denominator": 132490,
+      "interval_high": 0.0003320896552181938,
+      "interval_low": 0.00016485011266647237,
+      "interval_method": "wilson-score-95",
+      "label": "coordinate sits outside the recorded county",
+      "note": "Denominator: the comparable records above. The boundary layer's publisher states that boundary errors will exist, so these are counts of disagreement, not corrections.",
+      "numerator": 31,
+      "rate": 0.00023397992301305758,
+      "state": "measured"
+    },
+    "matched_no_county": {
+      "denominator": 132490,
+      "interval_high": 2.8993489647502274e-05,
+      "interval_low": 0.0,
+      "interval_method": "wilson-score-95",
+      "label": "comparable records whose coordinate reaches no county polygon",
+      "note": "",
+      "numerator": 0,
+      "rate": 0.0,
+      "state": "measured"
+    },
+    "note": "Counted, never corrected. The COUNTY field is published by CAL FIRE and is reported as published everywhere else in this project; the boundary layer comes from the California Department of Technology, whose metadata warns that boundary errors will exist. Where the two disagree, this project says how often and does not say who is right.",
+    "question": "How often does a record's coordinate land outside the county its publisher recorded?",
+    "records_compared": {
+      "denominator": 132520,
+      "interval_high": 0.9998414150527112,
+      "interval_low": 0.9996768492979299,
+      "interval_method": "wilson-score-95",
+      "label": "records whose county label and coordinate could both be compared",
+      "note": "The denominator is the whole wildfire record set. A record joins this comparison only with a usable coordinate and a county label the boundary layer carries; everything else stays counted where it already was.",
+      "numerator": 132490,
+      "rate": 0.9997736190763659,
+      "state": "measured"
+    },
+    "unmatchable_label": {
+      "denominator": 132520,
+      "interval_high": 2.89869262647943e-05,
+      "interval_low": 0.0,
+      "interval_method": "wilson-score-95",
+      "label": "records whose COUNTY label the boundary layer does not carry",
+      "note": "",
+      "numerator": 0,
+      "rate": 0.0,
+      "state": "measured"
+    }
+  },
   "excluded_types": [
     {
       "published_type": "ADMIN",
@@ -1295,10 +2900,10 @@
   "provenance": {
     "affiliation": "Unofficial. Not affiliated with, endorsed by, or approved by CAL FIRE, the California Energy Commission, or any electric utility.",
     "dins_landing_page": "https://data.ca.gov/dataset/cal-fire-damage-inspection-dins-data",
-    "dins_retrieved": "2026-08-17",
+    "dins_retrieved": "2026-08-23",
     "territories_item_modified": "2026-08-12",
     "territories_landing_page": "https://cecgis-caenergy.opendata.arcgis.com/datasets/CAEnergy::electric-load-serving-entities-iou-pou/about",
-    "territories_retrieved": "2026-08-17"
+    "territories_retrieved": "2026-08-23"
   },
   "representativeness": {
     "contested": {
@@ -1367,11 +2972,403 @@
       "state": "not_measured"
     }
   },
+  "representativeness_by_category": [
+    {
+      "contested": {
+        "denominator": 0,
+        "interval_high": null,
+        "interval_low": null,
+        "interval_method": "none",
+        "label": "destroyed share among contested records, Agriculture",
+        "note": "no records fall in this population, so there is nothing to divide",
+        "numerator": 0,
+        "rate": null,
+        "state": "not_measured"
+      },
+      "placed": {
+        "denominator": 7,
+        "interval_high": 0.7495416354723428,
+        "interval_low": 0.15821985525146975,
+        "interval_method": "wilson-score-95",
+        "label": "destroyed share among placed records, Agriculture",
+        "note": "",
+        "numerator": 3,
+        "rate": 0.42857142857142855,
+        "state": "measured"
+      },
+      "structure_category": "Agriculture"
+    },
+    {
+      "contested": {
+        "denominator": 242,
+        "interval_high": 0.09475025812750616,
+        "interval_low": 0.034770039113806064,
+        "interval_method": "wilson-score-95",
+        "label": "destroyed share among contested records, Infrastructure",
+        "note": "",
+        "numerator": 14,
+        "rate": 0.05785123966942149,
+        "state": "measured"
+      },
+      "difference": {
+        "difference": 0.09621438087266124,
+        "excludes_zero": true,
+        "interval_high": 0.13296907792163998,
+        "interval_low": 0.05173733405254528,
+        "interval_method": "newcombe-score-95",
+        "label": "placed minus contested, destroyed share, Infrastructure",
+        "left": {
+          "denominator": 701,
+          "interval_high": 0.18266922059651058,
+          "interval_low": 0.1292327767526833,
+          "interval_method": "wilson-score-95",
+          "label": "destroyed share among placed records, Infrastructure",
+          "note": "",
+          "numerator": 108,
+          "rate": 0.15406562054208273,
+          "state": "measured"
+        },
+        "note": "The same records measured twice within one published structure class. The Newcombe interval is the conservative bound; the exact figures are the counts above.",
+        "right": {
+          "denominator": 242,
+          "interval_high": 0.09475025812750616,
+          "interval_low": 0.034770039113806064,
+          "interval_method": "wilson-score-95",
+          "label": "destroyed share among contested records, Infrastructure",
+          "note": "",
+          "numerator": 14,
+          "rate": 0.05785123966942149,
+          "state": "measured"
+        },
+        "state": "measured"
+      },
+      "placed": {
+        "denominator": 701,
+        "interval_high": 0.18266922059651058,
+        "interval_low": 0.1292327767526833,
+        "interval_method": "wilson-score-95",
+        "label": "destroyed share among placed records, Infrastructure",
+        "note": "",
+        "numerator": 108,
+        "rate": 0.15406562054208273,
+        "state": "measured"
+      },
+      "structure_category": "Infrastructure"
+    },
+    {
+      "contested": {
+        "denominator": 70,
+        "interval_high": 0.3702613014715483,
+        "interval_low": 0.16929275741343847,
+        "interval_method": "wilson-score-95",
+        "label": "destroyed share among contested records, Mixed Commercial/Residential",
+        "note": "",
+        "numerator": 18,
+        "rate": 0.2571428571428571,
+        "state": "measured"
+      },
+      "difference": {
+        "difference": 0.023093131057732863,
+        "excludes_zero": false,
+        "interval_high": 0.12420816321396808,
+        "interval_low": -0.09869978486460051,
+        "interval_method": "newcombe-score-95",
+        "label": "placed minus contested, destroyed share, Mixed Commercial/Residential",
+        "left": {
+          "denominator": 339,
+          "interval_high": 0.3303020416249181,
+          "interval_low": 0.23509474407150815,
+          "interval_method": "wilson-score-95",
+          "label": "destroyed share among placed records, Mixed Commercial/Residential",
+          "note": "",
+          "numerator": 95,
+          "rate": 0.28023598820059,
+          "state": "measured"
+        },
+        "note": "The same records measured twice within one published structure class. The Newcombe interval is the conservative bound; the exact figures are the counts above.",
+        "right": {
+          "denominator": 70,
+          "interval_high": 0.3702613014715483,
+          "interval_low": 0.16929275741343847,
+          "interval_method": "wilson-score-95",
+          "label": "destroyed share among contested records, Mixed Commercial/Residential",
+          "note": "",
+          "numerator": 18,
+          "rate": 0.2571428571428571,
+          "state": "measured"
+        },
+        "state": "measured"
+      },
+      "placed": {
+        "denominator": 339,
+        "interval_high": 0.3303020416249181,
+        "interval_low": 0.23509474407150815,
+        "interval_method": "wilson-score-95",
+        "label": "destroyed share among placed records, Mixed Commercial/Residential",
+        "note": "",
+        "numerator": 95,
+        "rate": 0.28023598820059,
+        "state": "measured"
+      },
+      "structure_category": "Mixed Commercial/Residential"
+    },
+    {
+      "contested": {
+        "denominator": 1299,
+        "interval_high": 0.2091849937371036,
+        "interval_low": 0.16679433629134727,
+        "interval_method": "wilson-score-95",
+        "label": "destroyed share among contested records, Multiple Residence",
+        "note": "",
+        "numerator": 243,
+        "rate": 0.18706697459584296,
+        "state": "measured"
+      },
+      "difference": {
+        "difference": 0.24513641523466553,
+        "excludes_zero": true,
+        "interval_high": 0.2871149850975991,
+        "interval_low": 0.202861512430392,
+        "interval_method": "newcombe-score-95",
+        "label": "placed minus contested, destroyed share, Multiple Residence",
+        "left": {
+          "denominator": 708,
+          "interval_high": 0.46896234063044684,
+          "interval_low": 0.39617616906096254,
+          "interval_method": "wilson-score-95",
+          "label": "destroyed share among placed records, Multiple Residence",
+          "note": "",
+          "numerator": 306,
+          "rate": 0.4322033898305085,
+          "state": "measured"
+        },
+        "note": "The same records measured twice within one published structure class. The Newcombe interval is the conservative bound; the exact figures are the counts above.",
+        "right": {
+          "denominator": 1299,
+          "interval_high": 0.2091849937371036,
+          "interval_low": 0.16679433629134727,
+          "interval_method": "wilson-score-95",
+          "label": "destroyed share among contested records, Multiple Residence",
+          "note": "",
+          "numerator": 243,
+          "rate": 0.18706697459584296,
+          "state": "measured"
+        },
+        "state": "measured"
+      },
+      "placed": {
+        "denominator": 708,
+        "interval_high": 0.46896234063044684,
+        "interval_low": 0.39617616906096254,
+        "interval_method": "wilson-score-95",
+        "label": "destroyed share among placed records, Multiple Residence",
+        "note": "",
+        "numerator": 306,
+        "rate": 0.4322033898305085,
+        "state": "measured"
+      },
+      "structure_category": "Multiple Residence"
+    },
+    {
+      "contested": {
+        "denominator": 1509,
+        "interval_high": 0.37364655235353506,
+        "interval_low": 0.32559489998299307,
+        "interval_method": "wilson-score-95",
+        "label": "destroyed share among contested records, Nonresidential Commercial",
+        "note": "",
+        "numerator": 527,
+        "rate": 0.3492379058979457,
+        "state": "measured"
+      },
+      "difference": {
+        "difference": 0.06028092255393719,
+        "excludes_zero": true,
+        "interval_high": 0.08864482072321192,
+        "interval_low": 0.03137343555740502,
+        "interval_method": "newcombe-score-95",
+        "label": "placed minus contested, destroyed share, Nonresidential Commercial",
+        "left": {
+          "denominator": 3824,
+          "interval_high": 0.42518787407254854,
+          "interval_low": 0.3940313889391448,
+          "interval_method": "wilson-score-95",
+          "label": "destroyed share among placed records, Nonresidential Commercial",
+          "note": "",
+          "numerator": 1566,
+          "rate": 0.40951882845188287,
+          "state": "measured"
+        },
+        "note": "The same records measured twice within one published structure class. The Newcombe interval is the conservative bound; the exact figures are the counts above.",
+        "right": {
+          "denominator": 1509,
+          "interval_high": 0.37364655235353506,
+          "interval_low": 0.32559489998299307,
+          "interval_method": "wilson-score-95",
+          "label": "destroyed share among contested records, Nonresidential Commercial",
+          "note": "",
+          "numerator": 527,
+          "rate": 0.3492379058979457,
+          "state": "measured"
+        },
+        "state": "measured"
+      },
+      "placed": {
+        "denominator": 3824,
+        "interval_high": 0.42518787407254854,
+        "interval_low": 0.3940313889391448,
+        "interval_method": "wilson-score-95",
+        "label": "destroyed share among placed records, Nonresidential Commercial",
+        "note": "",
+        "numerator": 1566,
+        "rate": 0.40951882845188287,
+        "state": "measured"
+      },
+      "structure_category": "Nonresidential Commercial"
+    },
+    {
+      "contested": {
+        "denominator": 12054,
+        "interval_high": 0.5844571832633334,
+        "interval_low": 0.5668136728205875,
+        "interval_method": "wilson-score-95",
+        "label": "destroyed share among contested records, Other Minor Structure",
+        "note": "",
+        "numerator": 6939,
+        "rate": 0.5756595321055251,
+        "state": "measured"
+      },
+      "difference": {
+        "difference": -0.03832921536344369,
+        "excludes_zero": true,
+        "interval_high": -0.02745819522924349,
+        "interval_low": -0.04916805758093531,
+        "interval_method": "newcombe-score-95",
+        "label": "placed minus contested, destroyed share, Other Minor Structure",
+        "left": {
+          "denominator": 23868,
+          "interval_high": 0.54364932396389,
+          "interval_low": 0.5309992951245861,
+          "interval_method": "wilson-score-95",
+          "label": "destroyed share among placed records, Other Minor Structure",
+          "note": "",
+          "numerator": 12825,
+          "rate": 0.5373303167420814,
+          "state": "measured"
+        },
+        "note": "The same records measured twice within one published structure class. The Newcombe interval is the conservative bound; the exact figures are the counts above.",
+        "right": {
+          "denominator": 12054,
+          "interval_high": 0.5844571832633334,
+          "interval_low": 0.5668136728205875,
+          "interval_method": "wilson-score-95",
+          "label": "destroyed share among contested records, Other Minor Structure",
+          "note": "",
+          "numerator": 6939,
+          "rate": 0.5756595321055251,
+          "state": "measured"
+        },
+        "state": "measured"
+      },
+      "placed": {
+        "denominator": 23868,
+        "interval_high": 0.54364932396389,
+        "interval_low": 0.5309992951245861,
+        "interval_method": "wilson-score-95",
+        "label": "destroyed share among placed records, Other Minor Structure",
+        "note": "",
+        "numerator": 12825,
+        "rate": 0.5373303167420814,
+        "state": "measured"
+      },
+      "structure_category": "Other Minor Structure"
+    },
+    {
+      "contested": {
+        "denominator": 34993,
+        "interval_high": 0.5492934717388466,
+        "interval_low": 0.5388573404888796,
+        "interval_method": "wilson-score-95",
+        "label": "destroyed share among contested records, Single Residence",
+        "note": "",
+        "numerator": 19039,
+        "rate": 0.5440802446203526,
+        "state": "measured"
+      },
+      "difference": {
+        "difference": -0.0014952826122628382,
+        "excludes_zero": false,
+        "interval_high": 0.005233149406844877,
+        "interval_low": -0.008220110129387705,
+        "interval_method": "newcombe-score-95",
+        "label": "placed minus contested, destroyed share, Single Residence",
+        "left": {
+          "denominator": 52906,
+          "interval_high": 0.5468267858928351,
+          "interval_low": 0.5383369544579459,
+          "interval_method": "wilson-score-95",
+          "label": "destroyed share among placed records, Single Residence",
+          "note": "",
+          "numerator": 28706,
+          "rate": 0.5425849620080898,
+          "state": "measured"
+        },
+        "note": "The same records measured twice within one published structure class. The Newcombe interval is the conservative bound; the exact figures are the counts above.",
+        "right": {
+          "denominator": 34993,
+          "interval_high": 0.5492934717388466,
+          "interval_low": 0.5388573404888796,
+          "interval_method": "wilson-score-95",
+          "label": "destroyed share among contested records, Single Residence",
+          "note": "",
+          "numerator": 19039,
+          "rate": 0.5440802446203526,
+          "state": "measured"
+        },
+        "state": "measured"
+      },
+      "placed": {
+        "denominator": 52906,
+        "interval_high": 0.5468267858928351,
+        "interval_low": 0.5383369544579459,
+        "interval_method": "wilson-score-95",
+        "label": "destroyed share among placed records, Single Residence",
+        "note": "",
+        "numerator": 28706,
+        "rate": 0.5425849620080898,
+        "state": "measured"
+      },
+      "structure_category": "Single Residence"
+    }
+  ],
   "sensitivity": {
     "repair_strategy": {
       "alternative": "buffer_zero",
       "chosen": "make_valid",
-      "note": "Neither repair is correct. Both are answers to a question the published polygon does not answer, and the difference between them is the size of the ambiguity the publisher's invalid geometry leaves behind.",
+      "note": "No repair is correct. Each is an answer to a question the published polygon does not answer, and the disagreement between them is the size of the ambiguity the publisher's invalid geometry leaves behind.",
+      "pairwise_disagreements": [
+        {
+          "between": [
+            "buffer_zero",
+            "make_valid_structure"
+          ],
+          "records": 0
+        },
+        {
+          "between": [
+            "make_valid",
+            "buffer_zero"
+          ],
+          "records": 927
+        },
+        {
+          "between": [
+            "make_valid",
+            "make_valid_structure"
+          ],
+          "records": 927
+        }
+      ],
       "placed_difference": {
         "difference": 0.005810443706610324,
         "excludes_zero": true,
@@ -1427,21 +3424,42 @@
         "state": "measured"
       },
       "question": "How much of the result depends on which repair is applied to the polygons the publisher ships invalid?",
+      "records_where_any_two_repairs_disagree": {
+        "denominator": 132520,
+        "interval_high": 0.007458409245765455,
+        "interval_low": 0.006560513224105624,
+        "interval_method": "wilson-score-95",
+        "label": "records where at least one pair of repairs disagrees",
+        "note": "The union over every pair of the strategies compared. It is at least as large as any single pairwise count, and it is the number that bounds how much of the result the choice of repair can move.",
+        "numerator": 927,
+        "rate": 0.006995170540295805,
+        "state": "measured"
+      },
       "records_with_a_different_outcome": {
         "denominator": 132520,
         "interval_high": 0.007458409245765455,
         "interval_low": 0.006560513224105624,
         "interval_method": "wilson-score-95",
-        "label": "records the two repairs disagree about",
+        "label": "records make_valid and buffer_zero disagree about",
         "note": "Counted per record, not inferred from two totals. A record counts here if the set of outlines it falls inside is not the same under both repairs, including when both repairs agree on the kind of outcome.",
         "numerator": 927,
         "rate": 0.006995170540295805,
         "state": "measured"
       },
       "records_with_the_same_outcome_but_different_outlines": 157,
+      "strategies_compared": [
+        "make_valid",
+        "buffer_zero",
+        "make_valid_structure"
+      ],
       "territories_indexed": {
         "buffer_zero": 59,
-        "make_valid": 59
+        "make_valid": 59,
+        "make_valid_structure": 59
+      },
+      "territories_unusable_under_each_strategy": {
+        "buffer_zero": 0,
+        "make_valid_structure": 0
       },
       "territories_unusable_under_the_alternative": 0,
       "transitions": [

@@ -1,6 +1,6 @@
 # Provenance
 
-Three files, two publishers, one retrieval date. `src/inspected/sources.py` is the
+Four files, three publishers, one retrieval date. `src/inspected/sources.py` is the
 reviewed record and `tests/test_provenance.py` asserts this document agrees with it, so
 the two cannot drift apart.
 
@@ -11,17 +11,55 @@ Energy Commission, or any electric utility.
 
 | Source | Publisher | Features | Bytes | Retrieved |
 |---|---|---:|---:|---|
-| CAL FIRE Damage Inspection (DINS) Data | California Department of Forestry and Fire Protection | 132522 | 26505764 | 2026-08-17 |
-| Electric Load Serving Entities (IOU & POU) | California Energy Commission | 53 | 11724721 | 2026-08-17 |
-| Electric Load Serving Entities (Other) | California Energy Commission | 32 | 7397382 | 2026-08-17 |
+| CAL FIRE Damage Inspection (DINS) Data | California Department of Forestry and Fire Protection | 132522 | 31908735 | 2026-08-23 |
+| Electric Load Serving Entities (IOU & POU) | California Energy Commission | 53 | 11724721 | 2026-08-23 |
+| Electric Load Serving Entities (Other) | California Energy Commission | 32 | 7397382 | 2026-08-23 |
+| California County Boundaries and Identifiers | California Department of Technology | 58 | 28406231 | 2026-08-23 |
 
 SHA-256 of each written file:
 
-- `dins_postfire.json` `fd6c77ca5c7b680b56e5f82afbcd04f24ce248eec996b964c35cea353dcca467`
+- `dins_postfire.json` `28a0bedfc74616281febc2268f40a40304c96c2eb0414e9b04b10f5318f2c496`
 - `else_iou_pou.geojson` `e805520e747de619c9a97d03f8d70c9125f44b6e6fb2c0067bc122b317f2260e`
 - `else_other.geojson` `f6e6880c03c4e062aa6f0b2a69a66b74e7782ff62a2a3ce7e641efc4f0f7ffe3`
+- `county_boundaries.geojson` `52cb40c1db91b1a566683a4a6d39d2fad362df6b654e9d4b602bbbfe29601908`
 
-## The refresh of 2026-08-17
+## The refresh of 2026-08-23
+
+Trigger: this pipeline changed shape (three triggers in Refresh below would have fired;
+the third did). What the refresh carried: the ninth fetched field, a fourth source, two
+new measurements, and the three-repair census reaching the real record set.
+
+- Both territory layers returned the hashes the previous pin recorded, and the CEC
+  items still carry last-modified 2026-08-12. The boundaries are unchanged.
+- The re-acquired DINS file holds the same 132,522 records under the same predicate,
+  with `STRUCTURECATEGORY` added to the request. Its hash differs because the column
+  does.
+- The county boundary layer was acquired once, whole, under the same guards as
+  everything else: count before and after, strictly increasing unique identifiers.
+- The artifact built after the refresh was compared against the one built before at
+  every published value: **6,582 values compared, 1,528 added, none removed, none of
+  the measured figures changed.** The four changed leaves are two retrieval dates, one
+  label made more precise, and one note rewritten when a second alternative joined the
+  run it describes.
+
+What the new measurements found over the real record set:
+
+- **The three-repair census.** The structure-preserving repair agrees exactly with
+  the noding repair's disagreements: both differ from `buffer(0)` on the same 927
+  records, and `structure` against `buffer(0)` disagrees on none. The union bound does
+  not move from 927. A third reading of the invalid geometry widened nothing; it
+  corroborated the pair ADR 0007 measured.
+- **The coordinate-county comparison.** Of 132,520 records, 132,490 carry a usable
+  coordinate and a county label the boundary layer carries. 132,459 agree; 31
+  (0.023%, interval 0.016% to 0.034%) sit outside the county their publisher
+  recorded; none reaches no polygon and no label went unmatched. The largest county
+  counts are five records each in Lake, Napa and Sonoma. Counted against CDT's own
+  warning that boundary errors will exist, and never corrected.
+- **Representativeness by structure class.** Six of the seven published categories
+  carry enough placed and contested records to compare; the aggregate conclusion
+  holds inside most classes, with Multiple Residence the widest interval.
+
+## The refresh of 2026-08-17, kept for its pattern
 
 The DINS file was re-acquired to add the publisher's `COUNTY` column, so its byte count
 and hash above are not the ones the previous pin carried. What that refresh did and did
@@ -49,13 +87,20 @@ publishes counts.
 resources on [data.ca.gov](https://data.ca.gov/dataset/cal-fire-damage-inspection-dins-data).
 Creative Commons Attribution.
 
+**CDT County Boundaries.** Layer 1 of the California County Boundaries and
+Identifiers service published by the California Department of Technology on
+[data.ca.gov](https://gis.data.ca.gov/datasets/California::california-county-boundaries-and-identifiers/about).
+State of California terms of use. Only `OBJECTID` and `CDT_NAME_SHORT` are read
+beside the geometry.
+
 **CEC Electric Load Serving Entities.** Two feature services published by the California
 Energy Commission, ArcGIS Online items `30410214d637434ba1003cbdcc32cf55` and
 `07224640a2fe42f89399be796e7b8810`, both last modified by the publisher 2026-08-12.
 Terms: [CEC conditions of use](https://www.energy.ca.gov/conditions-of-use).
 
-Eight DINS fields are requested and no others: `OBJECTID`, `COUNTY`, `DAMAGE`,
-`HAZARDTYPE`, `INCIDENTNAME`, `INCIDENTSTARTDATE`, `LATITUDE`, `LONGITUDE`.
+Nine DINS fields are requested and no others: `OBJECTID`, `COUNTY`, `DAMAGE`,
+`HAZARDTYPE`, `INCIDENTNAME`, `INCIDENTSTARTDATE`, `LATITUDE`, `LONGITUDE`,
+`STRUCTURECATEGORY`.
 `SITEADDRESS`, `APN`, `STREETNUMBER`, `STREETNAME`, `ZIPCODE` and
 `ASSESSEDIMPROVEDVALUE` are published by CAL FIRE, are not needed to answer which polygon
 a point is in, and are therefore never downloaded. `tests/test_acquire.py` asserts that.
@@ -66,7 +111,7 @@ the county cut in `docs/adr/0009`, and it reaches the output only as a row label
 count.
 
 Requests carry a User-Agent naming this project, pause between pages, and stop rather
-than route around a 401, 403 or 429. No agency website is crawled: three REST endpoints
+than route around a 401, 403 or 429. No agency website is crawled: four REST endpoints
 are read the way their own dataset pages document them to be read.
 
 ## How completeness is established
