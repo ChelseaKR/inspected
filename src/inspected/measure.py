@@ -136,6 +136,47 @@ def representativeness(placement: Placement) -> dict[str, Any]:
     }
 
 
+def _band_rate_block(
+    distance_state: str, within_band: dict[int, int], denominator: int
+) -> dict[str, Any]:
+    """The proximity block for a contested-group row.
+
+    The denominator is the combination's own record count: every one of its records has
+    a nearest-edge distance among the group's outlines, whether or not it falls inside
+    any single band.
+    """
+    if distance_state != "measured":
+        return {
+            "state": distance_state,
+            "bands_m": list(BOUNDARY_BANDS_M),
+            "rates": [
+                Rate.not_measured(
+                    f"within {band} m of an edge in this combination",
+                    reason="no records are contested here, so no distance exists",
+                ).as_dict()
+                for band in BOUNDARY_BANDS_M
+            ],
+        }
+    return {
+        "state": distance_state,
+        "bands_m": list(BOUNDARY_BANDS_M),
+        "rates": [
+            Rate.of(
+                f"within {band} m of an edge in this combination",
+                within_band[band],
+                denominator,
+                note=(
+                    "Distance to the nearest edge among every outline in the "
+                    "combination. A contested record stops being contested when any "
+                    "of them ceases to contain it, so the nearest edge is the one an "
+                    "approximation error moves first."
+                ),
+            ).as_dict()
+            for band in BOUNDARY_BANDS_M
+        ],
+    }
+
+
 def _band_rates(tally: Any) -> list[dict[str, Any]]:
     if tally.distance_state != "measured":
         return [
@@ -219,7 +260,18 @@ def contested_groups(placement: Placement, limit: int = 25) -> list[dict[str, An
     items = sorted(placement.contested_groups.items(), key=lambda kv: (-kv[1], kv[0]))[
         :limit
     ]
-    return [{"territories": list(names), "records": count} for names, count in items]
+    rows: list[dict[str, Any]] = []
+    for names, count_ in items:
+        row: dict[str, Any] = {"territories": list(names), "records": count_}
+        bands = placement.contested_bands.get(names)
+        if bands is not None:
+            row["boundary_proximity"] = _band_rate_block(
+                placement.contested_distance_state.get(names, "not_measured"),
+                bands,
+                count_,
+            )
+        rows.append(row)
+    return rows
 
 
 def geometry_ledger(

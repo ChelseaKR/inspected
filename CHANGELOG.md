@@ -5,12 +5,22 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-### Changed
+### Added
 
+- Edge bands for contested groups. Each overlapping combination now carries how
+  much of it sits within 100, 250, 500 and 1000 metres of the nearest edge among the
+  outlines involved, with its own denominator and Wilson interval: a contested record
+  stops being contested when any outline in its combination ceases to contain it, so
+  that nearest edge is what an approximation error moves first. A combination near
+  100% at 250 metres is a thin seam between outlines; one near 0% is interior ground
+  two published territories genuinely cover together. The report's overlap table gains
+  the 250 metre column and still renders artifacts from before it existed unchanged.
 - `main` is protected by a branch ruleset: force push and deletion refused, every
   change arriving as a merged pull request, the six PR-facing checks required green,
   no bypass actors. The ci.yml header paragraph that recorded the gates as reporting
   without blocking is rewritten to match.
+
+### Changed
 
 Nothing else yet under Unreleased.
 

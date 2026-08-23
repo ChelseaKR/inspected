@@ -13,7 +13,12 @@ from typing import Any
 
 from inspected import artifacts, measure, report, sensitivity
 from inspected.geometry import load_territories
-from inspected.placement import classify, measure_boundary_distances, read_records
+from inspected.placement import (
+    classify,
+    measure_boundary_distances,
+    measure_contested_group_distances,
+    read_records,
+)
 from inspected.sources import DINS, ELSE_IOU_POU, ELSE_OTHER, RETRIEVED
 
 ARTIFACT_NAME = "measurements.json"
@@ -41,6 +46,7 @@ def build(
     records, excluded = read_records(_read_json(dins_path))
     placement = classify(records, territories, excluded)
     measure_boundary_distances(placement, territories)
+    measure_contested_group_distances(placement, territories)
 
     tree: dict[str, Any] = {
         "is_fixture": is_fixture,
