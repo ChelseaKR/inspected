@@ -7,6 +7,13 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- `inspected.artifact_diff`: the leaf-by-leaf refresh comparison from
+  `PROVENANCE.md`, promoted from a hand-run exercise into a command.
+  `python -m inspected.artifact_diff OLD NEW` reports every added, changed and removed
+  value at its path in both trees, pairs list rows by their identifying field where one
+  exists so a reordered collection stays silent and a changed row stays attached to its
+  name, and refuses to exit zero when published values disappear unless
+  `--allow-removals` names the removal deliberate.
 - An osv-scanner job in CI, reading the same `uv.lock` that `uv sync --locked`
   installs from, against the OSV database: a second vulnerability feed beside
   pip-audit, failing closed on any reported advisory.

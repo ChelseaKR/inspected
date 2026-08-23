@@ -154,10 +154,13 @@ these checks are applied to its output rather than assumed of it.
 
 **A refresh of the pin is compared against what it replaces, value by value.** A
 published number changing is fine. A published number changing quietly is not, and the
-only difference between the two is whether anybody measured it. The refresh of
-2026-08-17, which added the county field, is reported in `PROVENANCE.md` as a leaf-by-leaf
-comparison of the artifact before against the artifact after: 4,370 published values,
-none removed, none changed.
+only difference between the two is whether anybody measured it. The comparison is a
+command now rather than an act of care:
+`python -m inspected.artifact_diff OLD.json NEW.json` walks every leaf of both
+artifacts, reports what moved with its path and its old value, and refuses to pass if
+published values disappeared unless `--allow-removals` names the removal deliberate.
+The refresh of 2026-08-17, which added the county field, was compared this way by hand
+before the command existed: 4,370 published values, none removed, none changed.
 
 ## Relationship to `perimeter`
 
@@ -180,6 +183,7 @@ src/inspected/
   measure.py     the measurements, and a written record of the ones not built
   sensitivity.py the judgment calls, re-run against every alternative
   artifacts.py   the publication rules, enforced before anything is written
+  artifact_diff.py  what a refresh moved, leaf by leaf, or the run does not pass
   report.py      the generated document
 published/       measurements.json and REPORT.md, from the real retrievals
 fixtures/        hand-written, never sampled from the real file
