@@ -7,6 +7,10 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- A performance budget with a gate on it. `tests/test_performance_budget.py` runs
+  the offline fixture build against a recorded 30 second ceiling, generous by design:
+  wall clock does not compare across machines, so the budget catches order-of-magnitude
+  regressions over byte-identical inputs rather than load noise.
 - An operations runbook, `docs/RUNBOOK.md`: the refresh procedure start to finish,
   what each acquisition refusal (`AcquisitionBlocked`, `AcquisitionFailed`,
   `IncompleteAcquisition`) means and what to do, what each build-time gate failure
