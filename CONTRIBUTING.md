@@ -65,3 +65,34 @@ and commit the new `published/` tree. `data/raw/` stays out of git.
 ## Style
 
 Prose in comments and documentation explains why, not what. No em dashes or en dashes.
+
+## Your first change: a walkthrough
+
+Follow this walkthrough to make and verify your first change using only uv:
+
+1. Setup and offline build:
+   Run `uv sync --locked` to install pinned dependencies.
+   Run `make report-offline` (or `uv run python -m wildfire_service_territory_overlap.cli --fixture --dins fixtures/dins_sample.json --iou-pou fixtures/else_iou_pou_sample.geojson --other fixtures/else_other_sample.geojson --counties fixtures/county_boundaries_sample.geojson --out build/offline`).
+   This builds artifacts into `build/offline/measurements.json` and `build/offline/REPORT.md`.
+   Notice `"is_fixture": true` inside `measurements.json`: this flag distinguishes offline fixture runs from live published data.
+
+2. Inspect the generated report:
+   Open `build/offline/REPORT.md`. Locate the invented territories documented in `fixtures/README.md` (such as Alpha Electric Company, Beta Municipal Utility, Gamma Rural Cooperative, and Delta Choice Energy).
+
+3. Observe the determinism gate in action:
+   Break something tiny on purpose to see how the gates protect determinism. For example, edit `fixtures/else_iou_pou_sample.geojson` and rename a territory inside the fixture. Run `make determinism`.
+   Watch the gate refuse: two builds of byte-identical inputs must agree byte for byte, and any deviation or nondeterminism is rejected. Revert your temporary change before continuing.
+
+4. Understanding the verification gates:
+   `make verify` runs the following sequential gates. If a gate fails, here is what it means:
+   - `lock-check`: `uv lock --check` fails when `pyproject.toml` and `uv.lock` are out of sync.
+   - `sync`: `uv sync --locked` fails if dependencies cannot be cleanly installed from the lockfile.
+   - `lint`: `ruff check .` fails when code style or static quality rules are violated.
+   - `format`: `ruff format --check .` fails if code formatting deviates from ruff formatting rules.
+   - `typecheck`: `mypy --strict src` fails when static type annotations are missing or inconsistent.
+   - `test`: `pytest` with coverage fails when unit tests fail or branch coverage drops below the 90% floor.
+   - `audit`: `pip-audit` fails if any dependency contains known vulnerabilities.
+   - `report-offline`: fails if the offline report generation pipeline breaks on committed fixtures.
+   - `determinism`: fails if two consecutive builds from the same inputs produce different output bytes.
+
+For in-depth operational guidance and refusal troubleshooting, consult `docs/RUNBOOK.md`.
