@@ -171,7 +171,9 @@ def test_bad_usage_exits_two(tmp_path: Path, argv: list[str], expected: int) -> 
     assert main(argv) == expected
 
 
-def test_main_prints_a_verdict_line(capsys: pytest.Capsys, tmp_path: Path) -> None:
+def test_main_prints_a_verdict_line(
+    capsys: pytest.CaptureFixture[str], tmp_path: Path
+) -> None:
     old = tmp_path / "old.json"
     new = tmp_path / "new.json"
     changed = sample_tree()
@@ -182,3 +184,64 @@ def test_main_prints_a_verdict_line(capsys: pytest.Capsys, tmp_path: Path) -> No
     out = capsys.readouterr().out
     assert "1 changed." in out
     assert "Nothing was removed." in out
+
+
+def test_main_json_output_mode(
+    capsys: pytest.CaptureFixture[str], tmp_path: Path
+) -> None:
+    old = tmp_path / "old.json"
+    new = tmp_path / "new.json"
+    changed = sample_tree()
+    changed["placement_coverage"]["fire_records"] = 132522
+    changed["attributability_by_fire"] = {"counties_named_in_the_record_set": 52}
+    old.write_text(json.dumps(sample_tree()), encoding="utf-8")
+    new.write_text(json.dumps(changed), encoding="utf-8")
+
+    # Byte identical human readable without flag
+    main([str(old), str(new)])
+    plain_out = capsys.readouterr().out
+    assert "1 added" in plain_out
+    assert "1 changed" in plain_out
+    assert "Nothing was removed." in plain_out
+
+    # JSON mode
+    exit_code = main(["--json", str(old), str(new)])
+    assert exit_code == 0
+    json_out = capsys.readouterr().out
+    data = json.loads(json_out)
+
+    expected = diff_trees(sample_tree(), changed)
+    assert data["counts"]["total"] == expected.total
+    assert data["counts"]["added"] == len(expected.added)
+    assert data["counts"]["removed"] == len(expected.removed)
+    assert data["counts"]["changed"] == len(expected.changed)
+    assert data["counts"]["unchanged"] == expected.unchanged
+    assert len(data["added"]) == len(expected.added)
+    assert len(data["removed"]) == len(expected.removed)
+    assert len(data["changed"]) == len(expected.changed)
+    assert data["refused"] is False
+
+
+def test_main_json_removal_refusal(
+    capsys: pytest.CaptureFixture[str], tmp_path: Path
+) -> None:
+    old = tmp_path / "old.json"
+    new = tmp_path / "new.json"
+    stripped = sample_tree()
+    del stripped["placement_coverage"]["counts"]["placed"]
+    old.write_text(json.dumps(sample_tree()), encoding="utf-8")
+    new.write_text(json.dumps(stripped), encoding="utf-8")
+
+    # Without --allow-removals: exits 1 and refused is True
+    refused_code = main(["--json", str(old), str(new)])
+    assert refused_code == 1
+    refused_data = json.loads(capsys.readouterr().out)
+    assert refused_data["refused"] is True
+    assert refused_data["counts"]["removed"] == 1
+
+    # With --allow-removals: exits 0 and refused is False
+    allowed_code = main(["--json", "--allow-removals", str(old), str(new)])
+    assert allowed_code == 0
+    allowed_data = json.loads(capsys.readouterr().out)
+    assert allowed_data["refused"] is False
+    assert allowed_data["counts"]["removed"] == 1

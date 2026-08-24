@@ -8,7 +8,7 @@ so the next refresh cannot skip it by being tedious.
 
 Usage::
 
-    python -m wildfire_service_territory_overlap.artifact_diff OLD.json NEW.json [--allow-removals]
+    python -m wildfire_service_territory_overlap.artifact_diff OLD.json NEW.json [--allow-removals] [--json]
 
 Semantics
 ---------
@@ -256,6 +256,29 @@ def render(result: DiffResult, *, allow_removals: bool) -> str:
     return "\n".join(lines)
 
 
+def render_json(result: DiffResult, *, allow_removals: bool) -> str:
+    """The machine-readable report as a JSON object string."""
+    payload = {
+        "counts": {
+            "total": result.total,
+            "added": len(result.added),
+            "removed": len(result.removed),
+            "changed": len(result.changed),
+            "unchanged": result.unchanged,
+        },
+        "added": [{"path": leaf.path, "value": leaf.value} for leaf in result.added],
+        "removed": [
+            {"path": leaf.path, "value": leaf.value} for leaf in result.removed
+        ],
+        "changed": [
+            {"path": c.path, "before": c.before, "after": c.after}
+            for c in result.changed
+        ],
+        "refused": bool(result.removed and not allow_removals),
+    }
+    return json.dumps(payload, indent=2, sort_keys=False, ensure_ascii=False)
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="python -m wildfire_service_territory_overlap.artifact_diff",
@@ -271,6 +294,11 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="accept removed values; say why they went in PROVENANCE.md",
     )
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="print a JSON object instead of the human-readable report",
+    )
     args = parser.parse_args(argv)
     try:
         old = json.loads(args.old.read_text(encoding="utf-8"))
@@ -282,7 +310,10 @@ def main(argv: list[str] | None = None) -> int:
         print(f"an artifact is not valid JSON: {error}", file=sys.stderr)
         return 2
     result = diff_trees(old, new)
-    print(render(result, allow_removals=args.allow_removals))
+    if args.json:
+        print(render_json(result, allow_removals=args.allow_removals))
+    else:
+        print(render(result, allow_removals=args.allow_removals))
     if result.removed and not args.allow_removals:
         return 1
     return 0

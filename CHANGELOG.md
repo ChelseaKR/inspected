@@ -16,6 +16,8 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- `artifact_diff --json`: an opt-in machine-readable JSON output mode for the refresh
+  diff command, printing counts, full added/removed/changed leaf collections, and run refusal status.
 - **The coordinate-county comparison** (`docs/adr/0013`). CAL FIRE's `COUNTY` field is
   now measured, not just trusted: 132,490 records carry both a usable coordinate and a
   label the new CDT county layer carries, 132,459 agree, and 31 (0.023%) sit outside
