@@ -7,6 +7,7 @@ the real retrievals, so a fixture build can never be mistaken for the published 
 from __future__ import annotations
 
 import argparse
+import importlib.metadata
 import json
 from pathlib import Path
 from typing import Any
@@ -113,6 +114,11 @@ def main(argv: list[str] | None = None) -> int:
         prog="wildfire-service-territory-overlap",
         description="Measure how much of the DINS record set a published electric "
         "service territory boundary can account for. Reads local files only.",
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"%(prog)s {importlib.metadata.version('wildfire-service-territory-overlap')}",
     )
     parser.add_argument("--dins", type=Path, required=True)
     parser.add_argument("--iou-pou", type=Path, required=True)

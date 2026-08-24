@@ -71,6 +71,23 @@ def test_the_cli_returns_zero_and_names_what_it_wrote(
     assert "measurements.json" in capsys.readouterr().out
 
 
+def test_the_cli_version_flag_prints_version_and_exits_zero(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    import tomllib
+
+    pyproject_version = tomllib.loads(
+        (ROOT / "pyproject.toml").read_text(encoding="utf-8")
+    )["project"]["version"]
+
+    with pytest.raises(SystemExit) as exc:
+        cli.main(["--version"])
+    assert exc.value.code == 0
+    out = capsys.readouterr().out
+    assert pyproject_version in out
+    assert "wildfire-service-territory-overlap" in out
+
+
 def test_two_builds_of_the_same_inputs_are_byte_identical(tmp_path: Path) -> None:
     build_into(tmp_path / "one")
     build_into(tmp_path / "two")

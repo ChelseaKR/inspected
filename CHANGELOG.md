@@ -5,6 +5,11 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Added `--version` flag to the CLI (`python -m wildfire_service_territory_overlap.cli --version`) reading the version from installed package metadata (`importlib.metadata.version`).
+
+
 ### Changed
 
 - Renamed the project to `wildfire-service-territory-overlap` across the distribution, the package, and every
