@@ -181,6 +181,23 @@ def test_the_verify_target_exists_and_is_what_ci_runs() -> None:
     assert "run: make verify" in ci
 
 
+def test_makefile_help_documents_all_primary_targets() -> None:
+    """The help target and comments must document key lifecycle targets."""
+    help_targets: dict[str, str] = {}
+    for line in MAKEFILE.splitlines():
+        match = re.match(r"^([a-zA-Z_-]+):.*?##\s*(.+)$", line)
+        if match:
+            help_targets[match.group(1)] = match.group(2)
+
+    assert "\nhelp:" in MAKEFILE
+    assert MAKEFILE.startswith("default: help\n")
+    for required in ("verify", "report-offline", "determinism", "acquire"):
+        assert required in help_targets, f"Makefile help does not document '{required}'"
+        assert len(help_targets[required]) > 10, (
+            f"Help description for '{required}' is too short"
+        )
+
+
 @pytest.mark.parametrize("workflow", WORKFLOWS, ids=lambda p: p.name)
 def test_every_workflow_declares_a_top_level_permissions_block(workflow: Path) -> None:
     text = workflow.read_text(encoding="utf-8")

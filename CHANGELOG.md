@@ -5,6 +5,11 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- A self-documenting `make help` target (and default goal) listing every Makefile target
+  with an accurate one-line description, verified by `tests/test_provenance_and_standards.py`.
+
 ### Changed
 
 - Renamed the project to `wildfire-service-territory-overlap` across the distribution, the package, and every
