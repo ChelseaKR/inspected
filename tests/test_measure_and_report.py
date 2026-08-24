@@ -122,6 +122,19 @@ def test_contested_groups_are_counts_and_are_capped(placement: Placement) -> Non
     assert set(groups[0]["territories"]) == {ALPHA, "Beta Municipal Utility"}
 
 
+def test_contested_groups_are_ordered_by_size_descending() -> None:
+    """contested_groups orders combinations by record count descending as size, not a utility ranking."""
+    p = Placement(fire_records=85, excluded_by_hazard=0)
+    p.contested_groups[("Utility A", "Utility B")] = 10
+    p.contested_groups[("Utility C", "Utility D")] = 50
+    p.contested_groups[("Utility E", "Utility F")] = 25
+    groups = measure.contested_groups(p)
+    assert [g["records"] for g in groups] == [50, 25, 10]
+    assert groups[0]["territories"] == ["Utility C", "Utility D"]
+    assert groups[1]["territories"] == ["Utility E", "Utility F"]
+    assert groups[2]["territories"] == ["Utility A", "Utility B"]
+
+
 def test_the_geometry_ledger_sizes_the_repair_rather_than_only_naming_it(
     placement: Placement,
     territories: tuple[Territory, ...],

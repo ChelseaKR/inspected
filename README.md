@@ -146,9 +146,11 @@ position is read, inferred, approximated, or published, from these sources or an
 The CEC layers are administrative outlines. An analysis that would need an asset location
 is not built here.
 
-**No utility is compared to another.** Every collection in the output is sorted by name,
-`assert_no_ranking` refuses an artifact key that scores or grades, and
-`tests/test_published.py` reads the generated report for comparative phrasing.
+**No utility is compared to another.** Every collection in the output is sorted by name
+(with `contested_groups` listed by size because size of the boundary overlap is what is
+being reported, not a property of any individual utility), `assert_no_ranking` refuses
+an artifact key that scores or grades, and `tests/test_published.py` reads the generated
+report for comparative phrasing.
 
 **An acquisition that fetched part of a dataset must not report as complete.** Each layer
 is asked for its own record count before and after the walk, identifiers must come back
