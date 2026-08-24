@@ -1,0 +1,49 @@
+name: Bug report
+description: Report a bug, unexpected behavior, or verification failure
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report an issue.
+
+        If this is a security vulnerability, please do not file it here. See
+        SECURITY.md for instructions on private reporting.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What command did you run and what output or behavior was observed?
+      placeholder: Paste the exact command and full output or traceback.
+    validations:
+      required: true
+  - type: textarea
+    id: make-verify-output
+    attributes:
+      label: make verify output
+      description: What did `make verify` report?
+      placeholder: Paste output from `make verify` here.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Minimal steps or script to reproduce the issue from a clean environment.
+      placeholder: "1. git checkout ...\n2. uv sync --locked\n3. ..."
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should have happened according to project specifications or invariants?
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Environment details, operating system, Python version, or related ADRs.
+    validations:
+      required: false

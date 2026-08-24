@@ -1,0 +1,49 @@
+name: Measurement proposal
+description: Propose a new rate, proportion, or geographic measurement
+labels: ["measurement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Every measurement in this project must carry a numerator, a denominator,
+        and an uncertainty interval. Measurements must never rank, grade, or score
+        utilities, and must never touch or locate physical utility infrastructure.
+  - type: textarea
+    id: question
+    attributes:
+      label: Research question
+      description: What specific geographic or overlap question does this measurement answer?
+    validations:
+      required: true
+  - type: textarea
+    id: numerator
+    attributes:
+      label: The Numerator
+      description: What is the count of events or features being evaluated?
+    validations:
+      required: true
+  - type: textarea
+    id: denominator
+    attributes:
+      label: THE DENOMINATOR
+      description: |
+        What is the complete population or domain of observation? A count without
+        a denominator is not a risk and will be refused by artifacts.py.
+    validations:
+      required: true
+  - type: textarea
+    id: no-ranking-no-infrastructure
+    attributes:
+      label: Ranking and infrastructure review
+      description: |
+        Explain why this measurement ranks nobody and how it ensures no physical
+        utility asset locations or parcel/structure identifiers are read or published.
+    validations:
+      required: true
+  - type: textarea
+    id: adr-alignment
+    attributes:
+      label: ADR and architecture alignment
+      description: Which ADR does this proposal extend, or what new standard does it follow?
+    validations:
+      required: false

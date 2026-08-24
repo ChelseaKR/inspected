@@ -5,6 +5,10 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- GitHub issue forms (Bug report, Measurement proposal) and PR template under `.github/`, introducing project invariants (denominator requirement, no-ranking rules, Definition of Done checklist, published figures disclosure). (#19)
+
 ### Changed
 
 - Renamed the project to `wildfire-service-territory-overlap` across the distribution, the package, and every
