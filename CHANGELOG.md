@@ -5,6 +5,10 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- A project glossary (`docs/GLOSSARY.md`), defining core domain and technical terms (DINS, LSE, IOU, POU, CO-OP, Tribal, CCA, ADMIN, SRA, OGC validity and repairs, contested records, Wilson and Newcombe score intervals, boundary bands) with links to their authoritative definitions.
+
 ### Changed
 
 - Renamed the project to `wildfire-service-territory-overlap` across the distribution, the package, and every
@@ -16,6 +20,7 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- A project glossary (), defining core domain and technical terms (DINS, LSE, IOU, POU, CO-OP, Tribal, CCA, ADMIN, SRA, OGC validity and repairs, contested records, Wilson and Newcombe score intervals, boundary bands) with links to their authoritative definitions.
 - **The coordinate-county comparison** (`docs/adr/0013`). CAL FIRE's `COUNTY` field is
   now measured, not just trusted: 132,490 records carry both a usable coordinate and a
   label the new CDT county layer carries, 132,459 agree, and 31 (0.023%) sit outside
@@ -116,6 +121,7 @@ before the tag was cut, to fold in the roadmap execution that shipped the same d
 
 ### Added
 
+- A project glossary (), defining core domain and technical terms (DINS, LSE, IOU, POU, CO-OP, Tribal, CCA, ADMIN, SRA, OGC validity and repairs, contested records, Wilson and Newcombe score intervals, boundary bands) with links to their authoritative definitions.
 - Placement coverage over CAL FIRE DINS against the California Energy Commission's
   published electric service territory outlines: how much of the wildfire record set
   falls inside exactly one territory, inside more than one, inside none, or carries a
