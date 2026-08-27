@@ -1,0 +1,13 @@
+# Blank issues stay on. The forms below cover a defect and a proposed measurement, and
+# most of what this repository's own backlog holds is neither: issues 16 to 23 are
+# maintainer-written notes about a flag, a Makefile target, a template set and a
+# contradiction between a docstring and the README. Turning blank issues off would send
+# all of those through a form that asks for a denominator they do not have, and the
+# predictable result is a reporter filling required fields with "n/a" or not filing.
+blank_issues_enabled: true
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/ChelseaKR/wildfire-service-territory-overlap/security/advisories/new
+    about: >-
+      Report privately through GitHub private vulnerability reporting, not as a public
+      issue. SECURITY.md states the acknowledgment target and the severity levels.

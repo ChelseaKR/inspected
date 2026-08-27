@@ -386,3 +386,17 @@ def test_no_dash_character_appears_in_the_published_documents(
 ) -> None:
     for dash in ("\u2014", "\u2013"):
         assert dash not in published_report
+
+
+def test_the_published_collections_are_ordered_the_way_the_documents_say(
+    published_artifact: dict[str, Any],
+) -> None:
+    """Issue 23 was found in this file, not in the code. It is now read here.
+
+    Territories in name order, and the one documented exception in size order, asserted
+    against what was actually published rather than against what the writer intended.
+    """
+    names = [row["territory"] for row in published_artifact["territories"]]
+    assert names == sorted(names)
+    counts = [row["records"] for row in published_artifact["contested_groups"]]
+    assert counts == sorted(counts, reverse=True)

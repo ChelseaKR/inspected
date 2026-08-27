@@ -8,7 +8,8 @@ so the next refresh cannot skip it by being tedious.
 
 Usage::
 
-    python -m wildfire_service_territory_overlap.artifact_diff OLD.json NEW.json [--allow-removals]
+    python -m wildfire_service_territory_overlap.artifact_diff OLD.json NEW.json
+        [--allow-removals] [--json]
 
 Semantics
 ---------
@@ -37,6 +38,40 @@ at adjacent indices when two combinations swap size. Read those rows together.
 
 Exit codes: ``0`` when there is nothing to refuse, ``1`` when values were removed and
 ``--allow-removals`` was not given, ``2`` on bad usage.
+
+Output
+------
+Without ``--json`` the report is the prose above: one line per changed, added and
+removed leaf, a line of counts, and a verdict.
+
+With ``--json`` stdout carries exactly one JSON object and no prose, so the refresh
+procedure can read the counts instead of a person copying them. It holds the same
+information the prose does:
+
+``counts``
+    ``total``, ``added``, ``removed``, ``changed`` and ``unchanged``.
+
+``added``, ``removed``
+    Every leaf, as ``path`` and ``value``.
+
+``changed``
+    Every leaf, as ``path``, ``before`` and ``after``.
+
+``refused``
+    Whether this run refuses, which is exactly the condition behind exit code ``1``:
+    values were removed and ``--allow-removals`` was not given.
+
+``allow_removals``
+    Whether the flag was given, so ``refused`` being false is never read as nothing
+    having been removed.
+
+Values arrive whole. The prose truncates a long value to keep a line readable, and a
+machine-readable mode that did the same would publish a value that is not the value.
+Neither the flag nor the mode moves an exit code, and neither softens the removal
+refusal: ``--json`` reports the refusal, it does not lift it.
+
+The one JSON object is the whole of stdout in that mode. A usage failure still writes
+plain text to stderr and exits ``2``, leaving stdout empty rather than half an object.
 """
 
 from __future__ import annotations
@@ -256,6 +291,30 @@ def render(result: DiffResult, *, allow_removals: bool) -> str:
     return "\n".join(lines)
 
 
+def render_json(result: DiffResult, *, allow_removals: bool) -> str:
+    """The same comparison as one JSON object, with values whole rather than shortened."""
+    payload: dict[str, Any] = {
+        "added": [{"path": leaf.path, "value": leaf.value} for leaf in result.added],
+        "allow_removals": allow_removals,
+        "changed": [
+            {"after": change.after, "before": change.before, "path": change.path}
+            for change in result.changed
+        ],
+        "counts": {
+            "added": len(result.added),
+            "changed": len(result.changed),
+            "removed": len(result.removed),
+            "total": result.total,
+            "unchanged": result.unchanged,
+        },
+        "refused": bool(result.removed) and not allow_removals,
+        "removed": [
+            {"path": leaf.path, "value": leaf.value} for leaf in result.removed
+        ],
+    }
+    return json.dumps(payload, indent=2, sort_keys=True, ensure_ascii=False)
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="python -m wildfire_service_territory_overlap.artifact_diff",
@@ -271,6 +330,11 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="accept removed values; say why they went in PROVENANCE.md",
     )
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="print one JSON object instead of the prose; exit codes are unchanged",
+    )
     args = parser.parse_args(argv)
     try:
         old = json.loads(args.old.read_text(encoding="utf-8"))
@@ -282,7 +346,10 @@ def main(argv: list[str] | None = None) -> int:
         print(f"an artifact is not valid JSON: {error}", file=sys.stderr)
         return 2
     result = diff_trees(old, new)
-    print(render(result, allow_removals=args.allow_removals))
+    write = render_json if args.json else render
+    print(write(result, allow_removals=args.allow_removals))
+    # The refusal is decided by the comparison, not by the output mode. `--json` reports
+    # it; it does not lift it.
     if result.removed and not args.allow_removals:
         return 1
     return 0

@@ -38,7 +38,11 @@ comparison that the data cannot support, and this project does not publish it in
 form, ordered or unordered.
 
 **No territory is ranked, scored, or ordered by any measured value.** Every collection
-in the output is sorted by name.
+in the output is sorted by name, with one documented exception that orders combinations
+rather than territories. :func:`contested_groups` lists overlapping combinations largest
+first: size is what that collection reports, and the list is capped at the largest 25, a
+selection a name order cannot make. No row of it carries a rate and no named entity
+stands alone on one.
 
 **No rate is published against a denominator drawn from outside this record set.** Not
 housing units, not customers, not meters, not parcels. The numerator here is a

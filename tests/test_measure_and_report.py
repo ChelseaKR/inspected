@@ -122,6 +122,28 @@ def test_contested_groups_are_counts_and_are_capped(placement: Placement) -> Non
     assert set(groups[0]["territories"]) == {ALPHA, "Beta Municipal Utility"}
 
 
+def test_contested_groups_are_listed_largest_first(placement: Placement) -> None:
+    """The one collection not in name order, held to the order the documents now claim.
+
+    The cap is why: the rows are the largest 25 combinations, and a selection of the
+    largest cannot be made from a name order. Ties fall back to the names, so the output
+    stays byte-identical over identical inputs.
+    """
+    placement.contested_groups[("Delta Water Agency", "Epsilon Power")] = 9
+    placement.contested_groups[("Alpha Electric Company", "Zeta Irrigation")] = 9
+    placement.contested_groups[("Theta Tribal Utility", "Iota Cooperative")] = 41
+
+    groups = measure.contested_groups(placement)
+    counts = [row["records"] for row in groups]
+    assert counts == sorted(counts, reverse=True)
+    assert groups[0]["records"] == 41
+    # Ties break on the names, in name order, so the order is total and reproducible.
+    assert [row["territories"] for row in groups if row["records"] == 9] == [
+        ["Alpha Electric Company", "Zeta Irrigation"],
+        ["Delta Water Agency", "Epsilon Power"],
+    ]
+
+
 def test_the_geometry_ledger_sizes_the_repair_rather_than_only_naming_it(
     placement: Placement,
     territories: tuple[Territory, ...],

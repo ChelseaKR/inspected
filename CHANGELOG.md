@@ -16,6 +16,32 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- `--version` on the CLI. It reads the installed distribution metadata, which the build
+  backend copies from `pyproject.toml`, so there is no second copy of the version to
+  drift. The lookup happens inside the flag rather than while the parser is built: a
+  version resolved at construction time runs on every invocation, including the ones
+  that never ask, and a checkout with no installed metadata would lose `--dins` along
+  with `--version`. A version that cannot be read is not guessed. It is reported as not
+  measured, on stderr, with a nonzero exit, which is the shape every other
+  unanswerable question takes here.
+- `--json` on `artifact_diff`. One object on stdout carrying the counts, every added,
+  removed and changed leaf with its path, whether the run refuses, and whether
+  `--allow-removals` was given, so `refused: false` is never read as nothing having
+  gone. Values arrive whole where the prose shortens them. The flag is opt-in and moves
+  nothing else: the default output is held byte-for-byte by a test, exit codes are
+  unchanged, and `--json` reports the removal refusal rather than lifting it. The
+  refresh procedure can now read the counts instead of a person copying them.
+- `make help`, listing every target with one line. A target is listed because its own
+  line carries the description, so adding a target and documenting it are one edit, and
+  a test runs the target and refuses a target that carries none. `acquire` is the only
+  line that says network, and a test holds that too.
+- Two issue forms and a pull request template under `.github/`. The measurement form
+  asks for the numerator, the denominator, why the measurement ranks nobody and why it
+  touches no infrastructure, in the words `artifacts.py` uses when it refuses. The pull
+  request checklist is `docs/DEFINITION_OF_DONE.md` copied item for item, docs-only
+  section included, and a test holds the two together so the checklist cannot fall
+  behind the rules. Blank issues stay enabled: most of this backlog fits neither form,
+  and a required denominator on a note about a Makefile target collects fiction.
 - **The coordinate-county comparison** (`docs/adr/0013`). CAL FIRE's `COUNTY` field is
   now measured, not just trusted: 132,490 records carry both a usable coordinate and a
   label the new CDT county layer carries, 132,459 agree, and 31 (0.023%) sit outside
@@ -50,7 +76,21 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-Nothing else yet under Unreleased.
+- The README's ordering claim now names its one exception. It said every collection in
+  the output is sorted by name, without qualification, next to the enforced no-ranking
+  rule. That is false for `contested_groups`, which is ordered by record count, and
+  `check_all` only ever applies the name-order rule to `territories`. The claim is
+  narrowed rather than the ordering changed: size is what that collection reports, the
+  rows are the largest 25 and a name order cannot select the largest, no row carries a
+  rate, and no named entity stands alone on one. The same sentence in `measure.py` moved
+  with it, and three tests now hold the claim, the code and the published artifact
+  together. Reported as issue 23.
+- The Makefile declares `.DEFAULT_GOAL := verify` instead of inheriting it from line
+  order. Bare `make` already ran the one gate, because `verify` is the first target in
+  the file. It is written down now so adding `help` above it, or moving a target, cannot
+  quietly change what a habitual keystroke does.
+- The em dash and en dash check reads `.github` as well, so the templates a contributor
+  meets before writing anything are held to the writing rule they state.
 
 ## [0.1.0] - 2026-08-18
 

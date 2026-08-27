@@ -2,12 +2,19 @@
 
 ``--fixture`` marks the output as built from the committed sample files rather than from
 the real retrievals, so a fixture build can never be mistaken for the published one.
+
+``--version`` answers from the installed distribution metadata, which the build backend
+copies out of ``pyproject.toml``, so the version has one home and no way to drift from
+it. It answers or it says it could not; it never guesses.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import sys
+from collections.abc import Sequence
+from importlib import metadata
 from pathlib import Path
 from typing import Any
 
@@ -29,6 +36,63 @@ from wildfire_service_territory_overlap.sources import (
 
 ARTIFACT_NAME = "measurements.json"
 REPORT_NAME = "REPORT.md"
+
+# The name of the distribution whose metadata carries the version. Not a second copy of
+# the version: `pyproject.toml` holds the only one, the build backend copies it into the
+# installed metadata, and this reads it back from there. A test holds this string against
+# `project.name` so the lookup cannot go looking for a distribution nobody builds.
+DISTRIBUTION = "wildfire-service-territory-overlap"
+
+
+class _VersionAction(argparse.Action):
+    """`--version`, resolved when the flag is used rather than when it is declared.
+
+    `argparse`'s own version action takes a finished string at parser construction time.
+    Reading installed metadata into that string runs the lookup on every invocation,
+    including the ones that never ask for a version, so a checkout with no installed
+    distribution metadata loses the whole command rather than one flag. The lookup
+    therefore happens here, inside the flag.
+
+    A version that cannot be read is not reported as a version. There is no fallback
+    guess: the answer is the statement that nothing was installed to answer from, on
+    stderr, with a nonzero exit, in the same shape this project reports every other
+    measurement it could not make.
+    """
+
+    def __init__(
+        self,
+        option_strings: Sequence[str],
+        dest: str = argparse.SUPPRESS,
+        default: str = argparse.SUPPRESS,
+        help: str = "print the installed version and exit",
+    ) -> None:
+        super().__init__(
+            option_strings=list(option_strings),
+            dest=dest,
+            default=default,
+            nargs=0,
+            help=help,
+        )
+
+    def __call__(
+        self,
+        parser: argparse.ArgumentParser,
+        namespace: argparse.Namespace,
+        values: str | Sequence[Any] | None,
+        option_string: str | None = None,
+    ) -> None:
+        try:
+            version = metadata.version(DISTRIBUTION)
+        except metadata.PackageNotFoundError:
+            print(
+                f"{parser.prog}: version not measured. Nothing installed under "
+                f"{DISTRIBUTION} carries distribution metadata to read it from. "
+                "Install the project, with `uv sync --locked`, and ask again.",
+                file=sys.stderr,
+            )
+            raise SystemExit(1) from None
+        print(f"{parser.prog} {version}")
+        raise SystemExit(0)
 
 
 def _read_json(path: Path) -> Any:
@@ -114,6 +178,7 @@ def main(argv: list[str] | None = None) -> int:
         description="Measure how much of the DINS record set a published electric "
         "service territory boundary can account for. Reads local files only.",
     )
+    parser.add_argument("--version", action=_VersionAction)
     parser.add_argument("--dins", type=Path, required=True)
     parser.add_argument("--iou-pou", type=Path, required=True)
     parser.add_argument("--other", type=Path, required=True)

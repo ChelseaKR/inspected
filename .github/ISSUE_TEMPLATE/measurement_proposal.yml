@@ -1,0 +1,88 @@
+name: Measurement proposal
+description: A number you think this project should publish
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Nothing shaped like a rate leaves this project without its numerator, its
+        denominator, its interval and the method that produced the interval. A count
+        without a denominator is not a risk, and a rate without an interval is not a
+        comparison. `artifacts.check_all` refuses both before anything is written, so a
+        proposal that cannot answer the fields below cannot be built, whoever writes it.
+
+        A proposal that fails a field is still worth filing. Say so in the field. What
+        this project cannot measure is a finding it publishes rather than hides.
+  - type: textarea
+    id: question
+    attributes:
+      label: The question
+      description: >-
+        One sentence, answerable from the two published datasets. Not the number you
+        want; the question the number would answer.
+    validations:
+      required: true
+  - type: textarea
+    id: numerator
+    attributes:
+      label: The numerator
+      description: Which records are counted, and which published field decides.
+    validations:
+      required: true
+  - type: textarea
+    id: denominator
+    attributes:
+      label: THE DENOMINATOR
+      description: >-
+        Which population the numerator is counted out of, and why that population
+        contains it. Not housing units, not customers, not meters, not parcels: a
+        denominator defined some other way produces a number whose denominator does not
+        contain its numerator. If the denominator would be zero for some rows, say what
+        those rows report instead, remembering that a measurement that could not be made
+        is not a zero.
+    validations:
+      required: true
+  - type: textarea
+    id: ranks-nobody
+    attributes:
+      label: Why this ranks nobody
+      description: >-
+        Territories come out sorted by name and no published key orders, scores or
+        grades one against another. Say what stops this measurement from being read as a
+        league table of named companies, and what it would look like next to another
+        entity's row. ADR 0004 is the standing example of a number refused for failing
+        this: a territory-level damage rate would describe one fire and wear a company's
+        name.
+    validations:
+      required: true
+  - type: textarea
+    id: touches-no-infrastructure
+    attributes:
+      label: Why this touches no infrastructure and locates nobody
+      description: >-
+        No pole, conductor, substation or circuit position is read, inferred,
+        approximated or published here, from these sources or any other, and no
+        coordinate, address, parcel number or per-structure identifier reaches an
+        artifact. Say why this measurement needs none of them.
+    validations:
+      required: true
+  - type: textarea
+    id: judgment-call
+    attributes:
+      label: The judgment call inside it, and what it is worth
+      description: >-
+        If the measurement embeds a choice that could have gone the other way, name it
+        and say how the alternative would be measured alongside it. ADR 0006 set the
+        standard: a judgment call ships with a sensitivity variant that says what it is
+        worth. If there is no judgment call, say that.
+    validations:
+      required: false
+  - type: textarea
+    id: adr
+    attributes:
+      label: Which ADR this extends, or argues with
+      description: >-
+        `docs/adr/` holds the decisions. Name the one this builds on, or the one you
+        think is wrong.
+    validations:
+      required: false

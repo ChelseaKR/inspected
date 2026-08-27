@@ -20,6 +20,7 @@ are in `PROVENANCE.md`.
 
 ```bash
 uv sync --locked
+make help                  # every target, one line each; bare `make` runs verify
 make verify                # lint, types, tests, coverage floor, determinism
 ```
 
@@ -147,6 +148,11 @@ The CEC layers are administrative outlines. An analysis that would need an asset
 is not built here.
 
 **No utility is compared to another.** Every collection in the output is sorted by name,
+with one documented exception. `contested_groups` lists combinations of outlines largest
+first, because the size of an overlap is the thing that collection reports and because it
+is capped at the largest 25, which a name order could not select. No row of it carries a
+rate, and it orders combinations rather than utilities: no named entity appears there
+alone. `assert_territories_sorted_by_name` refuses territory rows in any other order,
 `assert_no_ranking` refuses an artifact key that scores or grades, and
 `tests/test_published.py` reads the generated report for comparative phrasing.
 
@@ -163,6 +169,9 @@ command now rather than an act of care:
 `python -m wildfire_service_territory_overlap.artifact_diff OLD.json NEW.json` walks every leaf of both
 artifacts, reports what moved with its path and its old value, and refuses to pass if
 published values disappeared unless `--allow-removals` names the removal deliberate.
+`--json` prints the same comparison as one object, values whole, for the step of the
+refresh procedure that copies counts into `PROVENANCE.md`; it moves no exit code and it
+does not lift the removal refusal.
 The refresh of 2026-08-17, which added the county field, was compared this way by hand
 before the command existed: 4,370 published values, none removed, none changed.
 
@@ -250,7 +259,7 @@ standards bind it. The scoping below was derived here and a manifest entry super
 | Internationalization | Applies (not met): `docs/I18N.md` records the declaration. English only, no catalog |
 | AI Evaluation | N/A: No model, no LLM, no generated text anywhere in the pipeline or the output |
 | Quality & Metrics | Applies: Fail-closed gates throughout: the retrieval schema guard, the acquisition completeness checks, the publication rules, the coverage floor, a performance budget with its own test, and a determinism gate whose own failure modes are tested. `docs/DEFINITION_OF_DONE.md` defines done by kind of change, and `docs/METRICS_LEDGER.md` records baselines and outcomes per stream. Not met: nothing recorded |
-| Documentation | Applies: README, `PROVENANCE.md`, `CONTRIBUTING.md`, `SECURITY.md`, `CHANGELOG.md`, `CITATION.cff`, a `docs/adr/` log, this table, and a `.standards-version` pin a test reads |
+| Documentation | Applies: README, `PROVENANCE.md`, `CONTRIBUTING.md`, `SECURITY.md`, `CHANGELOG.md`, `CITATION.cff`, a `docs/adr/` log, this table, and a `.standards-version` pin a test reads. `make help` lists every target with one line and a test refuses a target that carries none. Two issue forms and a pull request template under `.github/` carry the house rules to a first-time contributor; the checklist is copied from `docs/DEFINITION_OF_DONE.md` item for item and a test holds the two together. Blank issues stay enabled, because a note about a flag or a Makefile target has no denominator to give the measurement form |
 | Release & Versioning | Applies: Version `0.1.0` in `pyproject.toml` and `CITATION.cff`, with a CHANGELOG entry for it. The signed annotated tag `v0.1.0` was cut from `main` and released through the hardened three-job workflow on 2026-08-23 UTC: `authorize` verified the tag signature against `.github/allowed_signers`, and `publish` attached the wheel, the sdist, the reproducible CycloneDX SBOM, and a build provenance attestation. Not met: nothing recorded |
 | Responsible-Tech Framework | Applies: Unofficial framing on the README and on the generated report, no claim about any utility's posture, no address, parcel number, assessed value or coordinate republished, no ranking of any named company, and an acquisition that stops rather than routing around an access control. `docs/RESPONSIBLE-TECH.md` states the refusals as ethics content, names who each residual misreading lands on, and carries a review date. Not met: nothing recorded |
 | Performance | Applies: A CLI over local files. The full build runs in about 18 seconds, and now does twelve placements of the record set rather than one. It was about 50 seconds doing one, before the containment query was changed to narrow by bounding box and then test against a prepared geometry, which a test holds to answering exactly what the predicate form answers. The budget is recorded and enforced in `tests/test_performance_budget.py`: an offline fixture build must finish inside 30 seconds, generous by design because wall clock does not compare across machines; it exists to catch order-of-magnitude regressions over byte-identical inputs |
