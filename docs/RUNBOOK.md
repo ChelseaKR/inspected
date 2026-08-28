@@ -93,6 +93,29 @@ not among the options.
 **`uv lock --check` fails.** The lockfile and `pyproject.toml` disagree. Re-lock
 deliberately, review the resolution, and commit both together.
 
+## Re-reading the protection on `main`
+
+The conformance table states what the branch ruleset does. Nothing in this repository
+can check that from a test: the ruleset lives in repository settings, and the test suite
+runs offline against committed files. So it is re-read by hand, and the command is here
+rather than in somebody's memory.
+
+```sh
+gh api repos/OWNER/REPO/rulesets --jq '.[].id'
+gh api repos/OWNER/REPO/rulesets/RULESET_ID \
+  --jq '{enforcement, bypass_actors, checks: [.rules[] | select(.type=="required_status_checks") | .parameters.required_status_checks[].context]}'
+```
+
+Three things have to agree with the README's CI/CD row: `enforcement` is `active`, the
+six contexts are all present, and `bypass_actors` is what the row says it is. On
+2026-08-28 the third disagreed. The row had said `with no bypass actors` since it was
+written; the ruleset carried `RepositoryRole` 5, repository admin, at `bypass_mode:
+always`. The row now says so. A required check that the one account which pushes can
+skip is a required check by agreement rather than by configuration, and the difference
+only shows up if somebody reads the setting back.
+
+Re-read it on every refresh of the pin, and whenever the conformance table is touched.
+
 ## What must never happen
 
 - `data/raw/` is never committed, at any granularity, ever.

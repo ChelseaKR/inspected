@@ -10,7 +10,12 @@ that turns out to violate a rule in `docs/adr/` gets dropped rather than argued 
 the owner's approval, 0.1 shipped: signed annotated tag `v0.1.0`, verified against
 `.github/allowed_signers`, released through the three-job workflow with wheel, sdist,
 SBOM and provenance attestation attached; and 0.5 shipped as a branch ruleset on
-`main` that is PR-only behind its six checks with no bypass actors. On 2026-08-23,
+`main` that is PR-only behind its six checks. It shipped carrying one bypass actor,
+the repository admin role at `bypass_mode: always`, and was recorded here as carrying
+none until 2026-08-28, when the ruleset was read back. The item ships as it stands,
+with one deliberate bypass actor recorded rather than hidden: a required check the
+pushing account can skip is a required check by agreement, and that is the posture,
+not an oversight. On 2026-08-23,
 1.1 shipped as a registration in the portfolio applicability manifest, superseding
 this repository's own scoping table; 2.4 shipped as edge bands on the contested
 groups; and the deliberate refresh carried 2.2 (`docs/adr/0013`, the coordinate-county
