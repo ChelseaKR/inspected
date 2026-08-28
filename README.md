@@ -21,6 +21,7 @@ are in `PROVENANCE.md`.
 ```bash
 uv sync --locked
 make verify                # lint, types, tests, coverage floor, determinism
+make help                  # every target, one line each
 ```
 
 Then read [`published/REPORT.md`](published/REPORT.md), which is generated, and
