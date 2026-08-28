@@ -278,6 +278,44 @@ def render(result: DiffResult, *, allow_removals: bool) -> str:
     return "\n".join(lines)
 
 
+def as_json(result: DiffResult, *, allow_removals: bool) -> str:
+    """The same comparison as one JSON object, for a caller that is not a person.
+
+    The refresh procedure in ``docs/RUNBOOK.md`` copies the summary into
+    ``PROVENANCE.md`` by hand. This makes that step mechanical without changing what the
+    prose mode prints or what either mode exits with.
+
+    ``allow_removals`` is reported alongside ``refused`` on purpose. Without it,
+    ``"refused": false`` on a run that removed values and was told to accept them reads
+    as a run where nothing was removed, which is the same misreading the prose verdict
+    used to invite.
+
+    Values are whole here. :func:`_short` shortens a long value so a terminal line stays
+    readable, and a machine-readable mode that did the same would be publishing a
+    truncated value under the name of the real one.
+    """
+    payload: dict[str, Any] = {
+        "counts": {
+            "total": result.total,
+            "added": len(result.added),
+            "removed": len(result.removed),
+            "changed": len(result.changed),
+            "unchanged": result.unchanged,
+        },
+        "added": [{"path": leaf.path, "value": leaf.value} for leaf in result.added],
+        "removed": [
+            {"path": leaf.path, "value": leaf.value} for leaf in result.removed
+        ],
+        "changed": [
+            {"path": change.path, "before": change.before, "after": change.after}
+            for change in result.changed
+        ],
+        "allow_removals": allow_removals,
+        "refused": bool(result.removed) and not allow_removals,
+    }
+    return json.dumps(payload, indent=2, sort_keys=True, ensure_ascii=False)
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="python -m wildfire_service_territory_overlap.artifact_diff",
@@ -293,6 +331,12 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="accept removed values; say why they went in PROVENANCE.md",
     )
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        dest="as_json",
+        help="print one JSON object instead of the prose report; exit codes unchanged",
+    )
     args = parser.parse_args(argv)
     try:
         old = json.loads(args.old.read_text(encoding="utf-8"))
@@ -304,7 +348,10 @@ def main(argv: list[str] | None = None) -> int:
         print(f"an artifact is not valid JSON: {error}", file=sys.stderr)
         return 2
     result = diff_trees(old, new)
-    print(render(result, allow_removals=args.allow_removals))
+    if args.as_json:
+        print(as_json(result, allow_removals=args.allow_removals))
+    else:
+        print(render(result, allow_removals=args.allow_removals))
     if result.removed and not args.allow_removals:
         return 1
     return 0
