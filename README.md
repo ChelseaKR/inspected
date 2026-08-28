@@ -146,8 +146,18 @@ position is read, inferred, approximated, or published, from these sources or an
 The CEC layers are administrative outlines. An analysis that would need an asset location
 is not built here.
 
-**No utility is compared to another.** Every collection in the output is sorted by name,
-`assert_no_ranking` refuses an artifact key that scores or grades, and
+**No utility is compared to another.** Every published collection declares the order it
+comes out in, `assert_collections_are_ordered_as_declared` refuses one that is out of
+that order, and a collection missing from the ledger refuses the artifact rather than
+publishing in whatever order it happened to come out in. Name order is the rule. Four
+collections are deliberately not in it, each carrying its reason beside the declaration:
+`contested_groups` is largest first, because a row there is a combination of outlines
+rather than an entity and a name order cannot select the largest;
+`placement_coverage.rates` is the four outcomes in the order the report reads them;
+`sensitivity.type_inclusion.variants` puts the rule as built first, because every other
+row is published as a difference from it; and
+`sensitivity.repair_strategy.strategies_compared` follows `REPAIR_STRATEGIES`, chosen
+repair first. `assert_no_ranking` refuses an artifact key that scores or grades, and
 `tests/test_published.py` reads the generated report for comparative phrasing.
 
 **An acquisition that fetched part of a dataset must not report as complete.** Each layer

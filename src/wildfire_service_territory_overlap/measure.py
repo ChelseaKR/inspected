@@ -256,7 +256,23 @@ def territory_rows(
 
 
 def contested_groups(placement: Placement, limit: int = 25) -> list[dict[str, Any]]:
-    """The overlapping combinations, as counts. Largest first is a size, not a ranking."""
+    """The overlapping combinations, as counts, largest first.
+
+    Largest first is a size and not a ranking: a row here is a combination of published
+    outlines rather than an entity, no row carries a rate about a utility, and no named
+    entity stands alone on one. It is also the only order the cap can work with, since
+    the rows kept are the largest combinations and a name order cannot select those.
+
+    This is one of the four collections `artifacts.ORDERINGS` records as deliberately
+    not in name order, and the reason lives there as well as here, because the README
+    once claimed without qualification that every collection was in name order and
+    nothing read the claim against the code.
+
+    The cap can cut. Nothing in the rendering says how many combinations were dropped,
+    so `artifacts.assert_contested_groups_are_whole` refuses an artifact whose rows do
+    not sum to the published contested total, and the build stops rather than
+    publishing this table short.
+    """
     items = sorted(placement.contested_groups.items(), key=lambda kv: (-kv[1], kv[0]))[
         :limit
     ]

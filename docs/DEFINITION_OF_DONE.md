@@ -22,7 +22,8 @@ Everything above, plus:
 - [ ] Every rate the change produces carries numerator, denominator and interval, and
       passes `artifacts.check_all`; if it cannot be measured, it is not-measured
       shaped, never zero.
-- [ ] Collections stay aggregate-only and name-ordered; no key ranks or scores.
+- [ ] Collections stay aggregate-only and in the order `artifacts.ORDERINGS` declares
+      for them; no key ranks or scores.
 - [ ] The determinism gate still holds over byte-identical inputs.
 - [ ] If the change embeds a judgment call, a sensitivity variant measuring what the
       judgment is worth ships in the same change (the standard set by ADR 0006).
