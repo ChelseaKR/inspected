@@ -35,6 +35,17 @@ attached to its own name. Lists without a common identifying field pair position
 a size-ordered collection such as ``contested_groups`` can therefore report movement
 at adjacent indices when two combinations swap size. Read those rows together.
 
+Output
+------
+By default the report is prose, ending in a verdict line. ``--json`` prints exactly one
+JSON object instead, carrying the same information with none of the wording: the five
+counts, the full added, removed and changed lists with their paths and their values,
+whether ``--allow-removals`` was given, and whether the run was refused. Values are
+carried whole there, where the prose shortens a long one for the terminal.
+
+``--json`` is a second way to read the same comparison. It does not soften the removal
+refusal and it does not change an exit code.
+
 Exit codes: ``0`` when there is nothing to refuse, ``1`` when values were removed and
 ``--allow-removals`` was not given, ``2`` on bad usage.
 """
@@ -249,7 +260,18 @@ def render(result: DiffResult, *, allow_removals: bool) -> str:
             "REFUSED: published values disappeared. If the removal is deliberate, "
             "re-run with --allow-removals and say so in PROVENANCE.md."
         )
-    elif not result.changed and not result.added and not result.removed:
+    elif result.removed:
+        # --allow-removals accepts a removal. It does not make the removal stop having
+        # happened, and the verdict line is the one line a reader skims. Saying
+        # "Nothing was removed." directly under a REMOVED line is the quiet
+        # disappearance this tool exists to prevent, carrying this tool's signature.
+        count = len(result.removed)
+        lines.append(
+            f"{count} published value{'' if count == 1 else 's'} "
+            f"{'was' if count == 1 else 'were'} removed, and --allow-removals accepted "
+            "the removal. Say why in PROVENANCE.md."
+        )
+    elif not result.changed and not result.added:
         lines.append("No published value moved.")
     else:
         lines.append("Nothing was removed.")

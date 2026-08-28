@@ -182,3 +182,72 @@ def test_main_prints_a_verdict_line(capsys: pytest.Capsys, tmp_path: Path) -> No
     out = capsys.readouterr().out
     assert "1 changed." in out
     assert "Nothing was removed." in out
+
+
+def test_the_verdict_never_says_nothing_was_removed_when_something_was(
+    capsys: pytest.CaptureFixture[str], tmp_path: Path
+) -> None:
+    """The one line a reader skims must not contradict the lines above it.
+
+    `--allow-removals` accepts a removal; it does not make the removal stop having
+    happened. A verdict of `Nothing was removed.` printed underneath a `REMOVED` line is
+    the quiet disappearance this whole tool exists to prevent, wearing the tool's own
+    signature.
+    """
+    old = tmp_path / "old.json"
+    new = tmp_path / "new.json"
+    shrunk = sample_tree()
+    del shrunk["placement_coverage"]["counts"]["contested"]
+    old.write_text(json.dumps(sample_tree()), encoding="utf-8")
+    new.write_text(json.dumps(shrunk), encoding="utf-8")
+
+    assert main([str(old), str(new), "--allow-removals"]) == 0
+    out = capsys.readouterr().out
+    assert "REMOVED  $.placement_coverage.counts.contested" in out
+    assert "Nothing was removed." not in out, (
+        "the verdict contradicted the REMOVED line printed directly above it"
+    )
+    assert "1 published value was removed" in out
+    assert "PROVENANCE.md" in out
+
+
+def test_the_verdict_still_says_nothing_was_removed_when_nothing_was(
+    capsys: pytest.CaptureFixture[str], tmp_path: Path
+) -> None:
+    """The true case keeps its wording, so the fix above is a narrowing not a rewrite."""
+    old = tmp_path / "old.json"
+    new = tmp_path / "new.json"
+    changed = sample_tree()
+    changed["placement_coverage"]["fire_records"] = 132522
+    old.write_text(json.dumps(sample_tree()), encoding="utf-8")
+    new.write_text(json.dumps(changed), encoding="utf-8")
+
+    assert main([str(old), str(new), "--allow-removals"]) == 0
+    assert "Nothing was removed." in capsys.readouterr().out
+
+
+# The prose report, locked. Issue #20 required that adding a mode change nothing about
+# the mode that already existed, and "unchanged" is only checkable against a literal.
+PROSE_IDENTICAL = (
+    "24 values compared: 0 added, 0 removed, 0 changed.\nNo published value moved."
+)
+PROSE_ONE_CHANGED = (
+    "changed  $.placement_coverage.fire_records: 132520 -> 132521\n"
+    "24 values compared: 0 added, 0 removed, 1 changed.\nNothing was removed."
+)
+PROSE_REMOVED_REFUSED = (
+    "REMOVED  $.placement_coverage.counts.contested: 50167\n"
+    "24 values compared: 0 added, 1 removed, 0 changed.\n"
+    "REFUSED: published values disappeared. If the removal is deliberate, re-run with "
+    "--allow-removals and say so in PROVENANCE.md."
+)
+
+
+def _mutated(mutate: object = None) -> dict:
+    return json.loads(json.dumps(sample_tree()))
+
+
+def _run_json(argv: list[str], capsys: pytest.CaptureFixture[str]) -> tuple[int, dict]:
+    code = main(argv)
+    out = capsys.readouterr().out
+    return code, json.loads(out)
