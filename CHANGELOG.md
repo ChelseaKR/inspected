@@ -5,6 +5,66 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- **`artifact_diff` no longer prints `Nothing was removed.` on a run that removed
+  values.** With `--allow-removals` the verdict line fell through to the wrong branch
+  and contradicted the `REMOVED` lines printed directly above it. The tool exists so a
+  published value cannot disappear quietly, and its own summary said nothing had
+  disappeared. It now names the count and points at `PROVENANCE.md`.
+- **The overlap table can no longer be truncated silently** (issue #22).
+  `contested_groups` keeps the largest 25 combinations and dropped the rest with no
+  count, no rate and no line saying so. `assert_aggregate_only` could not catch it: its
+  ceiling is never below 32 and the cap is 25, so the only length rule in the module was
+  numerically incapable of firing on that collection. `assert_contested_groups_are_whole`
+  now refuses an artifact whose rows do not sum to the published contested total.
+  Nothing under `published/` moves; today's retrieval produces twelve combinations.
+- **The claim that every collection is sorted by name was false** (issue #23), and in
+  four places rather than the one the issue found. It is now a ledger,
+  `artifacts.ORDERINGS`, which names the order of every published collection and the
+  reason wherever that order is not by name, refuses a collection nobody declared, and
+  is held against the README by a test.
+- **The conformance table overstated the protection on `main`.** It said the branch
+  ruleset carried no bypass actor. It carries one:
+  repository admin at `bypass_mode: always`, which is the account that pushes. Read back
+  from the API on 2026-08-28 and corrected in `README.md`, `CHANGELOG.md` and
+  `docs/ROADMAP.md`; `docs/RUNBOOK.md` now carries the command that reads it back.
+  The actor is deliberate and stays; the maintainer keeps an administrative way back
+  into the repository. What was corrected is the claim, not the ruleset.
+- **Three gates that could not report what they exist to report.** The dash check read
+  five globs and never opened `.github/`, the `Makefile`, `tools/`, `fixtures/` or
+  `CITATION.cff`; it now reads the repository. The `verify` gate list was checked with
+  two substring greps that a deleted prerequisite could not fail; it is parsed now. The
+  coordinate scan matched longitudes only, so a latitude in a published file was
+  invisible to the one test that exists to see it.
+- **A test that asserted a defect.** `test_contested_groups_are_counts_and_are_capped`
+  passed `limit=1` over a fixture holding exactly one combination, which is a slice that
+  removes nothing, so it exercised no cap while its name said it did. The cap is now
+  exercised against a placement built to have one.
+
+### Added
+
+- `--version` on the CLI (issue #16), resolved inside the flag rather than while the
+  parser is built, so a build never asks. A version that cannot be read is reported as
+  not measured on stderr with exit 1, never guessed.
+- `--json` on `artifact_diff` (issue #20). Default output is locked byte for byte by a
+  test, exit codes are unchanged, and the mode does not soften the removal refusal.
+- `make help` (issue #17), with `.DEFAULT_GOAL := verify` declared so bare `make` still
+  runs the gate. A test refuses a target with no description.
+- GitHub issue forms and a pull request template (issue #19). The measurement proposal
+  asks for the denominator as a required field.
+- `docs/GLOSSARY.md` (issue #18). The `Type` entries state the conventional expansion
+  and say the publisher documents none of the six values, because `sources.py` records
+  exactly that. Issue #18 asked for Public Utilities Code 331.1 to be cited "as ADR 0002
+  does"; ADR 0002 does not cite it, `sources.py` does, and the glossary cites the file
+  that carries it.
+- A first-change walkthrough in `CONTRIBUTING.md` (issue #21). Issue #21 asked for a
+  step that renames a fixture territory and watches `make determinism` refuse. It does
+  not refuse: determinism compares two builds of the same inputs, so an edited input
+  changes both identically. The walkthrough sends that break at `make test`, says why
+  determinism passes, and reaches the determinism refusal by making two build trees
+  actually differ.
+
 ### Changed
 
 - Renamed the project to `wildfire-service-territory-overlap` across the distribution, the package, and every
@@ -44,9 +104,11 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   two published territories genuinely cover together. The report's overlap table gains
   the 250 metre column and still renders artifacts from before it existed unchanged.
 - `main` is protected by a branch ruleset: force push and deletion refused, every
-  change arriving as a merged pull request, the six PR-facing checks required green,
-  no bypass actors. The ci.yml header paragraph that recorded the gates as reporting
-  without blocking is rewritten to match.
+  change arriving as a merged pull request, the six PR-facing checks required green.
+  One bypass actor stands, the repository admin role at `bypass_mode: always`. This
+  entry claimed none until 2026-08-28, when the ruleset was read back from the API and
+  it was not none. The ci.yml header paragraph that recorded the gates as
+  reporting without blocking is rewritten to match.
 
 ### Changed
 
