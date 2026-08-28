@@ -1,0 +1,71 @@
+name: Measurement proposal
+description: Propose something new for this project to measure.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A measurement here is a number with a denominator and an interval, or it is not
+        published. A rate with a zero denominator is not zero percent, it is not
+        measured, and the writer refuses it. This form asks for the same things
+        `artifacts.py` asks for, in the same order, before any code is written.
+  - type: textarea
+    id: question
+    attributes:
+      label: The question
+      description: One sentence, answerable from the two published datasets alone.
+    validations:
+      required: true
+  - type: input
+    id: numerator
+    attributes:
+      label: The numerator
+      description: What is being counted.
+    validations:
+      required: true
+  - type: input
+    id: denominator
+    attributes:
+      label: The denominator
+      description: >
+        What it is counted out of. Required. A count without a denominator is not a
+        risk, and a rate without an interval is not a comparison. If you cannot name
+        one, the proposal is a count and not a rate; say so here.
+    validations:
+      required: true
+  - type: textarea
+    id: ranks-nobody
+    attributes:
+      label: Why this ranks nobody
+      description: >
+        This project describes geography. It does not rate, grade or order any named
+        utility, and `assert_no_ranking` refuses an artifact key that does. Say why the
+        proposed number cannot be read as a league table of companies.
+    validations:
+      required: true
+  - type: textarea
+    id: touches-no-infrastructure
+    attributes:
+      label: Why this touches no infrastructure
+      description: >
+        No pole, conductor, substation or circuit position is read, inferred or
+        published here, and no coordinate, address or parcel number reaches an
+        artifact. Say why the proposal stays inside that.
+    validations:
+      required: true
+  - type: input
+    id: adr
+    attributes:
+      label: Which ADR this extends or contradicts
+      description: A number from `docs/adr/`, or the word none.
+    validations:
+      required: false
+  - type: textarea
+    id: not-measured
+    attributes:
+      label: What it looks like when it cannot be measured
+      description: >
+        Every measurement here has a not-measured shape, because a measurement that
+        could not be made is never a zero. Say what yours is.
+    validations:
+      required: false
