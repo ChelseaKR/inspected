@@ -14,6 +14,7 @@ from typing import Any
 
 from wildfire_service_territory_overlap.artifacts import check_all
 from wildfire_service_territory_overlap.report import render
+from wildfire_service_territory_overlap.sources import DINS
 
 PUBLISHED = Path(__file__).resolve().parents[1] / "published"
 
@@ -416,3 +417,124 @@ def test_no_dash_character_appears_in_the_published_documents(
 ) -> None:
     for dash in ("\u2014", "\u2013"):
         assert dash not in published_report
+
+
+# --- The README's prose numbers are the artifact's numbers -------------------------
+#
+# README.md repeats the headline figures a visitor will quote: the placement table,
+# the destroyed-share comparison, the repair sensitivity, the incident and county
+# concentration, the geometry-repair share. Each was copied from the artifact by
+# hand, and nothing held the copy to its source: a deliberately refreshed retrieval
+# that moved a number would leave the prose quoting the old measurement with no gate
+# going red. REPORT.md cannot drift, because render() is re-run over the artifact
+# above; this suite gives the README's fragments the same property. Every expected
+# string below is *derived* from published/measurements.json (or sources.py for the
+# raw feature count), never hard-coded, so the test moves with the pins.
+
+# Whitespace-normalized, because the README hard-wraps prose and a fragment must
+# not fail the gate for straddling a line break.
+_README = " ".join(
+    (Path(__file__).resolve().parents[1] / "README.md")
+    .read_text(encoding="utf-8")
+    .split()
+)
+
+
+def _count(n: int) -> str:
+    return f"{n:,}"
+
+
+def _pct1(rate: float) -> str:
+    return f"{rate:.1%}"
+
+
+def _pct2(rate: float) -> str:
+    return f"{rate:.2%}"
+
+
+def _pp2(delta: float) -> str:
+    """Percentage points, two decimals, magnitude only; the sign is prose."""
+    return f"{abs(delta) * 100:.2f}"
+
+
+def _rate_row(coverage: dict[str, Any], numerator: int) -> dict[str, Any]:
+    matches = [row for row in coverage["rates"] if row["numerator"] == numerator]
+    assert len(matches) == 1, f"expected one rate row with numerator {numerator}"
+    return matches[0]
+
+
+def test_every_headline_figure_in_the_readme_is_the_published_measurement(
+    published_artifact: dict[str, Any],
+) -> None:
+    a = published_artifact
+    coverage = a["placement_coverage"]
+    counts = coverage["counts"]
+    placed = _rate_row(coverage, counts["placed_in_exactly_one_territory"])
+    contested = _rate_row(coverage, counts["contested_between_two_or_more"])
+    rep = a["representativeness"]
+    rep_diff = rep["difference"]
+    sens = a["sensitivity"]["repair_strategy"]
+    disagree = sens["records_with_a_different_outcome"]
+    placed_diff = sens["placed_difference"]
+    geometry = a["geometry_ledger"]["records_placed_via_repaired_geometry"]
+    by_fire = a["attributability_by_fire"]
+    incidents = by_fire["by_incident"]
+    one_way = incidents["one_way_or_the_other"]
+    years = by_fire["by_incident_year"]
+    first_year, last_year = years[0], years[-1]
+
+    expected = [
+        _count(coverage["fire_records"]),
+        _count(DINS.feature_count),
+        _count(counts["placed_in_exactly_one_territory"]),
+        _count(counts["contested_between_two_or_more"]),
+        _pct1(placed["rate"]),
+        _pct1(contested["rate"]),
+        f"{_pct1(placed['interval_low'])} to {_pct1(placed['interval_high'])}",
+        f"{_pct1(contested['interval_low'])} to {_pct1(contested['interval_high'])}",
+        _pct2(rep["placed"]["rate"]),
+        _pct2(rep["contested"]["rate"]),
+        f"minus {_pp2(rep_diff['difference'])} percentage points",
+        f"minus {_pp2(rep_diff['interval_low'])} to plus "
+        f"{_pp2(rep_diff['interval_high'])}",
+        f"{_count(disagree['numerator'])} records",
+        _pct2(disagree["rate"]),
+        f"{_pct2(disagree['interval_low'])} to {_pct2(disagree['interval_high'])}",
+        _pct2(sens["placed_under_the_chosen_repair"]["rate"]),
+        _pct2(sens["placed_under_the_alternative"]["rate"]),
+        f"{_pp2(placed_diff['difference'])} percentage points",
+        f"{_pp2(placed_diff['interval_low'])} to {_pp2(placed_diff['interval_high'])}",
+        f"{sens['records_with_the_same_outcome_but_different_outlines']} are "
+        "contested under both",
+        f"{_pct1(geometry['rate'])} of the placed records",
+        f"the {incidents['distinct_incidents']} incidents",
+        f"{incidents['no_record_contested']['numerator']} have no contested record",
+        f"{incidents['every_record_contested']['numerator']} have nothing but "
+        "contested records",
+        f"{_pct1(one_way['rate'])} of incidents fall entirely on one side",
+        f"interval {_pct1(one_way['interval_low'])} to "
+        f"{_pct1(one_way['interval_high'])}",
+        f"{_pct1(first_year['contested']['rate'])} in {first_year['year']}",
+        f"{_pct1(last_year['contested']['rate'])} in {last_year['year']}",
+        f"{by_fire['counties_named_in_the_record_set']} counties are named",
+        f"{by_fire['records_carrying_no_county_name']} records carry no county name",
+    ]
+
+    zero_contested = sum(
+        1 for row in by_fire["by_county"] if row["contested"]["numerator"] == 0
+    )
+    expected.append(f"{zero_contested} of the {len(by_fire['by_county'])}")
+
+    # Any county the prose names must carry that county's own artifact numbers.
+    for row in by_fire["by_county"]:
+        if f"in {row['county']}" in _README:
+            expected.append(
+                f"{_pct1(row['contested']['rate'])} of "
+                f"{_count(row['records_classified'])}"
+            )
+
+    missing = [fragment for fragment in expected if fragment not in _README]
+    assert not missing, (
+        "README figures that are not the published measurement (stale prose, or a "
+        f"refreshed artifact the README was not updated for): {missing}"
+    )
