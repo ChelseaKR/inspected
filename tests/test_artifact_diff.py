@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from wildfire_service_territory_overlap.artifact_diff import diff_trees, main
+from wildfire_service_territory_overlap.artifact_diff import diff_trees, main, render
 
 
 def sample_tree() -> dict:
@@ -182,3 +182,188 @@ def test_main_prints_a_verdict_line(capsys: pytest.Capsys, tmp_path: Path) -> No
     out = capsys.readouterr().out
     assert "1 changed." in out
     assert "Nothing was removed." in out
+
+
+def test_the_verdict_never_says_nothing_was_removed_when_something_was(
+    capsys: pytest.CaptureFixture[str], tmp_path: Path
+) -> None:
+    """The one line a reader skims must not contradict the lines above it.
+
+    `--allow-removals` accepts a removal; it does not make the removal stop having
+    happened. A verdict of `Nothing was removed.` printed underneath a `REMOVED` line is
+    the quiet disappearance this whole tool exists to prevent, wearing the tool's own
+    signature.
+    """
+    old = tmp_path / "old.json"
+    new = tmp_path / "new.json"
+    shrunk = sample_tree()
+    del shrunk["placement_coverage"]["counts"]["contested"]
+    old.write_text(json.dumps(sample_tree()), encoding="utf-8")
+    new.write_text(json.dumps(shrunk), encoding="utf-8")
+
+    assert main([str(old), str(new), "--allow-removals"]) == 0
+    out = capsys.readouterr().out
+    assert "REMOVED  $.placement_coverage.counts.contested" in out
+    assert "Nothing was removed." not in out, (
+        "the verdict contradicted the REMOVED line printed directly above it"
+    )
+    assert "1 published value was removed" in out
+    assert "PROVENANCE.md" in out
+
+
+def test_the_verdict_still_says_nothing_was_removed_when_nothing_was(
+    capsys: pytest.CaptureFixture[str], tmp_path: Path
+) -> None:
+    """The true case keeps its wording, so the fix above is a narrowing not a rewrite."""
+    old = tmp_path / "old.json"
+    new = tmp_path / "new.json"
+    changed = sample_tree()
+    changed["placement_coverage"]["fire_records"] = 132522
+    old.write_text(json.dumps(sample_tree()), encoding="utf-8")
+    new.write_text(json.dumps(changed), encoding="utf-8")
+
+    assert main([str(old), str(new), "--allow-removals"]) == 0
+    assert "Nothing was removed." in capsys.readouterr().out
+
+
+# The prose report, locked. Issue #20 required that adding a mode change nothing about
+# the mode that already existed, and "unchanged" is only checkable against a literal.
+PROSE_IDENTICAL = (
+    "24 values compared: 0 added, 0 removed, 0 changed.\nNo published value moved."
+)
+PROSE_ONE_CHANGED = (
+    "changed  $.placement_coverage.fire_records: 132520 -> 132521\n"
+    "24 values compared: 0 added, 0 removed, 1 changed.\nNothing was removed."
+)
+PROSE_REMOVED_REFUSED = (
+    "REMOVED  $.placement_coverage.counts.contested: 50167\n"
+    "24 values compared: 0 added, 1 removed, 0 changed.\n"
+    "REFUSED: published values disappeared. If the removal is deliberate, re-run with "
+    "--allow-removals and say so in PROVENANCE.md."
+)
+
+
+def _mutated(mutate: object = None) -> dict:
+    return json.loads(json.dumps(sample_tree()))
+
+
+def test_the_prose_report_is_byte_for_byte_what_it_printed_before_json_mode() -> None:
+    """Adding a mode must not move the mode that was already there."""
+    old = sample_tree()
+    assert (
+        render(diff_trees(old, sample_tree()), allow_removals=False) == PROSE_IDENTICAL
+    )
+
+    changed = _mutated()
+    changed["placement_coverage"]["fire_records"] = 132521
+    assert render(diff_trees(old, changed), allow_removals=False) == PROSE_ONE_CHANGED
+
+    shrunk = _mutated()
+    del shrunk["placement_coverage"]["counts"]["contested"]
+    assert (
+        render(diff_trees(old, shrunk), allow_removals=False) == PROSE_REMOVED_REFUSED
+    )
+
+
+def _run_json(argv: list[str], capsys: pytest.CaptureFixture[str]) -> tuple[int, dict]:
+    code = main(argv)
+    out = capsys.readouterr().out
+    return code, json.loads(out)
+
+
+def test_json_mode_prints_one_object_and_nothing_else(
+    capsys: pytest.CaptureFixture[str], tmp_path: Path
+) -> None:
+    old, new = tmp_path / "old.json", tmp_path / "new.json"
+    changed = _mutated()
+    changed["placement_coverage"]["fire_records"] = 132521
+    old.write_text(json.dumps(sample_tree()), encoding="utf-8")
+    new.write_text(json.dumps(changed), encoding="utf-8")
+
+    code, payload = _run_json([str(old), str(new), "--json"], capsys)
+    assert code == 0
+    assert set(payload) == {
+        "counts",
+        "added",
+        "removed",
+        "changed",
+        "allow_removals",
+        "refused",
+    }
+    assert payload["counts"]["changed"] == 1
+    assert payload["changed"] == [
+        {"path": "$.placement_coverage.fire_records", "before": 132520, "after": 132521}
+    ]
+    assert payload["refused"] is False
+    assert payload["allow_removals"] is False
+
+
+def test_json_mode_counts_agree_with_a_direct_diff_trees_call(
+    capsys: pytest.CaptureFixture[str], tmp_path: Path
+) -> None:
+    old, new = tmp_path / "old.json", tmp_path / "new.json"
+    moved = _mutated()
+    moved["placement_coverage"]["fire_records"] = 132521
+    moved["territories"][0]["records_placed_here"] = 306
+    moved["extra_block"] = {"added": 1}
+    old.write_text(json.dumps(sample_tree()), encoding="utf-8")
+    new.write_text(json.dumps(moved), encoding="utf-8")
+
+    _, payload = _run_json([str(old), str(new), "--json"], capsys)
+    direct = diff_trees(sample_tree(), moved)
+    assert payload["counts"] == {
+        "total": direct.total,
+        "added": len(direct.added),
+        "removed": len(direct.removed),
+        "changed": len(direct.changed),
+        "unchanged": direct.unchanged,
+    }
+
+
+def test_json_mode_carries_a_long_value_whole_where_the_prose_shortens_it(
+    capsys: pytest.CaptureFixture[str], tmp_path: Path
+) -> None:
+    """A truncated value published under the name of the real one is a wrong value."""
+    long_note = "n" * 400
+    old, new = tmp_path / "old.json", tmp_path / "new.json"
+    moved = _mutated()
+    moved["long_note"] = long_note
+    old.write_text(json.dumps(sample_tree()), encoding="utf-8")
+    new.write_text(json.dumps(moved), encoding="utf-8")
+
+    _, payload = _run_json([str(old), str(new), "--json"], capsys)
+    assert payload["added"] == [{"path": "$.long_note", "value": long_note}]
+
+
+def test_json_mode_does_not_soften_the_removal_refusal(
+    capsys: pytest.CaptureFixture[str], tmp_path: Path
+) -> None:
+    old, new = tmp_path / "old.json", tmp_path / "new.json"
+    shrunk = _mutated()
+    del shrunk["placement_coverage"]["counts"]["contested"]
+    old.write_text(json.dumps(sample_tree()), encoding="utf-8")
+    new.write_text(json.dumps(shrunk), encoding="utf-8")
+
+    code, payload = _run_json([str(old), str(new), "--json"], capsys)
+    assert code == 1, "a removal under --json must still refuse"
+    assert payload["refused"] is True
+    assert payload["removed"] == [
+        {"path": "$.placement_coverage.counts.contested", "value": 50167}
+    ]
+
+    code, payload = _run_json(
+        [str(old), str(new), "--json", "--allow-removals"], capsys
+    )
+    assert code == 0
+    assert payload["refused"] is False
+    assert payload["allow_removals"] is True, (
+        "refused false with allow_removals hidden reads as nothing having been removed"
+    )
+    assert payload["counts"]["removed"] == 1
+
+
+def test_json_mode_leaves_stdout_empty_on_bad_usage(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    assert main(["/does/not/exist.json", "/also/missing.json", "--json"]) == 2
+    assert capsys.readouterr().out == "", "a failed run printed a JSON object anyway"

@@ -21,6 +21,7 @@ are in `PROVENANCE.md`.
 ```bash
 uv sync --locked
 make verify                # lint, types, tests, coverage floor, determinism
+make help                  # every target, one line each
 ```
 
 Then read [`published/REPORT.md`](published/REPORT.md), which is generated, and
@@ -146,8 +147,18 @@ position is read, inferred, approximated, or published, from these sources or an
 The CEC layers are administrative outlines. An analysis that would need an asset location
 is not built here.
 
-**No utility is compared to another.** Every collection in the output is sorted by name,
-`assert_no_ranking` refuses an artifact key that scores or grades, and
+**No utility is compared to another.** Every published collection declares the order it
+comes out in, `assert_collections_are_ordered_as_declared` refuses one that is out of
+that order, and a collection missing from the ledger refuses the artifact rather than
+publishing in whatever order it happened to come out in. Name order is the rule. Four
+collections are deliberately not in it, each carrying its reason beside the declaration:
+`contested_groups` is largest first, because a row there is a combination of outlines
+rather than an entity and a name order cannot select the largest;
+`placement_coverage.rates` is the four outcomes in the order the report reads them;
+`sensitivity.type_inclusion.variants` puts the rule as built first, because every other
+row is published as a difference from it; and
+`sensitivity.repair_strategy.strategies_compared` follows `REPAIR_STRATEGIES`, chosen
+repair first. `assert_no_ranking` refuses an artifact key that scores or grades, and
 `tests/test_published.py` reads the generated report for comparative phrasing.
 
 **An acquisition that fetched part of a dataset must not report as complete.** Each layer
@@ -244,13 +255,13 @@ standards bind it. The scoping below was derived here and a manifest entry super
 |---|---|
 | Code Quality | Applies: uv, ruff, mypy `--strict`, pytest with branch coverage against a 90% floor, complexity capped at 10, `uv lock --check` as the drift gate and `uv sync --locked` as the install |
 | Security & Supply-Chain | Applies: semgrep, gitleaks, pip-audit, CodeQL over actions and python, zizmor over the workflows, every action SHA-pinned, `permissions: contents: read` at the top of every workflow, `persist-credentials: false` on every checkout, and the release build writing no Actions cache. A CodeQL finding fails the job unless it is written down in `.github/codeql-accepted.json` with its reasoning, and an entry there fails the job once the finding it excuses is gone. Two entries today, both on the release build. osv-scanner reads the same lockfile against the OSV database in CI as a second feed beside pip-audit, the release build publishes a reproducible CycloneDX SBOM of its locked build environment next to the artifacts, and an OpenSSF Scorecard analysis uploads to code scanning weekly. Not met: nothing recorded |
-| CI/CD | Applies: A branch ruleset on `main`, active 2026-08-22, blocks force push and deletion, requires every change to arrive as a merged pull request, and requires the six PR-facing checks green before merge, with no bypass actors. The release workflow stays dispatch-only by design |
+| CI/CD | Applies (partially met): A branch ruleset on `main`, active 2026-08-22, blocks force push and deletion, requires every change to arrive as a merged pull request, and requires the six PR-facing checks green before merge. Not met: the ruleset carries one bypass actor, the repository admin role at `bypass_mode: always`, which is the maintainer's own account, so every check on that list can be skipped by the one account that pushes. This row claimed none until 2026-08-28, when the ruleset was read back with `gh api repos/OWNER/REPO/rulesets/21222489` and it was not none. The actor is deliberate and stays: the maintainer keeps an administrative way back into the repository. What was wrong was the claim, not the setting, so the correction is to this row. The release workflow stays dispatch-only by design |
 | Observability | Applies (Tier C): A library and a CLI writing to stdout. No hosted service, no telemetry, no SLO surface. The operations runbook in `docs/RUNBOOK.md` states what every acquisition and publication refusal means and what to do about it. Not met: nothing recorded |
 | Accessibility | Applies (partially met): Output is Markdown and JSON, with no rendered UI and no colour encoding. `docs/ACR.md` records a static structural review: header rows, self-describing cells, not-measured values as words, no dash characters, descriptive links. Still not done: an assistive-technology pass over the generated tables, which this review does not claim to substitute for |
 | Internationalization | Applies (not met): `docs/I18N.md` records the declaration. English only, no catalog |
 | AI Evaluation | N/A: No model, no LLM, no generated text anywhere in the pipeline or the output |
-| Quality & Metrics | Applies: Fail-closed gates throughout: the retrieval schema guard, the acquisition completeness checks, the publication rules, the coverage floor, a performance budget with its own test, and a determinism gate whose own failure modes are tested. `docs/DEFINITION_OF_DONE.md` defines done by kind of change, and `docs/METRICS_LEDGER.md` records baselines and outcomes per stream. Not met: nothing recorded |
-| Documentation | Applies: README, `PROVENANCE.md`, `CONTRIBUTING.md`, `SECURITY.md`, `CHANGELOG.md`, `CITATION.cff`, a `docs/adr/` log, this table, and a `.standards-version` pin a test reads |
+| Quality & Metrics | Applies: Fail-closed gates throughout: the retrieval schema guard, the acquisition completeness checks, the publication rules, the coverage floor, a performance budget with its own test, and a determinism gate whose own failure modes are tested. Two publication rules were added after an audit found the gate that should have caught them numerically incapable of firing: `assert_contested_groups_are_whole` refuses an overlap table whose rows do not sum to the published contested total, and `assert_collections_are_ordered_as_declared` refuses a collection out of its declared order or with no declaration at all. The dash check now reads the whole repository rather than five globs, and the `verify` prerequisite list is parsed rather than grepped for, so a gate deleted from it fails a test. `docs/DEFINITION_OF_DONE.md` defines done by kind of change, and `docs/METRICS_LEDGER.md` records baselines and outcomes per stream. Not met: nothing recorded |
+| Documentation | Applies: README, `PROVENANCE.md`, `CONTRIBUTING.md` including a first-change walkthrough that ends at a gate the reader has watched refuse, `SECURITY.md`, `CHANGELOG.md`, `CITATION.cff`, `docs/GLOSSARY.md` whose every relative link a test resolves, a `docs/adr/` log, this table, and a `.standards-version` pin a test reads. `make help` lists every target and a test refuses a target with no description. GitHub issue forms and a pull request checklist copied item for item from `docs/DEFINITION_OF_DONE.md`, which a test holds together |
 | Release & Versioning | Applies: Version `0.1.0` in `pyproject.toml` and `CITATION.cff`, with a CHANGELOG entry for it. The signed annotated tag `v0.1.0` was cut from `main` and released through the hardened three-job workflow on 2026-08-23 UTC: `authorize` verified the tag signature against `.github/allowed_signers`, and `publish` attached the wheel, the sdist, the reproducible CycloneDX SBOM, and a build provenance attestation. Not met: nothing recorded |
 | Responsible-Tech Framework | Applies: Unofficial framing on the README and on the generated report, no claim about any utility's posture, no address, parcel number, assessed value or coordinate republished, no ranking of any named company, and an acquisition that stops rather than routing around an access control. `docs/RESPONSIBLE-TECH.md` states the refusals as ethics content, names who each residual misreading lands on, and carries a review date. Not met: nothing recorded |
 | Performance | Applies: A CLI over local files. The full build runs in about 18 seconds, and now does twelve placements of the record set rather than one. It was about 50 seconds doing one, before the containment query was changed to narrow by bounding box and then test against a prepared geometry, which a test holds to answering exactly what the predicate form answers. The budget is recorded and enforced in `tests/test_performance_budget.py`: an offline fixture build must finish inside 30 seconds, generous by design because wall clock does not compare across machines; it exists to catch order-of-magnitude regressions over byte-identical inputs |

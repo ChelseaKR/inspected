@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 import json
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
 import pytest
 
 from wildfire_service_territory_overlap import measure, report
-from wildfire_service_territory_overlap.artifacts import check_all
+from wildfire_service_territory_overlap.artifacts import PublicationRefused, check_all
 from wildfire_service_territory_overlap.cli import build
 from wildfire_service_territory_overlap.geometry import Territory
 from wildfire_service_territory_overlap.placement import Placement, Record, classify
@@ -115,11 +116,84 @@ def test_a_territory_with_nothing_placed_reports_not_measured(
             assert band["state"] == "not_measured"
 
 
-def test_contested_groups_are_counts_and_are_capped(placement: Placement) -> None:
+def test_contested_groups_are_counts(placement: Placement) -> None:
+    """The fixture geography holds exactly one overlapping combination.
+
+    This test used to be called "and are capped" and passed `limit=1`, which over one
+    combination is a slice that removes nothing. It exercised no cap. The cap is
+    exercised below, against a placement built for it, because the fixtures cannot
+    produce a second combination and a test cannot check what its data cannot express.
+    """
     groups = measure.contested_groups(placement, limit=1)
+    assert len(placement.contested_groups) == 1, (
+        "the fixtures produce one combination, so limit=1 here cuts nothing"
+    )
     assert len(groups) == 1
     assert groups[0]["records"] == 3
     assert set(groups[0]["territories"]) == {ALPHA, "Beta Municipal Utility"}
+
+
+def _placement_with_many_combinations(count: int) -> Placement:
+    """A placement carrying `count` overlapping combinations, largest first.
+
+    Combination i holds `count - i` records, so the total is the triangular number and
+    any cap below `count` drops a known number of records.
+    """
+    groups: Counter[tuple[str, ...]] = Counter(
+        {
+            (f"Territory {i:03d}", f"Territory {i:03d} West"): count - i
+            for i in range(count)
+        }
+    )
+    return Placement(
+        fire_records=sum(groups.values()),
+        excluded_by_hazard=0,
+        contested=sum(groups.values()),
+        contested_groups=groups,
+    )
+
+
+def test_the_cap_cuts_records_out_of_the_table_when_it_bites() -> None:
+    """The reproduction from issue #22, run against the shipped function.
+
+    Thirty combinations against a cap of 25: twenty five rows come back, they account
+    for 450 of 465 contested records, and fifteen records are in no row.
+    """
+    placement = _placement_with_many_combinations(30)
+    rows = measure.contested_groups(placement)
+    assert len(placement.contested_groups) == 30
+    assert len(rows) == 25
+    assert sum(row["records"] for row in rows) == 450
+    assert placement.contested == 465
+
+
+def test_a_capped_contested_table_is_refused_before_it_can_be_published() -> None:
+    """The cut above, taken to the writer, which is where it has to stop.
+
+    Nothing in the rendering says how many combinations were dropped or how many records
+    went with them, so the artifact must not be written at all.
+    """
+    placement = _placement_with_many_combinations(30)
+    tree = {
+        "placement_coverage": {
+            "counts": {"contested_between_two_or_more": placement.contested}
+        },
+        "contested_groups": measure.contested_groups(placement),
+    }
+    with pytest.raises(PublicationRefused, match="450 of 465 contested records"):
+        check_all(tree, max_rows=64)
+
+
+def test_an_uncapped_contested_table_over_the_same_placement_passes() -> None:
+    """The same data, nothing dropped, publishes. The rule is about the cut, not the size."""
+    placement = _placement_with_many_combinations(30)
+    tree = {
+        "placement_coverage": {
+            "counts": {"contested_between_two_or_more": placement.contested}
+        },
+        "contested_groups": measure.contested_groups(placement, limit=30),
+    }
+    check_all(tree, max_rows=64)
 
 
 def test_the_geometry_ledger_sizes_the_repair_rather_than_only_naming_it(
@@ -363,3 +437,50 @@ def test_a_county_disagreement_is_measured_not_corrected(tmp_path: Path) -> None
     assert east["disagreed"]["state"] == "measured"
     assert west["disagreed"]["state"] == "measured"
     assert block["unmatchable_label"]["numerator"] == 0
+
+
+def test_contested_groups_come_out_in_size_order_and_not_in_name_order() -> None:
+    """Data built so the two orders disagree, because otherwise this proves nothing.
+
+    The earlier cap tests happen to number their combinations so that name order and
+    size order coincide, which means changing the sort key in `contested_groups` passes
+    them both. Here the names ascend while the counts descend, so a name sort and a size
+    sort produce opposite tables and only one of them is the declared order.
+    """
+    groups: Counter[tuple[str, ...]] = Counter(
+        {("Shared Outline", f"Territory {i:03d}"): i + 1 for i in range(5)}
+    )
+    total = sum(groups.values())
+    placement = Placement(
+        fire_records=total,
+        excluded_by_hazard=0,
+        contested=total,
+        contested_groups=groups,
+    )
+    rows = measure.contested_groups(placement)
+
+    assert [row["records"] for row in rows] == [5, 4, 3, 2, 1]
+    assert rows[0]["territories"] == ["Shared Outline", "Territory 004"]
+    names = [row["territories"] for row in rows]
+    assert names != sorted(names), "the fixture no longer distinguishes the two orders"
+
+    # And the publication rule agrees that this is the order it declares.
+    check_all(
+        {
+            "placement_coverage": {"counts": {"contested_between_two_or_more": total}},
+            "contested_groups": rows,
+        },
+        max_rows=32,
+    )
+
+
+def test_a_size_tie_is_broken_on_the_names_so_the_order_is_total() -> None:
+    """Two combinations of equal size must not depend on dict insertion order."""
+    groups: Counter[tuple[str, ...]] = Counter(
+        {("A", "Z"): 7, ("A", "B"): 7, ("A", "M"): 7}
+    )
+    placement = Placement(
+        fire_records=21, excluded_by_hazard=0, contested=21, contested_groups=groups
+    )
+    rows = measure.contested_groups(placement)
+    assert [row["territories"] for row in rows] == [["A", "B"], ["A", "M"], ["A", "Z"]]

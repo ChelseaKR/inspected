@@ -1,9 +1,21 @@
-# Definition of done
+## What this changes
 
-What "done" means here, by kind of change. A change that meets everything below can be
-merged without a conversation about whether it is finished.
+<!-- One paragraph. What moved, and why it moved. -->
 
-## Any change
+## Does this change published figures?
+
+Required. Tick exactly one. Published figures are anything under `published/`.
+
+- [ ] No. Nothing under `published/` moves.
+- [ ] Yes. It went through the deliberate refresh procedure in `docs/RUNBOOK.md`,
+      including the artifact diff against the pin it replaces.
+
+## Definition of done
+
+Copied item for item from `docs/DEFINITION_OF_DONE.md`. A test holds the two together,
+so an item added there and not here fails the build.
+
+### Any change
 
 - [ ] `make verify` passes locally, end to end: lockfile drift, lint, format, mypy
       `--strict`, tests with the branch-coverage floor, pip-audit, the offline report,
@@ -13,7 +25,7 @@ merged without a conversation about whether it is finished.
 - [ ] The README conformance table still states what is true, not what is intended;
       if this change moved a row, the row moved with it.
 
-## A change to measurement code
+### A change to measurement code
 
 Everything above, plus:
 
@@ -30,7 +42,7 @@ Everything above, plus:
 - [ ] If the change touches what is fetched from publishers: `sources.py`,
       `PROVENANCE.md`, and the schema guard move together, or the change does not ship.
 
-## A change to published figures
+### A change to published figures
 
 Everything above, plus:
 
@@ -40,8 +52,13 @@ Everything above, plus:
 - [ ] The committed `published/REPORT.md` renders from the committed
       `published/measurements.json`, which the report-matches-artifact test holds.
 
-## A change to docs only
+### A change to docs only
 
 - [ ] No em dash or en dash anywhere (a test holds this, but do not make the test do
       your proofreading).
 - [ ] Claims about the repository are checkable by a reader with the repository.
+
+## Every new gate was watched failing
+
+A gate nobody has seen go red is not a gate. If this change adds or repairs one, say
+what you broke to prove it, and what it printed.

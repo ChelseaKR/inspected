@@ -1,0 +1,14 @@
+# Blank issues stay on, deliberately. Not every useful note is a bug report or a
+# measurement proposal: issues #16 to #23 are maintainer written and fit neither form,
+# and routing a note about a Makefile target through a form that demands a denominator
+# collects fiction or collects nothing.
+blank_issues_enabled: true
+contact_links:
+  - name: Security report
+    url: https://github.com/ChelseaKR/wildfire-service-territory-overlap/security/advisories/new
+    about: >
+      Report a vulnerability privately. SECURITY.md carries the severity levels and the
+      72 hour acknowledgment target.
+  - name: How a gate refusal is meant to be read
+    url: https://github.com/ChelseaKR/wildfire-service-territory-overlap/blob/main/docs/RUNBOOK.md
+    about: The runbook says what every acquisition and publication refusal means.

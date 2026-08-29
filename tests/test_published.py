@@ -334,13 +334,43 @@ def test_the_report_matches_the_artifact_it_was_rendered_from(
     assert render(published_artifact) == published_report
 
 
+# A California coordinate, in both halves. The longitude pattern is the one this check
+# has always carried. The latitude pattern is new: the check was named for coordinates
+# and could only ever match a longitude, so a latitude reaching a published file was
+# invisible to the one test that exists to see it.
+CALIFORNIA_LONGITUDE = re.compile(r"-1[12][0-9]\.[0-9]{3,}")
+CALIFORNIA_LATITUDE = re.compile(r"\b(?:3[2-9]|4[0-2])\.[0-9]{3,}")
+
+
 def test_no_coordinate_appears_anywhere_in_the_published_files(
     published_report: str,
 ) -> None:
     raw = (PUBLISHED / "measurements.json").read_text(encoding="utf-8")
-    coordinate = re.compile(r"-1[12][0-9]\.\d{3,}")
-    assert not coordinate.search(raw), "a longitude reached the published artifact"
-    assert not coordinate.search(published_report)
+    for where, text in (("measurements.json", raw), ("REPORT.md", published_report)):
+        assert not CALIFORNIA_LONGITUDE.search(text), f"a longitude reached {where}"
+        assert not CALIFORNIA_LATITUDE.search(text), f"a latitude reached {where}"
+
+
+def test_the_coordinate_patterns_match_a_coordinate() -> None:
+    """Guard the guard.
+
+    A pattern that matches nothing passes this file forever and reports nothing. Both
+    halves are run against coordinates of the shape DINS publishes, and against the
+    numbers that legitimately appear in these artifacts, so the check is known to be
+    able to fire and known not to fire on a rate or a count.
+    """
+    for longitude in ("-122.6789", "-118.24368", "-124.4096"):
+        assert CALIFORNIA_LONGITUDE.search(longitude), longitude
+    for latitude in ("38.4567", "34.05223", "41.9981"):
+        assert CALIFORNIA_LATITUDE.search(latitude), latitude
+
+    # The numbers these artifacts do carry, none of which is a position.
+    for innocent in ("0.6214", "132520", "37.9%", "1000", "-0.0043", "2025"):
+        assert not CALIFORNIA_LONGITUDE.search(innocent), innocent
+        assert not CALIFORNIA_LATITUDE.search(innocent), innocent
+
+    # A latitude embedded in a longitude must not be read as a latitude.
+    assert not CALIFORNIA_LATITUDE.search("-132.4567")
 
 
 def test_the_published_report_never_ranks_a_utility(published_report: str) -> None:

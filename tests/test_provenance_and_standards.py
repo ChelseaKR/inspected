@@ -8,12 +8,14 @@ from __future__ import annotations
 
 import json
 import re
+import subprocess
 import tomllib
 from pathlib import Path
 
 import pytest
 
 from wildfire_service_territory_overlap.acquire import DINS_FIELDS
+from wildfire_service_territory_overlap.artifacts import BY_NAME, ORDERINGS
 from wildfire_service_territory_overlap.sources import RETRIEVED, SOURCES, WIRES_TYPES
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -23,6 +25,7 @@ PROVENANCE = (ROOT / "PROVENANCE.md").read_text(encoding="utf-8")
 README = (ROOT / "README.md").read_text(encoding="utf-8")
 CHANGELOG = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
 CONTRIBUTING = (ROOT / "CONTRIBUTING.md").read_text(encoding="utf-8")
+ROADMAP = (ROOT / "docs" / "ROADMAP.md").read_text(encoding="utf-8")
 MAKEFILE = (ROOT / "Makefile").read_text(encoding="utf-8")
 WORKFLOWS = sorted((ROOT / ".github" / "workflows").glob("*.yml"))
 
@@ -104,18 +107,92 @@ def test_the_readme_never_claims_users_adopters_or_downloads() -> None:
         assert phrase not in lowered, f"the README says {phrase!r}"
 
 
-def test_no_document_uses_an_em_or_en_dash() -> None:
-    targets = [
-        *ROOT.glob("*.md"),
-        *(ROOT / "docs").rglob("*.md"),
-        *(ROOT / "published").glob("*.md"),
-        *(ROOT / "src").rglob("*.py"),
-        *(ROOT / "tests").rglob("*.py"),
-    ]
-    for path in targets:
+# Directories that hold no authored prose: the virtualenv, build output, caches, and
+# the raw retrievals, which are not in git at all.
+DASH_SKIP_DIRS = frozenset(
+    {
+        ".git",
+        ".venv",
+        ".mypy_cache",
+        ".pytest_cache",
+        ".ruff_cache",
+        "__pycache__",
+        "build",
+        "data",
+        "dist",
+        "node_modules",
+    }
+)
+DASH_SUFFIXES = frozenset(
+    {
+        ".cff",
+        ".cfg",
+        ".geojson",
+        ".ini",
+        ".json",
+        ".md",
+        ".py",
+        ".sh",
+        ".toml",
+        ".txt",
+        ".yaml",
+        ".yml",
+    }
+)
+DASH_NAMED = frozenset({"Makefile", "CODEOWNERS", "allowed_signers"})
+
+
+def authored_files() -> list[Path]:
+    """Every authored text file in the repository, wherever it lives.
+
+    The rule is stated as repository wide, so the check has to be. The previous version
+    globbed root markdown, `docs/`, `published/`, `src/` and `tests/`, which left
+    `.github/`, the `Makefile`, `tools/`, `fixtures/` and `CITATION.cff` unread by the
+    one gate that enforces the writing rule over them.
+    """
+    found: list[Path] = []
+    for path in ROOT.rglob("*"):
+        if not path.is_file():
+            continue
+        parts = path.relative_to(ROOT).parts
+        if any(part in DASH_SKIP_DIRS for part in parts):
+            continue
+        if path.suffix in DASH_SUFFIXES or path.name in DASH_NAMED:
+            found.append(path)
+    return sorted(found)
+
+
+def test_no_file_in_the_repository_uses_an_em_or_en_dash() -> None:
+    for path in authored_files():
         text = path.read_text(encoding="utf-8")
         for dash in DASHES:
-            assert dash not in text, f"{path.name} contains {dash!r}"
+            assert dash not in text, f"{path.relative_to(ROOT)} contains {dash!r}"
+
+
+def test_the_dash_check_reads_the_places_it_used_to_be_blind_to() -> None:
+    """Guard the guard.
+
+    Widening a check is worth nothing if the widening is nominal. Every path below sits
+    outside the globs the previous version used, so each one going missing from this
+    list is the check quietly narrowing back.
+    """
+    seen = {path.relative_to(ROOT).as_posix() for path in authored_files()}
+    for previously_unread in (
+        ".github/workflows/ci.yml",
+        ".github/workflows/release.yml",
+        ".github/dependabot.yml",
+        ".github/codeql-accepted.json",
+        ".github/CODEOWNERS",
+        "Makefile",
+        "tools/determinism.sh",
+        "fixtures/README.md",
+        "CITATION.cff",
+        "pyproject.toml",
+    ):
+        assert previously_unread in seen, (
+            f"{previously_unread} is outside the dash check again"
+        )
+    assert len(seen) > 60, "the sweep collapsed to a handful of files"
 
 
 def test_the_standards_conformance_table_has_no_blank_state() -> None:
@@ -165,6 +242,49 @@ def test_the_dev_toolchain_declares_version_floors() -> None:
     dev = " ".join(config["dependency-groups"]["dev"])
     assert "ruff>=" in dev
     assert "mypy>=" in dev
+
+
+# Every gate `make verify` runs, in order. CI runs `make verify` and nothing else, so
+# this list is the gate list for the whole repository.
+VERIFY_GATES: tuple[str, ...] = (
+    "lock-check",
+    "sync",
+    "lint",
+    "format",
+    "typecheck",
+    "test",
+    "audit",
+    "report-offline",
+    "determinism",
+)
+
+
+def verify_prerequisites() -> list[str]:
+    for line in MAKEFILE.splitlines():
+        if line.startswith("verify:"):
+            # The help description lives on the same line, after `## `.
+            return line.split(":", 1)[1].split("##")[0].split()
+    raise AssertionError("the Makefile defines no verify target")
+
+
+def test_the_verify_target_runs_every_gate_by_name() -> None:
+    """The list, read. The previous version of this check could not see it shrink.
+
+    It asserted that the file contained the text `verify:` and the text
+    `uv sync --locked`. The second is satisfied by the `sync:` recipe wherever it sits,
+    so deleting `sync`, `audit` or `determinism` from the prerequisites left every test
+    in this suite green while `make verify` quietly stopped running them. A gate list
+    nothing reads is a gate list that can be shortened by accident.
+    """
+    assert verify_prerequisites() == list(VERIFY_GATES)
+
+
+def test_every_gate_verify_names_is_a_target_that_exists() -> None:
+    """A prerequisite with no rule behind it is a name, not a gate."""
+    for gate in VERIFY_GATES:
+        assert re.search(rf"^{re.escape(gate)}:", MAKEFILE, re.MULTILINE), (
+            f"verify depends on {gate}, which the Makefile does not define"
+        )
 
 
 def test_the_verify_target_exists_and_is_what_ci_runs() -> None:
@@ -290,3 +410,357 @@ def test_the_unresolvable_dependency_is_ignored_with_its_reason_rather_than_left
     dependabot = (ROOT / ".github" / "dependabot.yml").read_text(encoding="utf-8")
     assert 'dependency-name: "perimeter"' in dependabot
     assert "PyPI" in dependabot, "the ignore must say what the real fix is and is not"
+
+
+def test_the_readme_names_every_collection_that_is_not_in_name_order() -> None:
+    """The claim issue #23 found false, tied to the ledger that now decides it.
+
+    The README asserted, without qualification and directly beside an enforced rule,
+    that every collection in the output is sorted by name. It was false in four places
+    and nothing read it, so it stayed false. A fifth exception added to the ledger and
+    not to the README fails here.
+    """
+    top_level = [
+        path
+        for path, (kind, _) in ORDERINGS.items()
+        if kind != BY_NAME and "[]" not in path
+    ]
+    assert top_level, "the ledger records no exception, so this test checks nothing"
+    for path in top_level:
+        name = path.removeprefix("$.")
+        assert name in README, (
+            f"{name} is published in an order other than by name and the README does "
+            "not say so"
+        )
+    assert "Name order is the rule" in README
+
+
+def test_the_readme_does_not_still_make_the_unqualified_claim() -> None:
+    assert "Every collection in the output is sorted by name" not in README
+
+
+RULESET_DOCUMENTS = {
+    "README.md": README,
+    "CHANGELOG.md": CHANGELOG,
+    "docs/ROADMAP.md": ROADMAP,
+}
+
+
+def test_no_document_claims_the_ruleset_carries_no_bypass_actor() -> None:
+    """It carries one, and three documents said it carried none.
+
+    Read back from the API on 2026-08-28: the ruleset on `main` grants `RepositoryRole`
+    5, repository admin, `bypass_mode: always`. That is the account that pushes, so
+    every one of the six required checks is skippable by the person they exist to
+    check. The claim had been in the conformance table since the ruleset was created
+    and nothing re-read it, which is the failure this repository is otherwise careful
+    about. `docs/RUNBOOK.md` now carries the command that reads it back.
+    """
+    for name, text in RULESET_DOCUMENTS.items():
+        assert "no bypass actors" not in text.lower(), (
+            f"{name} claims a protection the ruleset does not have"
+        )
+
+
+def test_every_document_describing_the_ruleset_names_its_bypass_actor() -> None:
+    """Silence would be the same overstatement with fewer words."""
+    for name, text in RULESET_DOCUMENTS.items():
+        if "ruleset" not in text.lower():
+            continue
+        lowered = text.lower()
+        assert "bypass" in lowered, name
+        assert "repository admin" in lowered, name
+
+
+def test_the_runbook_carries_the_command_that_reads_the_ruleset_back() -> None:
+    runbook = (ROOT / "docs" / "RUNBOOK.md").read_text(encoding="utf-8")
+    assert "gh api repos/OWNER/REPO/rulesets" in runbook
+    assert "bypass_actors" in runbook
+
+
+def make_targets() -> list[str]:
+    """Every target named in the Makefile's .PHONY declaration."""
+    block = MAKEFILE.split(".PHONY:", 1)[1].split("\n\n", 1)[0]
+    return block.replace("\\", " ").split()
+
+
+def test_make_help_lists_every_target_with_a_description() -> None:
+    """A target added without its help line is a target nobody will find.
+
+    The description lives on the target line, so adding a target and documenting it are
+    the same edit, and this test is what makes skipping the second half fail.
+    """
+    result = subprocess.run(
+        ["make", "help"],  # noqa: S607
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    listed = {
+        line.split()[0] for line in result.stdout.splitlines() if line.startswith("  ")
+    }
+    assert listed == set(make_targets()), (
+        "make help and .PHONY disagree about which targets exist"
+    )
+    for required in ("verify", "report-offline", "determinism", "acquire"):
+        assert required in listed, required
+
+
+def test_make_help_says_which_target_touches_the_network() -> None:
+    """`acquire` is the only one, and the listing has to say so."""
+    for line in MAKEFILE.splitlines():
+        if line.startswith("acquire:"):
+            assert "network" in line.split("##", 1)[1]
+            return
+    raise AssertionError("the Makefile defines no acquire target")
+
+
+def test_bare_make_still_runs_the_one_gate() -> None:
+    """Adding `help` must not turn the habitual keystroke into a listing."""
+    assert ".DEFAULT_GOAL := verify" in MAKEFILE
+    result = subprocess.run(
+        ["make", "--dry-run"],  # noqa: S607
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    assert "uv lock --check" in result.stdout
+    assert "tools/determinism.sh" in result.stdout
+
+
+ISSUE_FORMS = sorted((ROOT / ".github" / "ISSUE_TEMPLATE").glob("*.yml"))
+PR_TEMPLATE = (ROOT / ".github" / "PULL_REQUEST_TEMPLATE.md").read_text(
+    encoding="utf-8"
+)
+DEFINITION_OF_DONE = (ROOT / "docs" / "DEFINITION_OF_DONE.md").read_text(
+    encoding="utf-8"
+)
+
+# Read from the repository on 2026-08-28 with `gh label list`. A form filing under a
+# label that does not exist silently files under none, so the set is written down here
+# rather than assumed. Re-read it when a label is added or removed.
+REPOSITORY_LABELS = frozenset(
+    {
+        "accessibility",
+        "bug",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix",
+    }
+)
+
+
+def checklist_items(text: str) -> list[str]:
+    """Every checklist item, with its continuation lines folded into one string."""
+    items: list[str] = []
+    for line in text.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("- [ ]"):
+            items.append(stripped.removeprefix("- [ ]").strip())
+        elif items and line.startswith("      ") and stripped:
+            items[-1] = f"{items[-1]} {stripped}"
+    return [" ".join(item.split()) for item in items]
+
+
+def test_the_repository_carries_both_issue_forms_and_a_config() -> None:
+    names = {path.name for path in ISSUE_FORMS}
+    assert names == {"bug_report.yml", "measurement_proposal.yml", "config.yml"}
+
+
+def test_every_issue_form_names_a_label_the_repository_has() -> None:
+    """A form filing under a label that does not exist files under none.
+
+    This is what would have caught a `measurement` label that was never created.
+    """
+    for path in ISSUE_FORMS:
+        text = path.read_text(encoding="utf-8")
+        for match in re.finditer(r"labels:\s*\[(.*?)\]", text):
+            for raw in match.group(1).split(","):
+                label = raw.strip().strip('"').strip("'")
+                assert label in REPOSITORY_LABELS, f"{path.name} files under {label!r}"
+
+
+def test_blank_issues_stay_enabled() -> None:
+    """Issues #16 to #23 fit neither form. A form is a funnel, not a gate."""
+    config = (ROOT / ".github" / "ISSUE_TEMPLATE" / "config.yml").read_text(
+        encoding="utf-8"
+    )
+    assert "blank_issues_enabled: true" in config
+
+
+def test_the_measurement_form_asks_for_the_denominator() -> None:
+    """The one field this project cannot publish a rate without."""
+    form = (ROOT / ".github" / "ISSUE_TEMPLATE" / "measurement_proposal.yml").read_text(
+        encoding="utf-8"
+    )
+    assert "id: denominator" in form
+    assert "id: numerator" in form
+    assert "id: ranks-nobody" in form
+    assert "id: touches-no-infrastructure" in form
+    denominator = form.split("id: denominator", 1)[1].split("id: ", 1)[0]
+    assert "required: true" in denominator, "the denominator field is optional"
+
+
+def test_the_pull_request_template_mirrors_the_definition_of_done() -> None:
+    """The checklist cannot fall behind the rules it states.
+
+    Every item in `docs/DEFINITION_OF_DONE.md` has to appear in the template, so adding
+    a rule and forgetting the checklist is a failing build rather than a checklist that
+    slowly stops describing the project.
+    """
+    required = checklist_items(DEFINITION_OF_DONE)
+    assert len(required) >= 14, "the Definition of Done parsed to almost nothing"
+    template = " ".join(PR_TEMPLATE.split())
+    for item in required:
+        assert item in template, f"the pull request template is missing: {item}"
+
+
+def test_the_pull_request_template_asks_whether_published_figures_moved() -> None:
+    assert "Does this change published figures?" in PR_TEMPLATE
+    assert "Tick exactly one" in PR_TEMPLATE
+    assert "docs/RUNBOOK.md" in PR_TEMPLATE
+
+
+def test_no_issue_template_was_added_under_workflows() -> None:
+    """Issue #19 scoped this change out of `.github/workflows`, which tests read."""
+    workflow_names = {path.name for path in WORKFLOWS}
+    assert workflow_names == {
+        "ci.yml",
+        "codeql.yml",
+        "osv.yml",
+        "release.yml",
+        "scorecard.yml",
+    }
+
+
+GLOSSARY = (ROOT / "docs" / "GLOSSARY.md").read_text(encoding="utf-8")
+
+
+def test_the_glossary_defines_every_term_the_readme_uses_without_defining() -> None:
+    """The list issue #18 asked for, held so an entry cannot quietly go missing."""
+    for term in (
+        "DINS",
+        "State responsibility area",
+        "Load serving entity",
+        "IOU",
+        "POU",
+        "CO-OP",
+        "Tribal utility",
+        "CCA",
+        "ADMIN",
+        "OGC validity check",
+        "Geometry repair",
+        "Contested",
+        "Boundary band",
+        "Wilson score interval",
+        "Newcombe score interval",
+    ):
+        assert f"**{term}" in GLOSSARY, f"the glossary has no entry for {term}"
+
+
+def test_the_glossary_says_the_publisher_documents_none_of_the_type_values() -> None:
+    """The entry that would be a fabrication if it were written the easy way.
+
+    `sources.py` records that the CEC documents none of the six `Type` values. A
+    glossary that stated what IOU or POU means as though the publisher had said so
+    would contradict a published document in this repository, which is the case issue
+    #18 said to stop and report rather than smooth over. The expansions are given as
+    the conventional reading and the gap is named.
+    """
+    assert "The publisher documents none of\nthem" in GLOSSARY.replace("**", "")
+    assert "TYPE_FIELD_IS_UNDOCUMENTED" in GLOSSARY
+    assert "conventionally" in GLOSSARY
+
+
+def test_every_relative_link_in_the_glossary_resolves() -> None:
+    """A glossary of dead links is a glossary that stopped being checked."""
+    targets = re.findall(r"\]\((?!https?:)([^)#]+)", GLOSSARY)
+    assert len(targets) > 15, "the glossary links to almost nothing"
+    for target in targets:
+        resolved = (ROOT / "docs" / target).resolve()
+        assert resolved.exists(), (
+            f"the glossary links to {target}, which does not exist"
+        )
+
+
+def test_the_glossary_cites_the_public_utilities_code_for_a_cca() -> None:
+    """The citation, checked against where it actually lives.
+
+    Issue #18 asked for section 331.1 "as ADR 0002 does". ADR 0002 does not: it
+    describes a community choice aggregator in its own words and cites no section. The
+    citation is in `sources.py`, in `EXCLUDED_TYPES`. The glossary cites the code
+    section and points at the file that carries it, and this test checks the authority
+    rather than the one the issue named from memory.
+    """
+    assert "331.1" in GLOSSARY
+    sources = (
+        ROOT / "src" / "wildfire_service_territory_overlap" / "sources.py"
+    ).read_text(encoding="utf-8")
+    assert "331.1" in sources, "the citation moved out of sources.py"
+
+
+def test_contributing_carries_a_first_change_walkthrough() -> None:
+    for phrase in (
+        "## Your first change, start to finish",
+        "make report-offline",
+        "is_fixture",
+        "fixtures/README.md",
+        "tools/determinism.sh",
+        "docs/RUNBOOK.md",
+    ):
+        assert phrase in CONTRIBUTING, phrase
+
+
+def test_the_walkthrough_lists_the_gates_in_the_order_verify_runs_them() -> None:
+    """The table cannot drift from the gate list it describes.
+
+    A walkthrough that teaches a newcomer a stale order is worse than one that does not
+    try, because they will trust it.
+    """
+    section = CONTRIBUTING.split("### 4. The gates, in the order")[1]
+    found = [
+        line.strip("| ").split("|")[0].strip().strip("`")
+        for line in section.splitlines()
+        if line.startswith("| `")
+    ]
+    assert found == list(VERIFY_GATES)
+
+
+def test_the_walkthrough_only_names_make_targets_that_exist() -> None:
+    """Issue #21 asked for the target names exactly as currently defined."""
+    section = CONTRIBUTING.split("## Your first change, start to finish")[1]
+    named = set(re.findall(r"make ([a-z][a-z-]*)", section))
+    real = set(make_targets())
+    assert named, "the walkthrough names no make target at all"
+    assert named <= real, (
+        f"the walkthrough names targets that do not exist: {named - real}"
+    )
+
+
+def test_the_walkthrough_does_not_claim_a_fixture_edit_trips_determinism() -> None:
+    """The correction that had to be checked rather than copied.
+
+    Issue #21 asked for a step that renames a territory in a fixture, runs
+    `make determinism`, and watches it refuse. It does not refuse. The determinism gate
+    builds the fixtures twice and compares the two trees, so an edited input changes
+    both builds identically and the comparison still matches. Run and confirmed on
+    2026-08-28: the rename leaves `make determinism` at exit 0 and fails `make test`
+    with eight failures.
+
+    The walkthrough therefore sends the rename at `make test`, says in as many words
+    that determinism passes and why, and reaches the determinism refusal by making two
+    build trees actually differ.
+    """
+    section = CONTRIBUTING.split("### 3. Break something on purpose")[1]
+    assert "**It passes.**" in section
+    assert "changes both builds identically" in section
+    assert 'echo "edited" >> build/run-two/REPORT.md' in section

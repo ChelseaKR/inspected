@@ -6,7 +6,9 @@ nobody has watched fail is a gate that might not be able to.
 
 from __future__ import annotations
 
+import importlib.metadata as metadata
 import subprocess
+import tomllib
 from pathlib import Path
 
 import pytest
@@ -104,3 +106,77 @@ def test_the_gate_refuses_the_wrong_number_of_arguments() -> None:
     )
     assert result.returncode == 2
     assert "usage" in result.stderr
+
+
+def test_the_version_flag_prints_the_installed_version_and_exits_zero(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    with pytest.raises(SystemExit) as exit_info:
+        cli.main(["--version"])
+    assert exit_info.value.code == 0
+    printed = capsys.readouterr().out.strip()
+    assert printed == f"{cli.DISTRIBUTION} {metadata.version(cli.DISTRIBUTION)}"
+
+
+def test_the_version_cannot_drift_from_pyproject() -> None:
+    """One source of truth, checked from both ends.
+
+    `pyproject.toml` holds the version, hatchling copies it into the installed
+    distribution metadata, and the flag reads it back from there. There is no second
+    copy to drift, and these two assertions are what hold the chain together: the name
+    the flag looks up has to be the name the project is packaged under, and the version
+    that comes back has to be the one declared.
+    """
+    config = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    assert config["project"]["name"] == cli.DISTRIBUTION
+    assert metadata.version(cli.DISTRIBUTION) == config["project"]["version"]
+
+
+def test_a_version_that_cannot_be_read_is_refused_rather_than_guessed(
+    capsys: pytest.CaptureFixture[str], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Not measured, on stderr, with a nonzero exit. Never a placeholder string."""
+
+    def absent(_name: str) -> str:
+        raise metadata.PackageNotFoundError(cli.DISTRIBUTION)
+
+    monkeypatch.setattr(cli.metadata, "version", absent)
+    with pytest.raises(SystemExit) as exit_info:
+        cli.main(["--version"])
+    assert exit_info.value.code == 1
+    captured = capsys.readouterr()
+    assert captured.out == "", "a version that could not be read was printed anyway"
+    assert "not measured" in captured.err
+    assert "uv sync --locked" in captured.err
+
+
+def test_a_build_never_asks_for_the_version(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The trap this flag was written around, held shut by a test.
+
+    Resolving the version while the parser is built runs the lookup on every
+    invocation. Here the lookup is rigged to fail outright, and a full fixture build
+    still has to succeed, because a build has no business asking what version it is.
+    """
+
+    def never(_name: str) -> str:
+        raise AssertionError("a build asked for the version")
+
+    monkeypatch.setattr(cli.metadata, "version", never)
+    code = cli.main(
+        [
+            "--fixture",
+            "--dins",
+            str(FIXTURES / "dins_sample.json"),
+            "--iou-pou",
+            str(FIXTURES / "else_iou_pou_sample.geojson"),
+            "--other",
+            str(FIXTURES / "else_other_sample.geojson"),
+            "--counties",
+            str(FIXTURES / "county_boundaries_sample.geojson"),
+            "--out",
+            str(tmp_path / "out"),
+        ]
+    )
+    assert code == 0

@@ -7,7 +7,10 @@ the real retrievals, so a fixture build can never be mistaken for the published 
 from __future__ import annotations
 
 import argparse
+import importlib.metadata as metadata
 import json
+import sys
+from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 
@@ -29,6 +32,47 @@ from wildfire_service_territory_overlap.sources import (
 
 ARTIFACT_NAME = "measurements.json"
 REPORT_NAME = "REPORT.md"
+
+# The name in pyproject.toml, which hatchling copies into the installed distribution
+# metadata. There is no second copy of the version anywhere: the flag below reads it
+# back from that metadata, so a hardcoded string cannot drift from the packaging.
+DISTRIBUTION = "wildfire-service-territory-overlap"
+
+
+class PrintVersion(argparse.Action):
+    """Resolve the version when the flag is used, not while the parser is built.
+
+    ``version=f"%(prog)s {metadata.version(...)}"`` is the obvious form and it is a
+    trap: the lookup runs on every invocation, including every build that never asks.
+    On a checkout with no installed distribution metadata it raises before ``--dins``
+    is even parsed, so the whole command dies in order to offer one flag.
+
+    A version that cannot be read is not guessed. It is reported as not measured, which
+    is the shape this project gives every other question it cannot answer.
+    """
+
+    def __init__(self, option_strings: Sequence[str], dest: str, **kwargs: Any) -> None:
+        super().__init__(option_strings, dest, nargs=0, **kwargs)
+
+    def __call__(
+        self,
+        parser: argparse.ArgumentParser,
+        namespace: argparse.Namespace,
+        values: str | Sequence[Any] | None,
+        option_string: str | None = None,
+    ) -> None:
+        try:
+            version = metadata.version(DISTRIBUTION)
+        except metadata.PackageNotFoundError:
+            print(
+                f"{DISTRIBUTION}: version not measured. Nothing installed under "
+                f"{DISTRIBUTION} carries the distribution metadata to read it from. "
+                "Install the project, with `uv sync --locked`, and ask again.",
+                file=sys.stderr,
+            )
+            raise SystemExit(1) from None
+        print(f"{DISTRIBUTION} {version}")
+        raise SystemExit(0)
 
 
 def _read_json(path: Path) -> Any:
@@ -113,6 +157,11 @@ def main(argv: list[str] | None = None) -> int:
         prog="wildfire-service-territory-overlap",
         description="Measure how much of the DINS record set a published electric "
         "service territory boundary can account for. Reads local files only.",
+    )
+    parser.add_argument(
+        "--version",
+        action=PrintVersion,
+        help="print the installed version and exit",
     )
     parser.add_argument("--dins", type=Path, required=True)
     parser.add_argument("--iou-pou", type=Path, required=True)

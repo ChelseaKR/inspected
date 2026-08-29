@@ -12,7 +12,12 @@ from typing import Any
 import pytest
 
 from wildfire_service_territory_overlap.artifacts import (
+    BY_NAME,
+    BY_SIZE,
+    DECLARED,
+    ORDERINGS,
     PublicationRefused,
+    _walk,
     assert_aggregate_only,
     assert_differences_carry_intervals,
     assert_no_locating_fields,
@@ -20,6 +25,7 @@ from wildfire_service_territory_overlap.artifacts import (
     assert_rates_are_denominated,
     assert_territories_sorted_by_name,
     check_all,
+    generic_path,
     serialise,
     write_json,
 )
@@ -174,3 +180,121 @@ def test_a_clean_artifact_is_written(tmp_path: Path) -> None:
     target = tmp_path / "out" / "measurements.json"
     written = write_json({"share": measured()}, target, max_rows=5)
     assert written.read_text(encoding="utf-8").startswith("{")
+
+
+def _coverage_tree(rows: list[dict[str, Any]], total: int) -> dict[str, Any]:
+    return {
+        "placement_coverage": {"counts": {"contested_between_two_or_more": total}},
+        "contested_groups": rows,
+    }
+
+
+def test_a_contested_groups_table_that_accounts_for_every_record_passes() -> None:
+    check_all(_coverage_tree([{"records": 30}, {"records": 20}], 50), max_rows=32)
+
+
+def test_a_truncated_contested_groups_table_is_refused() -> None:
+    """The cut issue #22 reports, caught before anything is written.
+
+    `assert_aggregate_only` cannot see this: its ceiling is never below 32 and the cap
+    is 25, so the only length rule in the module is numerically incapable of firing on
+    this collection.
+    """
+    with pytest.raises(PublicationRefused, match="15 short"):
+        check_all(_coverage_tree([{"records": 30}, {"records": 20}], 65), max_rows=32)
+
+
+def test_a_contested_groups_table_longer_than_its_total_is_also_refused() -> None:
+    """Over as well as under. A double count is a wrong number, not a safe one."""
+    with_extra = [{"records": 30}, {"records": 20}, {"records": 5}]
+    with pytest.raises(PublicationRefused, match="55 of 50"):
+        check_all(_coverage_tree(with_extra, 50), max_rows=32)
+
+
+def test_the_contested_check_stays_quiet_when_there_is_nothing_to_compare() -> None:
+    """A tree without the coverage block is not an artifact this rule can judge."""
+    check_all({"contested_groups": [{"records": 3}]}, max_rows=32)
+    check_all({"placement_coverage": {"counts": {}}}, max_rows=32)
+    check_all({"placement_coverage": "not a block"}, max_rows=32)
+
+
+def test_a_collection_nobody_declared_an_order_for_is_refused() -> None:
+    """Fail closed on arrival. A new collection cannot reach a reader undeclared."""
+    with pytest.raises(PublicationRefused, match="nothing has declared"):
+        check_all({"newly_added_rows": [{"a": 1}, {"a": 2}]}, max_rows=32)
+
+
+def test_a_name_ordered_collection_out_of_name_order_is_refused() -> None:
+    with pytest.raises(PublicationRefused, match="declared in name order"):
+        check_all(
+            {"territories": [{"territory": "Zulu"}, {"territory": "Alpha"}]},
+            max_rows=32,
+        )
+
+
+def test_contested_groups_out_of_size_order_are_refused() -> None:
+    rows = [
+        {"records": 10, "territories": ["A", "B"]},
+        {"records": 90, "territories": ["C", "D"]},
+    ]
+    with pytest.raises(PublicationRefused, match="declared in size order"):
+        check_all(_coverage_tree(rows, 100), max_rows=32)
+
+
+def test_contested_groups_in_size_order_pass() -> None:
+    rows = [
+        {"records": 90, "territories": ["C", "D"]},
+        {"records": 10, "territories": ["A", "B"]},
+    ]
+    check_all(_coverage_tree(rows, 100), max_rows=32)
+
+
+def test_a_row_missing_the_field_its_order_runs_on_is_refused_not_crashed() -> None:
+    """A checker that raises KeyError reads as a bug in the checker, not in the data."""
+    with pytest.raises(PublicationRefused, match="does not carry it"):
+        check_all(
+            {"territories": [{"territory": "Alpha"}, {"name": "Beta"}]}, max_rows=32
+        )
+
+
+def test_a_single_row_collection_has_no_order_to_get_wrong() -> None:
+    check_all({"territories": [{"territory": "Alpha"}]}, max_rows=32)
+
+
+def test_every_declared_exception_to_name_order_says_why() -> None:
+    """The half that keeps the ledger from becoming a way to opt out of the rule.
+
+    A collection can be published in an order other than by name, and three are. Each
+    has to carry the reason next to the declaration, in words, long enough to argue
+    with.
+    """
+    exceptions = {
+        path: reason
+        for path, (kind, reason) in ORDERINGS.items()
+        if kind in (DECLARED, BY_SIZE)
+    }
+    assert exceptions, "the ledger records no exception, so this test checks nothing"
+    for path, reason in exceptions.items():
+        assert len(reason) > 60, f"{path} is excused in one line. Say why."
+    by_name = [path for path, (kind, _) in ORDERINGS.items() if kind == BY_NAME]
+    assert len(by_name) > len(exceptions), "name order must remain the rule"
+
+
+def test_the_ordering_ledger_describes_collections_that_are_actually_published(
+    published_artifact: dict[str, Any],
+) -> None:
+    """No entry outlives the collection it describes, and none is missing.
+
+    The same shape as the CodeQL acceptance gate: a ledger that can only grow becomes a
+    list of things that used to be true. Every path declared here must appear in the
+    published artifact, and every collection in the published artifact must be declared.
+    """
+    published: set[str] = set()
+    for path, node in _walk(published_artifact):
+        if isinstance(node, list):
+            published.add(generic_path(path))
+    assert published, "the published artifact carries no collection at all"
+    assert published - set(ORDERINGS) == set(), "an undeclared published collection"
+    assert set(ORDERINGS) - published == set(), (
+        "ORDERINGS declares an order for a collection the artifact no longer carries"
+    )
