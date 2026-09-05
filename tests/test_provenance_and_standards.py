@@ -6,6 +6,7 @@ the engineering. Both drift the moment nothing reads them.
 
 from __future__ import annotations
 
+import inspect
 import json
 import re
 import subprocess
@@ -15,7 +16,11 @@ from pathlib import Path
 import pytest
 
 from wildfire_service_territory_overlap.acquire import DINS_FIELDS
-from wildfire_service_territory_overlap.artifacts import BY_NAME, ORDERINGS
+from wildfire_service_territory_overlap.artifacts import (
+    BY_NAME,
+    ORDERINGS,
+    check_document,
+)
 from wildfire_service_territory_overlap.sources import RETRIEVED, SOURCES, WIRES_TYPES
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -764,3 +769,85 @@ def test_the_walkthrough_does_not_claim_a_fixture_edit_trips_determinism() -> No
     assert "**It passes.**" in section
     assert "changes both builds identically" in section
     assert 'echo "edited" >> build/run-two/REPORT.md' in section
+
+
+# --- The accessibility review, held against the gates it now cites ------------------
+
+ACR = (ROOT / "docs" / "ACR.md").read_text(encoding="utf-8")
+
+# The documents `docs/ACR.md` makes its structural claims about. The generated report
+# goes through `artifacts.write_report` on every build and is checked again as
+# committed in tests/test_published.py; these three are repository prose, and the
+# review names them, so the same rules read them here.
+DOCUMENTS_THE_REVIEW_CLAIMS = ("README.md", "PROVENANCE.md", "docs/ACR.md")
+
+
+@pytest.mark.parametrize("name", DOCUMENTS_THE_REVIEW_CLAIMS)
+def test_the_documents_this_review_makes_claims_about_pass_the_document_rules(
+    name: str,
+) -> None:
+    """The review says header rows, descriptive links and hierarchical headings hold
+    in these documents. Saying it is not holding it.
+
+    This is what caught `docs/ACR.md` itself: the row asserting that every data table
+    has a header row carried four unescaped pipes inside a code span, so the row was
+    read as five cells under a two-cell header and the claim rendered under the wrong
+    column name.
+    """
+    check_document((ROOT / name).read_text(encoding="utf-8"))
+
+
+def document_rules() -> list[str]:
+    """Every rule `check_document` runs, read out of the function rather than listed."""
+    return re.findall(r"assert_[a-z_]+", inspect.getsource(check_document))
+
+
+def test_the_accessibility_review_names_the_rule_behind_every_enforced_check() -> None:
+    """A rule added to the gate and not to the review is a review going stale again.
+
+    The list is read from `check_document`, so it cannot fall behind the module the way
+    a hand-copied list would.
+    """
+    rules = document_rules()
+    assert len(rules) >= 6, "check_document parsed to almost no rules"
+    for rule in rules:
+        assert rule in ACR, f"{rule} enforces a check the review does not name"
+
+
+def test_the_accessibility_review_still_says_the_assistive_technology_pass_is_open() -> (
+    None
+):
+    """The sentence in this repository that must never be quietly improved.
+
+    Six structural checks moved from reviewed to enforced on 2026-09-04. None of them
+    is a screen reader, nobody has run one, and the value of this document is that it
+    says so. A future edit that softens this into a claim of general accessibility
+    conformance fails here.
+    """
+    normalised = " ".join(ACR.split())
+    assert "No assistive-technology pass" in normalised
+    assert (
+        "Nobody has navigated the generated tables with a screen reader" in normalised
+    )
+    assert "that pass remains open" in normalised
+    assert "this review does not claim it" in normalised
+    for overstatement in (
+        "fully accessible",
+        "accessibility conformant",
+        "screen reader tested",
+        "wcag aa",
+        "wcag 2.1 aa",
+    ):
+        assert overstatement not in ACR.lower(), f"the review claims {overstatement!r}"
+
+
+def test_the_readme_accessibility_row_says_the_same_thing_the_review_says() -> None:
+    """The conformance table and the review cannot disagree about what is outstanding."""
+    rows = [line for line in README.splitlines() if line.startswith("| Accessibility")]
+    assert len(rows) == 1, "the conformance table has no single Accessibility row"
+    row = rows[0]
+    assert "assistive-technology pass" in row
+    assert "docs/ACR.md" in row
+    assert "check_document" in row, (
+        "the row states what became enforced, so it names the gate that enforces it"
+    )

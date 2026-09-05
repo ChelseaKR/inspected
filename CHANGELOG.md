@@ -41,6 +41,11 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   passed `limit=1` over a fixture holding exactly one combination, which is a slice that
   removes nothing, so it exercised no cap while its name said it did. The cap is now
   exercised against a placement built to have one.
+- **`docs/ACR.md` broke the rule it was asserting.** The row claiming that every data
+  table has a header row carried four unescaped pipe characters inside a code span, so
+  Markdown read it as five cells under a two-cell header and rendered the second half of
+  the claim as extra columns. The pipes are escaped, and the rule that found it now
+  reads that document on every run.
 
 ### Added
 
@@ -64,6 +69,26 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   changes both identically. The walkthrough sends that break at `make test`, says why
   determinism passes, and reaches the determinism refusal by making two build trees
   actually differ.
+- **Publication rules over the rendered document** (roadmap 1.6, structural half).
+  `docs/ACR.md` recorded ten structural checks over the generated report as reviewed
+  once, on 2026-08-22, against one build of version `0.1.0`. A reviewed-once claim about
+  generated output goes stale the moment the renderer changes. Six of them are gates
+  now, in `artifacts.check_document`, called from the new `artifacts.write_report` so a
+  document that breaks one is not written at all, and called again over the committed
+  `published/REPORT.md` by `tests/test_published.py` because `published/` is built by
+  hand where CI cannot rebuild it. `assert_tables_have_a_header_row` refuses a table
+  whose first row is not sitting over a delimiter row; `assert_tables_are_rectangular`
+  refuses a row that does not carry the column count its header declares, which is what
+  a published territory name arriving with a `|` in it would produce;
+  `assert_no_table_cell_is_empty` refuses a cell that reads as its column name followed
+  by silence; `assert_headings_do_not_skip_a_level` refuses a document opening below
+  level one or skipping a level; `assert_links_are_descriptive` refuses a link labelled
+  with a bare URL or with "here"; `assert_nothing_is_carried_by_styling` refuses an ANSI
+  escape or a markup tag. Every one is fed output that breaks it in
+  `tests/test_artifacts.py`, and `docs/ACR.md` now separates what is enforced from what
+  is still a person reading a document. Nothing under `published/` moves. The remaining
+  half of roadmap 1.6, an assistive-technology pass over the generated tables, stays
+  open; none of this is a screen reader and the review does not claim otherwise.
 
 ### Changed
 

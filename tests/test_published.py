@@ -12,7 +12,12 @@ import re
 from pathlib import Path
 from typing import Any
 
-from wildfire_service_territory_overlap.artifacts import check_all
+from wildfire_service_territory_overlap.artifacts import (
+    _table_blocks,
+    check_all,
+    check_document,
+    table_cells,
+)
 from wildfire_service_territory_overlap.report import render
 from wildfire_service_territory_overlap.sources import DINS
 
@@ -417,6 +422,33 @@ def test_no_dash_character_appears_in_the_published_documents(
 ) -> None:
     for dash in ("\u2014", "\u2013"):
         assert dash not in published_report
+
+
+def test_the_published_report_passes_every_document_rule(published_report: str) -> None:
+    """The structural half of `docs/ACR.md`, held against the committed document.
+
+    `published/` is built by hand from retrievals CI cannot see, so the write-time gate
+    in `cli.build` never runs here. This is the same gate, run over what was committed.
+    """
+    check_document(published_report)
+
+
+def test_the_document_rules_have_something_to_read_in_the_published_report(
+    published_report: str,
+) -> None:
+    """Guard the guard.
+
+    Every rule above passes over a document with no tables in it, so a renderer that
+    stopped emitting tables would turn this file green rather than red. The report's
+    tables are the accessibility surface; their presence is asserted rather than
+    assumed.
+    """
+    blocks = _table_blocks(published_report)
+    assert len(blocks) >= 10, "the report renders almost no tables"
+    assert sum(len(block) - 2 for block in blocks) > 200, "the tables carry no rows"
+    assert max(len(table_cells(block[0][1])) for block in blocks) >= 6, (
+        "no table in the report is wide enough for a shifted cell to hide in"
+    )
 
 
 # --- The README's prose numbers are the artifact's numbers -------------------------

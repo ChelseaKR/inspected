@@ -25,9 +25,12 @@ from wildfire_service_territory_overlap.artifacts import (
     assert_rates_are_denominated,
     assert_territories_sorted_by_name,
     check_all,
+    check_document,
     generic_path,
     serialise,
+    table_cells,
     write_json,
+    write_report,
 )
 from wildfire_service_territory_overlap.intervals import Rate
 
@@ -298,3 +301,165 @@ def test_the_ordering_ledger_describes_collections_that_are_actually_published(
     assert set(ORDERINGS) - published == set(), (
         "ORDERINGS declares an order for a collection the artifact no longer carries"
     )
+
+
+# --- The rules over the rendered document -------------------------------------------
+#
+# Each one is fed a document that breaks it. This repository has already written down
+# an audit of four gates that were numerically incapable of firing and a test that
+# asserted a defect, so a rule that has never been watched refuse is not treated here
+# as a rule at all.
+
+CLEAN_DOCUMENT = """# A title
+
+One paragraph, and then a table introduced by this sentence.
+
+| Outcome | Records |
+|---|---:|
+| placed in exactly one published territory | 82,353 |
+| inside no published territory | 0 |
+
+## A section
+
+Prose, with a link to [the provenance record](PROVENANCE.md) in it.
+"""
+
+
+def test_a_clean_document_passes_every_document_rule() -> None:
+    check_document(CLEAN_DOCUMENT)
+
+
+def test_a_row_counts_the_same_cells_with_or_without_its_outer_pipes() -> None:
+    """Markdown lets the pipes at the ends of a row be left off.
+
+    The rectangularity rule is a comparison of cell counts, so the count has to mean
+    the same thing on a row written either way, or the rule would refuse a table for
+    the punctuation at its margins rather than for a cell in the wrong column.
+    """
+    assert table_cells("| Alpha | 12 |") == ["Alpha", "12"]
+    assert table_cells("Alpha | 12") == ["Alpha", "12"]
+    assert table_cells("| Alpha | 12") == ["Alpha", "12"]
+
+
+def test_a_table_with_no_delimiter_row_is_refused() -> None:
+    with pytest.raises(PublicationRefused, match="no header row"):
+        check_document("# T\n\n| Outcome | Records |\n| placed | 12 |\n")
+
+
+def test_a_table_that_opens_on_its_delimiter_row_is_refused() -> None:
+    """Its first row of data would be read out as the name of every column."""
+    with pytest.raises(PublicationRefused, match="no header row"):
+        check_document("# T\n\n|---|---:|\n| placed | 12 |\n")
+
+
+def test_a_lone_table_row_is_refused() -> None:
+    with pytest.raises(PublicationRefused, match="no header row"):
+        check_document("# T\n\n| placed | 12 |\n")
+
+
+def test_a_pipe_inside_a_value_is_refused_rather_than_shifting_the_row() -> None:
+    """The failure this rule exists for.
+
+    Territory names come from a published layer this project does not control. One
+    arriving with a `|` in it renders as an extra column, and every cell after it is
+    announced under the name of the column to its left. The row still looks like a row.
+    """
+    document = (
+        "# T\n\n| Territory | Records |\n|---|---:|\n| Alpha | Beta Electric | 12 |\n"
+    )
+    with pytest.raises(PublicationRefused, match="carries 3 cells under a header of 2"):
+        check_document(document)
+
+
+def test_a_row_short_of_its_header_is_refused() -> None:
+    with pytest.raises(PublicationRefused, match="carries 1 cells under a header of 2"):
+        check_document("# T\n\n| Territory | Records |\n|---|---:|\n| Alpha |\n")
+
+
+def test_a_pipe_escaped_the_way_markdown_requires_stays_one_cell() -> None:
+    """The rule refuses a broken row, not a value that happens to contain a pipe."""
+    check_document(
+        "# T\n\n| Territory | Records |\n|---|---:|\n| Alpha \\| Beta | 12 |\n"
+    )
+
+
+def test_an_empty_cell_is_refused() -> None:
+    with pytest.raises(PublicationRefused, match="column 2 of this row is empty"):
+        check_document("# T\n\n| Territory | Records |\n|---|---:|\n| Alpha |  |\n")
+
+
+def test_an_empty_leading_cell_is_refused() -> None:
+    """The corner cell a documentation table leaves blank, which reads as nothing."""
+    with pytest.raises(PublicationRefused, match="column 1 of this row is empty"):
+        check_document("# T\n\n|  | Records |\n|---|---:|\n| Alpha | 12 |\n")
+
+
+def test_a_skipped_heading_level_is_refused() -> None:
+    with pytest.raises(PublicationRefused, match="level 3 heading under a level 1"):
+        check_document("# A title\n\n### A subsection with no section\n")
+
+
+def test_a_document_that_opens_below_level_one_is_refused() -> None:
+    with pytest.raises(PublicationRefused, match="opens at heading level 2"):
+        check_document("## A section\n\nProse.\n")
+
+
+def test_a_heading_returning_to_a_shallower_level_is_not_a_skip() -> None:
+    check_document("# T\n\n## One\n\n### Under one\n\n## Two\n\nProse.\n")
+
+
+def test_a_link_labelled_with_its_own_url_is_refused() -> None:
+    with pytest.raises(PublicationRefused, match="a link labelled"):
+        check_document("# T\n\nSee [https://example.org/a](https://example.org/a).\n")
+
+
+def test_a_link_labelled_here_is_refused() -> None:
+    with pytest.raises(PublicationRefused, match="a link labelled 'here'"):
+        check_document("# T\n\nThe method is described [here](PROVENANCE.md).\n")
+
+
+def test_a_link_with_no_text_at_all_is_refused() -> None:
+    with pytest.raises(PublicationRefused, match="a link labelled ''"):
+        check_document("# T\n\nThe method is described [](PROVENANCE.md).\n")
+
+
+def test_a_bare_url_published_as_a_link_is_refused() -> None:
+    with pytest.raises(PublicationRefused, match="character by character"):
+        check_document("# T\n\nThe source is <https://example.org/data>.\n")
+
+
+def test_a_link_labelled_with_a_phrase_passes() -> None:
+    check_document(
+        "# T\n\nSee [the publisher's conditions of use](https://example.org).\n"
+    )
+
+
+def test_an_ansi_escape_sequence_is_refused() -> None:
+    with pytest.raises(PublicationRefused, match="ANSI escape sequence"):
+        check_document("# T\n\n\x1b[31mnot measured\x1b[0m\n")
+
+
+def test_a_markup_tag_carrying_a_colour_is_refused() -> None:
+    with pytest.raises(PublicationRefused, match="reached a published"):
+        check_document('# T\n\n<span style="color: red">37.9%</span>\n')
+
+
+def test_a_fenced_block_is_not_read_as_a_table_or_as_a_heading() -> None:
+    """A shell transcript inside a fence is an example, not the document's own output."""
+    check_document(
+        "# T\n\nA sample of what the tool prints:\n\n"
+        "```\n| not | a | table |\n### not a heading\n```\n"
+    )
+
+
+def test_a_refused_document_is_not_written_at_all(tmp_path: Path) -> None:
+    target = tmp_path / "out" / "REPORT.md"
+    with pytest.raises(PublicationRefused):
+        write_report("# T\n\n| Alpha | 12 |\n", target)
+    assert not target.exists(), "a refused document must leave nothing behind"
+
+
+def test_a_clean_document_is_written(tmp_path: Path) -> None:
+    target = tmp_path / "out" / "REPORT.md"
+    written = write_report(CLEAN_DOCUMENT, target)
+    assert written.read_text(encoding="utf-8") == CLEAN_DOCUMENT

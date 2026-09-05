@@ -147,8 +147,11 @@ def build(
     artifact_path = artifacts.write_json(
         tree, out_dir / ARTIFACT_NAME, max_rows=ceiling
     )
-    report_path = out_dir / REPORT_NAME
-    report_path.write_text(report.render(tree), encoding="utf-8")
+    # The document goes through a gate of its own. Both artifacts are checked before
+    # either is read by anybody: a rate reaching the reader without its denominator and
+    # a table reaching the reader with its cells shifted one column left are the same
+    # kind of failure, and neither is caught by looking at the output afterwards.
+    report_path = artifacts.write_report(report.render(tree), out_dir / REPORT_NAME)
     return artifact_path, report_path
 
 
