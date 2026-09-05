@@ -93,9 +93,9 @@ The pipeline is built, measured, and hardened; the release is not.
 |---|---|---|
 | 0.1 | Cut and push signed annotated tag `v0.1.0`; dispatch the release workflow from `main`; confirm the `allowed_signers` verification gate passes end-to-end | First real exercise of `release.yml`; the accepted CodeQL entries get re-read against the live run |
 | 0.2 | SBOM for the release artifact (CycloneDX), attached to the release | Supply-chain: closes the "no SBOM" row |
-| 0.3 | `osv-scanner` alongside `pip-audit` in `make audit` and CI | Second vulnerability feed; both must pass |
+| 0.3 | **Done.** `osv-scanner` alongside `pip-audit`, in a different shape than this row imagined: CI runs it as its own required job (`.github/workflows/osv.yml`), not inside `make verify`, and `make osv` gives the same answer locally. Putting it in `verify` would install a Go binary on the runner to re-run a scan osv.yml already ran, which is a second execution rather than a second feed | Second vulnerability feed; both must pass |
 | 0.4 | OpenSSF Scorecard workflow, results published, regressions triaged like CodeQL findings | Scorecard fails the job or is written down with reasoning, same convention as `.github/codeql-accepted.json` |
-| 0.5 | Branch ruleset / protection on `main`: PR-only, required checks = the `make verify` list (owner action, noted as such) | CI/CD standard moves from "not met" to met |
+| 0.5 | **Done.** The ruleset is live on `main` (PR-only, deletion and force-push refused) and is now committed at `.github/rulesets/main.json` with its admin bypass stated rather than omitted, so the setting has evidence in the history. `tests/test_ruleset.py` holds it to the workflows: every job that runs on a pull request must be a required check, and no required check may name a job that does not run | CI/CD standard moves from "not met" to met |
 
 ## Phase 1: Close the standards ledger
 

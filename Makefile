@@ -1,4 +1,4 @@
-.PHONY: help verify lock-check sync lint format typecheck test audit \
+.PHONY: help verify lock-check sync lint format typecheck test audit osv \
         report report-offline determinism acquire
 
 # Bare `make` runs the one gate, and says so rather than relying on `verify` happening
@@ -43,6 +43,28 @@ test:  ## pytest with branch coverage against the 90% floor
 
 audit:  ## pip-audit over the installed set
 	uv run pip-audit
+
+# The second vulnerability feed, locally. `.github/workflows/osv.yml` is the gate of
+# record: it is a required check, it reads this same uv.lock with the same scanner
+# version, and it fails the pull request. This target exists so the answer is available
+# before the push rather than after it.
+#
+# It is deliberately NOT a prerequisite of `verify`. CI runs `make verify` byte for
+# byte, so adding osv here would mean installing a Go binary on the runner to re-run a
+# scan that osv.yml has already run against the same file: a second execution, not a
+# second feed. `verify` and CI stay identical by staying out of each other's way.
+#
+# Fails closed on a finding, and fails loudly when the scanner is absent rather than
+# passing quietly: a gate that reports success because it did not run is the defect
+# this repository is built around.
+osv:  ## osv-scanner over uv.lock, the second feed; osv.yml is the gate of record
+	@command -v osv-scanner >/dev/null 2>&1 || { \
+	  echo "osv-scanner is not installed. Install it (brew install osv-scanner, or"; \
+	  echo "see https://google.github.io/osv-scanner/installation/) or read the result"; \
+	  echo "of the required 'scan' check on the pull request instead."; \
+	  exit 1; \
+	}
+	osv-scanner scan source --lockfile uv.lock
 
 # Build the published tree from locally acquired files. data/raw/ is never in git and
 # never in CI, so this target only runs on a machine that has run `make acquire`.
