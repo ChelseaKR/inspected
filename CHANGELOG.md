@@ -157,10 +157,37 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   entry claimed none until 2026-08-28, when the ruleset was read back from the API and
   it was not none. The ci.yml header paragraph that recorded the gates as
   reporting without blocking is rewritten to match.
+- **The report's words are extracted into a string catalog** (`docs/adr/0016`, the half
+  of roadmap 4.2 that was not blocked on a translator).
+  `src/wildfire_service_territory_overlap/catalog.py` declares an ordered mapping from a
+  stable key to one edition's string, and `report.render` takes a catalog as a parameter
+  defaulting to the English one, so a second edition is a catalog rather than a second
+  renderer. `catalog.translation` refuses an edition that misses a key, adds one nothing
+  renders, holds an empty string, or changes the placeholder fields inside an entry;
+  that last refusal is the one that matters, because `str.format` ignores a keyword
+  nothing uses, so an entry that drops `{fire_records}` would render the sentence
+  without the number and raise nothing. A test parses `report.py` and fails on any
+  string a reader could read, and it was watched refuse a heading put back on purpose. A
+  second test renders the whole report under a second catalog holding the same keys and
+  different strings, and holds every figure, both ends of every interval and the order
+  of every row identical between the editions. No `--lang` flag was added: a flag
+  accepting one value is a menu with one item. `docs/I18N.md` now records what is true,
+  including what is still not done, and the README conformance row moved with it.
+  The English output did not move by a byte. `published/REPORT.md` still renders exactly
+  from `published/measurements.json`, the offline fixture build is byte-identical to the
+  build taken before the change, and the old and new renderers were compared branch by
+  branch, including the two-repair rendering, the empty-transitions rendering and a tree
+  in which nothing is measured.
 
 ### Changed
 
-Nothing else yet under Unreleased.
+- The renderer's helpers split along the line between a number and a word. `report.pct`
+  takes a rate rather than an optional one and `report.span` returns the two ends of an
+  interval rather than one joined string, because the word between two bounds is
+  language; `report.interval` and `report.rate_line` take the catalog, and the new
+  `report.share` and `report.difference` hold the branch that prints words when there is
+  no number. The numeric helpers take no catalog and cannot be given one, so no edition
+  can punctuate a figure its own way. Nothing in the generated output moved.
 
 ## [0.1.0] - 2026-08-18
 
