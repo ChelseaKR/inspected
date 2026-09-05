@@ -21,10 +21,40 @@ this repository's own scoping table; 2.4 shipped as edge bands on the contested
 groups; and the deliberate refresh carried 2.2 (`docs/adr/0013`, the coordinate-county
 comparison over the new CDT source) and 2.3 (`STRUCTURECATEGORY`, representativeness by
 structure class) into the published figures, diffed leaf by leaf against the pin they
-replaced: nothing removed, nothing measured moved. Still open: all of Phase 3 except
-the letter drafts under `docs/outreach/`, which wait for a human to send them, and
-Phase 4 as written. Item 1.6's remaining half, an assistive-technology pass over the
-generated tables, stays open and `docs/ACR.md` says so rather than implying otherwise.
+replaced: nothing removed, nothing measured moved.
+
+**Status at 2026-09-04**: the paragraph above stopped at 2026-08-23 and the merges
+since went past it. #24 renamed the project (`docs/adr/0014`). #33 repaired four gates that
+were numerically incapable of firing and two defects in published output, and filed the
+backlog that became issues #16 to #23. #34 held the README's headline figures to the
+published artifact.
+
+Three items then moved partway, and each is recorded as partway rather than as done,
+with the open half named and filed:
+
+- **1.6** in #40. Six of the accessibility review's structural checks moved from a dated
+  reading into rules that run on every build, and #61 made it seven. Still open: the
+  assistive-technology pass, issue #49. No screen reader has touched these tables and
+  no rule substitutes for one.
+- **3.4** in #41. The comparison is decided in `docs/adr/0015` and built against
+  hand-written fixtures, before the data exists, in the mould of `docs/adr/0012`. Still
+  open: a county inspection record set that can be pinned, issue #53. The search found
+  that the obvious candidate, "Camp Fire Structure Status" on data.ca.gov, is published
+  by CAL FIRE, so a cross-check against it would report CAL FIRE's file agreeing with
+  itself. The honest possibility is that this item's ground truth does not exist in
+  fetchable form.
+- **4.2** in #42. Every string the report prints on its own account lives in a catalog,
+  and a second edition is a catalog rather than a second renderer. Still open: a Spanish
+  catalog reviewed by somebody who reads Spanish, issue #55, and a decision about the
+  row labels that live inside `measurements.json`, issue #56.
+
+#60 then fixed four document defects and widened the document rules from three
+documents to all thirty-three, which immediately refused a fourth nobody had read.
+
+Still open: 3.1 and 3.2 wait for a human to send the letter drafts under
+`docs/outreach/` (issues #50 and #51); 3.3 waits for a reviewer (issue #52); 4.1 waits
+for an archive deposit (issue #54); 4.3 is corrected below rather than waiting; and 4.4
+has no acquisition gap to contribute yet (issue #58).
 
 ## What constrains every item below
 
@@ -102,7 +132,7 @@ The findings are locatable in the publisher's data; the publishers have not hear
 |---|---|---|
 | 4.1 | **Archive and DOI** (e.g. Zenodo) for tagged releases; `CITATION.cff` already exists and should gain the DOI | Makes the negative result citable |
 | 4.2 | **Spanish edition of `REPORT.md`**, generated from `measurements.json` with a reviewed string catalog; figures render identically in both languages | California's other language; requires an ADR amending the English-only declaration in `docs/I18N.md`. Numbers are never re-formatted per locale inside one artifact, and the determinism gate must hold across both editions |
-| 4.3 | **PyPI distribution**: unblocked on the name side by the rename to `wildfire-service-territory-overlap`; still waits for `perimeter` to have a PyPI release to depend on instead of a git pin, because dropping the URL would resolve somebody else's package | Sequence: publish `perimeter` first (its repo's call), then this ships as `0.2.0` or later |
+| 4.3 | **PyPI distribution**: this project's own name is clear after the rename to `wildfire-service-territory-overlap`. The dependency's is not. **Corrected 2026-09-04**: the sequence this row used to state, publish `perimeter` first and then drop the URL, cannot be executed. The name `perimeter` on PyPI is held by an unrelated Django package from YunoJuno, checked against the PyPI API on 2026-09-04, so `perimeter` cannot publish under the name this project pins. This is `docs/adr/0014` one level down | The real sequence: `perimeter` picks a distribution name that is free, publishes under it, and then the pin here changes to that name. Two of those three steps are the other repository's call. Until then the direct reference stays, and the `allow-direct-references` comment in `pyproject.toml` keeps its reasoning. Issue #57 |
 | 4.4 | **Upstream contributions to `perimeter`** where acquisition gaps surface here | The relationship is already "consume, don't re-implement"; contributing fixes keeps it that way |
 
 ## Explicit non-goals

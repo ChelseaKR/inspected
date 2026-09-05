@@ -7,6 +7,17 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- **`docs/ROADMAP.md` item 4.3 stated a sequence nobody could execute** (issue #57). It
+  read as though PyPI distribution waited only on `perimeter` cutting a release. The
+  name `perimeter` on PyPI is held by an unrelated Django package from YunoJuno,
+  checked against the PyPI API on 2026-09-04, so `perimeter` cannot publish under the
+  name this project pins. That is `docs/adr/0014` one level down: the same failure that
+  forced this project's own rename, in its dependency. The row now states the real
+  sequence, two of whose three steps belong to the other repository.
+- **The roadmap's status paragraph stopped at 2026-08-23** (issue #59) while the merges
+  since went past it. A second dated paragraph records what moved, and records 1.6, 3.4
+  and 4.2 as partway with the open half of each named and filed rather than as done.
+
 - **A table in `published/REPORT.md` that no sentence introduced** (issue #43). In
   "What the repair is worth", the placed-share table followed the transitions table
   with one blank line between them, so a reader going through the document in order met
