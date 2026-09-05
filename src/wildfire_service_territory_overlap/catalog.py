@@ -325,6 +325,10 @@ _ENGLISH: dict[str, str] = {
     ),
     "repair.no_transitions.widened": "The repairs place every record the same way.",
     "repair.no_transitions.two": "The two repairs place every record the same way.",
+    "repair.placed_intro": (
+        "What each repair places in total, over the whole record set, rather than\n"
+        "only the records whose outcome moved."
+    ),
     "repair.placed_table_head": (
         "| Repair | Placed share | Placed | Of | 95% interval |\n|---|---:|---:|---:|---|"
     ),
