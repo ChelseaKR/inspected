@@ -7,6 +7,15 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- **A table in `published/REPORT.md` that no sentence introduced** (issue #43). In
+  "What the repair is worth", the placed-share table followed the transitions table
+  with one blank line between them, so a reader going through the document in order met
+  a second header row with nothing saying what it counts or how it differs from the one
+  above. The renderer emits an introducing sentence now, as a catalog entry, and
+  `published/REPORT.md` was re-rendered from an unchanged
+  `published/measurements.json`. Three lines of prose moved and no measurement did; the
+  artifact's sha256 is the same before and after, and `PROVENANCE.md` records the
+  re-render as a re-render rather than as a refresh.
 - **The conformance table dated itself 2026-08-17 while its own rows recorded later**
   (issue #47). The CI/CD row records a ruleset read back on 2026-08-28 and later rows
   describe gates added in September, under a line saying every row states what is true
@@ -70,6 +79,13 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   reads that document on every run.
 
 ### Added
+
+- **`assert_every_table_is_introduced`** (issue #44), refusing a table whose nearest
+  non-blank line above it is another table's row, and a table that opens a document.
+  Added **after** the fix above rather than before it: the rule refused exactly one of
+  thirty-four documents while the defect stood, and a gate is never introduced by
+  editing the artifact it would refuse into shape. Four tests, two of them driving the
+  two refusals.
 
 - `--version` on the CLI (issue #16), resolved inside the flag rather than while the
   parser is built, so a build never asks. A version that cannot be read is reported as

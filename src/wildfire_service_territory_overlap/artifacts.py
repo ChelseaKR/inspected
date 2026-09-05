@@ -557,6 +557,39 @@ def assert_tables_have_a_header_row(document: str) -> None:
             )
 
 
+def assert_every_table_is_introduced(document: str) -> None:
+    """Refuse a table that follows another table with nothing said between them.
+
+    Two tables separated by one blank line are two tables to a reader looking at the
+    page and one undifferentiated run to a reader moving through it linearly: the
+    second arrives with nothing saying what it counts or how it differs from the first.
+
+    `published/REPORT.md` broke this from the day the third repair joined the
+    comparison until the refresh that carried the fix, and `docs/ACR.md` recorded it
+    rather than gating it, because the rule would have refused the committed document
+    and the published bytes are not edited to fit a gate. The order was the other way
+    round: the renderer gained its introducing sentence, the refresh carried it into
+    `published/`, and the rule went in behind it.
+    """
+    prose = dict(_prose_lines(document))
+    numbered = sorted(prose)
+    for block in _table_blocks(document):
+        line = block[0][0]
+        said_before = [n for n in numbered if n < line and prose[n].strip()]
+        if not said_before:
+            raise PublicationRefused(
+                f"line {line}: a table opens the document. A reader meets a header row "
+                "before anything has said what is being counted."
+            )
+        previous = prose[said_before[-1]]
+        if previous.lstrip().startswith("|"):
+            raise PublicationRefused(
+                f"line {line}: a table follows a table with nothing between them. The "
+                "blank line is a boundary on the page and silence to a reader going "
+                f"through in order: {block[0][1].strip()}"
+            )
+
+
 def assert_tables_are_rectangular(document: str) -> None:
     """Refuse a row that does not carry the column count its own header declares."""
     for block in _table_blocks(document):
@@ -679,6 +712,7 @@ def assert_nothing_is_carried_by_styling(document: str) -> None:
 def check_document(document: str) -> None:
     """Every rule the rendered document passes, in one call, before it is written."""
     assert_tables_have_a_header_row(document)
+    assert_every_table_is_introduced(document)
     assert_tables_are_rectangular(document)
     assert_no_table_cell_is_empty(document)
     assert_headings_do_not_skip_a_level(document)

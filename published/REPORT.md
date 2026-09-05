@@ -394,6 +394,9 @@ of 132,520 records, 0.7%
 | contested between two or more | contested between two or more | 157 |
 | placed in exactly one territory | contested between two or more | 770 |
 
+What each repair places in total, over the whole record set, rather than
+only the records whose outcome moved.
+
 | Repair | Placed share | Placed | Of | 95% interval |
 |---|---:|---:|---:|---|
 | placed in exactly one published territory, under make_valid | 62.1% | 82,353 | 132,520 | 61.9% to 62.4% |

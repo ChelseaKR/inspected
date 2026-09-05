@@ -357,6 +357,50 @@ def test_a_lone_table_row_is_refused() -> None:
         check_document("# T\n\n| placed | 12 |\n")
 
 
+def test_a_table_following_a_table_with_nothing_between_them_is_refused() -> None:
+    """The defect this rule was written for, reduced to its smallest form.
+
+    `published/REPORT.md` carried exactly this shape from the day the third repair
+    joined the comparison: the placed-share table sat one blank line under the
+    transitions table with no sentence between them, so a reader going through the
+    document in order met a second header row with nothing saying what changed.
+    """
+    with pytest.raises(PublicationRefused, match="follows a table"):
+        check_document(
+            "# T\n\nWhat moved.\n\n"
+            "| Outcome | Records |\n|---|---:|\n| placed | 12 |\n"
+            "\n"
+            "| Repair | Records |\n|---|---:|\n| make_valid | 12 |\n"
+        )
+
+
+def test_a_table_opening_the_document_is_refused() -> None:
+    """A header row before anything has said what is being counted."""
+    with pytest.raises(PublicationRefused, match="opens the document"):
+        check_document("| Outcome | Records |\n|---|---:|\n| placed | 12 |\n")
+
+
+def test_a_table_introduced_by_a_heading_alone_is_enough() -> None:
+    """The rule asks for something said, not for a sentence.
+
+    A heading names what follows it, which is what a reader arriving at the table
+    needs. Requiring prose as well would refuse most of the tables in this repository
+    to no benefit, and a rule that forces filler text is a rule people route around.
+    """
+    check_document(
+        "# T\n\n## Coverage\n\n| Outcome | Records |\n|---|---:|\n| placed | 12 |\n"
+    )
+
+
+def test_two_tables_separated_by_a_sentence_are_allowed() -> None:
+    check_document(
+        "# T\n\nWhat moved.\n\n"
+        "| Outcome | Records |\n|---|---:|\n| placed | 12 |\n"
+        "\nWhat each repair places in total.\n\n"
+        "| Repair | Records |\n|---|---:|\n| make_valid | 12 |\n"
+    )
+
+
 def test_a_pipe_inside_a_value_is_refused_rather_than_shifting_the_row() -> None:
     """The failure this rule exists for.
 

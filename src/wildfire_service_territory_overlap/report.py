@@ -432,6 +432,8 @@ def _sensitivity_repair(tree: dict[str, Any], cat: Catalog) -> list[str]:
     lines.extend(
         [
             "",
+            cat["repair.placed_intro"],
+            "",
             cat["repair.placed_table_head"],
             rate_line(block["placed_under_the_chosen_repair"], cat),
             rate_line(block["placed_under_the_alternative"], cat),

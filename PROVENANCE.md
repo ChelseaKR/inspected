@@ -23,6 +23,30 @@ SHA-256 of each written file:
 - `else_other.geojson` `f6e6880c03c4e062aa6f0b2a69a66b74e7782ff62a2a3ce7e641efc4f0f7ffe3`
 - `county_boundaries.geojson` `52cb40c1db91b1a566683a4a6d39d2fad362df6b654e9d4b602bbbfe29601908`
 
+## The re-render of 2026-09-04, which moved prose and no measurement
+
+`published/REPORT.md` was rewritten from `published/measurements.json` without
+re-acquiring anything. This is not a refresh and is recorded separately from the two
+above so that nothing here is mistaken for one: no endpoint was called, no pin moved,
+and the artifact the document renders from is byte-identical before and after, sha256
+`d473ea9c2ae3fbab00586aff36b97826b5e3b22e19069d9a53867ac53910a274`.
+
+What moved is three lines of prose. In "What the repair is worth", the table of placed
+shares followed the transitions table with one blank line and no sentence between them,
+which `docs/ACR.md` recorded on 2026-09-04 as a table a reader meets with nothing saying
+what it counts. The renderer gained an introducing sentence as a catalog entry, and the
+document was re-rendered to carry it.
+
+No measured value changed, because none could: the numbers in the document are read out
+of the artifact, and the artifact was not rebuilt. The leaf-by-leaf artifact diff that a
+refresh runs has nothing to compare here, and saying so is more honest than running it
+against an identical file and reporting that nothing moved.
+
+The order was deliberate, and it is the order any future rule of this kind should
+follow: the renderer changed first, the published document was re-rendered to match,
+and `assert_every_table_is_introduced` was added last, behind an artifact that could
+already pass it. A gate is never added by editing the artifact it would refuse.
+
 ## The refresh of 2026-08-23
 
 Trigger: this pipeline changed shape (three triggers in Refresh below would have fired;

@@ -37,6 +37,7 @@ watched refuse is not a gate.
 | Check | State |
 |---|---|
 | Every data table has a header row (`\| Outcome \| Share \| ...`) | Enforced by `assert_tables_have_a_header_row`, which refuses a table whose first row is not sitting over a delimiter row. The delimiter row is the whole of what makes a row a header in Markdown. Refusal watched by `test_a_table_with_no_delimiter_row_is_refused` |
+| Every table is introduced by a heading or a sentence, rather than dropped in bare | Enforced by `assert_every_table_is_introduced`, which refuses a table whose nearest non-blank line above it is another table's row, and a table that opens a document. Two tables one blank line apart are two tables on the page and one undifferentiated run to a reader going through in order. Refusal watched by `test_a_table_following_a_table_with_nothing_between_them_is_refused` |
 | Table cells carry their own context (denominator columns sit beside share columns) | Partly enforced. `assert_tables_are_rectangular` refuses a row that does not carry the column count its header declares, so a value arriving with a `\|` in it cannot shift every later cell under the wrong column name; `assert_no_table_cell_is_empty` refuses a cell that would be announced as its column name and then silence; `assert_rates_are_denominated` keeps the denominator beside the share in the artifact the table is rendered from. Whether the column names are the right names is still a human reading |
 | No meaning conveyed by colour anywhere in the output | Enforced by `assert_nothing_is_carried_by_styling`, which refuses an ANSI escape sequence or a markup tag anywhere in the document. This was the basis the 2026-08-22 pass gave for the claim, and nothing was reading it |
 | No meaning conveyed by shape, size, or position alone | Partly enforced. `assert_collections_are_ordered_as_declared` refuses a collection published in an order nobody declared, and `ORDERINGS` carries the reason for each of the orders that is not by name. Whether each row is self-describing once read out of its table is a human reading |
@@ -57,15 +58,18 @@ running the new rules over them.
   read it as a five-cell row under a two-cell header and rendered its second half as
   extra columns. The claim about header rows was itself being read under the wrong
   column name. Fixed here, by escaping the pipes as `\|`.
-- **One table in `published/REPORT.md` is not introduced.** In "What the repair is
+- **One table in `published/REPORT.md` was not introduced.** In "What the repair is
   worth", the table headed
-  `\| Repair \| Placed share \| Placed \| Of \| 95% interval \|` follows the transitions
+  `\| Repair \| Placed share \| Placed \| Of \| 95% interval \|` followed the transitions
   table with one blank line and no sentence between them, so a reader arriving at it
-  gets a second table with nothing saying what changed. This is a nicety rather than a
-  conformance failure, and no rule refuses it: adding one would refuse the currently
-  published document, and the published bytes are not edited to fit a gate. It is
-  written down here instead, and the fix belongs to the next deliberate refresh, in
-  `report._sensitivity_repair`, where one introducing sentence would close it.
+  got a second table with nothing saying what changed. This was a nicety rather than a
+  conformance failure, and on 2026-09-04 no rule refused it: adding one would have
+  refused the currently published document, and the published bytes are not edited to
+  fit a gate. **Fixed on 2026-09-04, in that order.** The renderer gained the sentence
+  as a catalog entry, `published/REPORT.md` was re-rendered from the unchanged
+  `published/measurements.json`, and `assert_every_table_is_introduced` went in behind
+  the artifact that could pass it. The rule refused exactly one of thirty-four
+  documents before the fix and none after.
 - **Two repository documents outside the gated set would be refused.** The same rules
   refuse `docs/METRICS_LEDGER.md`, whose "Next deliberate refresh" row carries two
   cells under a five-column header and reads as two sentences run together where three
