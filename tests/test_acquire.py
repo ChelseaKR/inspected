@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from perimeter.acquire import USER_AGENT as PERIMETER_USER_AGENT
 from perimeter.acquire import AcquisitionBlocked, AcquisitionFailed
 
 from wildfire_service_territory_overlap import acquire
@@ -319,3 +320,78 @@ def test_the_county_column_is_requested_and_is_read_by_the_pipeline() -> None:
     assert set(acquire.DINS_FIELDS) >= set(REQUIRED_COLUMNS), (
         "the retrieval must fetch every column the schema guard then insists on"
     )
+
+
+# --- Who the publisher's server is told is calling ---------------------------------
+
+
+def install_recording(
+    monkeypatch: pytest.MonkeyPatch, handler: Any
+) -> list[tuple[str, str | None]]:
+    """Substitute the socket and record the identity each request carried.
+
+    `urllib.request` is one module object, so replacing `urlopen` on it reaches the walk
+    inside `perimeter` as well as the walk here. Nothing below opens a socket.
+    """
+    sent: list[tuple[str, str | None]] = []
+
+    def fake_urlopen(request: Any, timeout: int = 0) -> Any:
+        sent.append((request.full_url, request.get_header("User-agent")))
+        return handler(request.full_url)
+
+    monkeypatch.setattr(acquire.urllib.request, "urlopen", fake_urlopen)
+    monkeypatch.setattr(acquire.time, "sleep", lambda _seconds: None)
+    return sent
+
+
+def _dins_handler(rows: list[dict[str, Any]]) -> Any:
+    """Answer the walk `perimeter` runs: attribute rows under `f=json`."""
+
+    def handler(url: str) -> Any:
+        if "returnCountOnly=true" in url:
+            return json_response({"count": len(rows)})
+        offset = int(url.split("resultOffset=")[1].split("&")[0])
+        page = [{"attributes": row} for row in rows[offset:]]
+        return json_response({"features": page})
+
+    return handler
+
+
+def test_the_walks_written_here_name_this_project_to_the_publisher(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """An honest User-Agent is what lets an operator see who is calling their service."""
+    features = [
+        {"type": "Feature", "properties": {"OBJECTID": i}, "geometry": None}
+        for i in range(1, 4)
+    ]
+    sent = install_recording(monkeypatch, _territory_handler([3, 3], features))
+    acquire.acquire_territories(ELSE_IOU_POU, tmp_path)
+    assert sent, "the acquisition made no request, so this test checked nothing"
+    assert {identity for _url, identity in sent} == {acquire.USER_AGENT}
+    assert "wildfire-service-territory-overlap" in acquire.USER_AGENT
+
+
+def test_the_dins_walk_names_the_pinned_dependency_rather_than_this_project(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """The largest of the four layers identifies as `perimeter`, and cannot be made not to.
+
+    `perimeter.acquire` reads its User-Agent from a module constant inside a private
+    helper, and neither of the two functions this project calls accepts one. So every
+    request of the DINS walk, both counts and each page, names the dependency instead of
+    the caller. That is gap 1 in `docs/UPSTREAM.md`, and PROVENANCE.md says so rather
+    than claiming otherwise.
+
+    Held here so the fact cannot drift away from the documents. It fails the day the pin
+    moves onto a walk that lets a caller identify itself, which is the day both are
+    rewritten.
+    """
+    rows = [{"OBJECTID": i} for i in range(1, 3)]
+    sent = install_recording(monkeypatch, _dins_handler(rows))
+    acquire.acquire_dins(tmp_path)
+    assert sent, "the acquisition made no request, so this test checked nothing"
+    identities = {identity for _url, identity in sent}
+    assert identities == {PERIMETER_USER_AGENT}
+    assert "perimeter" in PERIMETER_USER_AGENT
+    assert acquire.USER_AGENT not in identities

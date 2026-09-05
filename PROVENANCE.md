@@ -160,9 +160,17 @@ coordinate this project already reads and does not republish. It is used for one
 the county cut in `docs/adr/0009`, and it reaches the output only as a row label beside a
 count.
 
-Requests carry a User-Agent naming this project, pause between pages, and stop rather
-than route around a 401, 403 or 429. No agency website is crawled: four REST endpoints
-are read the way their own dataset pages document them to be read.
+Requests pause between pages and stop rather than route around a 401, 403 or 429. No
+agency website is crawled: four REST endpoints are read the way their own dataset pages
+document them to be read.
+
+Requests for the two CEC layers and the county layer carry a User-Agent naming this
+project. The DINS requests do not, and this document said otherwise until 2026-09-05.
+That walk is `perimeter`'s, and `perimeter` reads its own name from a module constant no
+caller can pass, so those requests identify as
+`perimeter-coverage/0.1 (+https://github.com/ChelseaKR/perimeter)`, the pinned dependency
+that performs the walk. Both facts are held by `tests/test_acquire.py`, and the gap is
+recorded with the change that would close it in `docs/UPSTREAM.md`.
 
 ## How completeness is established
 

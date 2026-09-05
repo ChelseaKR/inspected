@@ -6,6 +6,7 @@ the engineering. Both drift the moment nothing reads them.
 
 from __future__ import annotations
 
+import importlib.util
 import inspect
 import json
 import re
@@ -31,6 +32,7 @@ README = (ROOT / "README.md").read_text(encoding="utf-8")
 CHANGELOG = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
 CONTRIBUTING = (ROOT / "CONTRIBUTING.md").read_text(encoding="utf-8")
 ROADMAP = (ROOT / "docs" / "ROADMAP.md").read_text(encoding="utf-8")
+UPSTREAM = (ROOT / "docs" / "UPSTREAM.md").read_text(encoding="utf-8")
 MAKEFILE = (ROOT / "Makefile").read_text(encoding="utf-8")
 WORKFLOWS = sorted((ROOT / ".github" / "workflows").glob("*.yml"))
 
@@ -299,6 +301,75 @@ def test_the_dev_toolchain_declares_version_floors() -> None:
     dev = " ".join(config["dependency-groups"]["dev"])
     assert "ruff>=" in dev
     assert "mypy>=" in dev
+
+
+# --- The two mypy overrides, held against the packages they name -------------------
+
+
+def test_every_untyped_import_override_names_a_package_that_is_actually_untyped() -> (
+    None
+):
+    """An override that cannot fail is a rule nobody is following.
+
+    `pyproj.*` sat in this list until 2026-09-05 under a comment saying none of the
+    three dependencies shipped type information. pyproj 3.7.2 ships `py.typed`, so the
+    entry silenced nothing and `mypy --strict src` passes without it. The list is read
+    back against the installed packages here so the next entry cannot go quiet the same
+    way, and so the day `perimeter` ships the marker this fails rather than leaving a
+    workaround in place for nobody's benefit.
+    """
+    config = tomllib.loads((ROOT / "pyproject.toml").read_text())
+    overrides = [
+        override
+        for override in config["tool"]["mypy"]["overrides"]
+        if override.get("ignore_missing_imports")
+    ]
+    modules = [module for override in overrides for module in override["module"]]
+    assert modules, "nothing ignores a missing import, so this test checks nothing"
+    for pattern in modules:
+        name = pattern.removesuffix(".*")
+        spec = importlib.util.find_spec(name)
+        if spec is None or spec.origin is None:
+            continue  # not importable at all, which is what the override is for
+        assert not (Path(spec.origin).parent / "py.typed").exists(), (
+            f"{name} ships py.typed, so ignoring its missing imports is inert. Drop "
+            "the entry and read the types it publishes."
+        )
+
+
+def test_the_upstream_audit_names_the_commit_this_project_pins() -> None:
+    """A dated audit against a moved pin is a dated audit of something else.
+
+    `docs/UPSTREAM.md` records what `perimeter` did at one commit and what this
+    repository does to compensate. If the pin moves and the audit does not, every gap in
+    it is a claim about code this project no longer runs.
+    """
+    config = tomllib.loads((ROOT / "pyproject.toml").read_text())
+    pinned = next(
+        line
+        for line in config["project"]["dependencies"]
+        if line.startswith("perimeter @")
+    )
+    commit = pinned.rsplit("@", 1)[1]
+    assert len(commit) == 40, f"the pin is not a full commit: {commit}"
+    assert commit in UPSTREAM, (
+        "docs/UPSTREAM.md was written against a different commit than pyproject.toml "
+        "pins. Re-audit against the new pin, or say in the document that it was not "
+        "re-run."
+    )
+
+
+def test_provenance_does_not_still_make_the_unqualified_user_agent_claim() -> None:
+    """The claim the upstream audit of 2026-09-05 found false.
+
+    Three of the four layers carry a User-Agent naming this project. The DINS walk is
+    `perimeter`'s and carries `perimeter`'s, and this document said all of them named
+    this project. `tests/test_acquire.py` holds both halves of the corrected sentence
+    against the code that sends them.
+    """
+    assert "Requests carry a User-Agent naming this project" not in PROVENANCE
+    assert "perimeter-coverage/0.1" in PROVENANCE
+    assert "docs/UPSTREAM.md" in PROVENANCE
 
 
 # Every gate `make verify` runs, in order. CI runs `make verify` and nothing else, so
