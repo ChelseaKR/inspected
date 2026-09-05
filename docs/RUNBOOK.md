@@ -49,11 +49,14 @@ that county, as agreement and disagreement counts. The comparison is decided in
 `docs/adr/0015`; read it before running any of this, because it settles what agreement
 means and what the result is not allowed to be turned into.
 
-**The source is not pinned.** No county inspection record set exists in this repository.
-`sources.py` carries four sources and none of them is a county's own survey, `data/raw/`
-holds no such file, and `src/wildfire_service_territory_overlap/acquire.py` has no route
-that fetches one. The command below runs the moment a file exists and refuses until then.
-Everything in this section is a hand-run step.
+**The source is not pinned, and after a finished search that is a decision rather than a
+gap.** No county inspection record set exists in this repository. `sources.py` carries
+four sources and none of them is a county's own survey, `data/raw/` holds no such file,
+and `src/wildfire_service_territory_overlap/acquire.py` has no route that fetches one.
+`docs/adr/0018` says why: the one California county set that meets every criterion names
+its fires differently from CAL FIRE, so the comparison joins nothing and refuses. The
+command below runs the moment a joinable file exists. Everything in this section is a
+hand-run step.
 
 ### 1. Choose the county
 
@@ -63,6 +66,15 @@ already contains it; it can be retrieved whole and hashed; and it can be read wi
 fetching an address, a parcel number, a coordinate, or an assessed value. A county GIS
 hub carrying CAL FIRE's own assessment fails the first two, and comparing against it
 would report a file agreeing with itself.
+
+**This step is already done and its answer is in `docs/adr/0018`.** The search finished
+on 2026-09-05. Read that decision before repeating any of it: it enumerates what was
+queried, records that no California county publishes on `data.ca.gov` at all, and says
+which of Santa Cruz, Sonoma, Los Angeles, Butte and Napa fails which criterion. One set
+meets all four, Napa County's own ATC damage assessments for 2020, and it is still not
+pinned because the two organisations name the same fires differently. A candidate is
+worth the afternoon only if it carries CAL FIRE's incident name or number, or if a
+county has answered an ask with counts by fire.
 
 ### 2. Acquire it by hand and pin it
 
@@ -147,6 +159,16 @@ external file names more distinct fires than CAL FIRE's entire statewide file do
 is the wrong file, or the wrong column read as the fire name, not a large disagreement.
 Check which column the county calls the incident.
 
+**`... and not one name is shared`.** Both files name fires in this county and no name
+appears in both, so the comparison joined nothing and every fire fell into a
+disagreement bucket. This is ADR 0015's "defect, not a finding" reaching you as a
+refusal rather than as a block you might have pasted somewhere. It is the state the one
+eligible county set found so far is in: `docs/adr/0018` records that Napa County names
+`GLASS COMPLEX 2020` where CAL FIRE names `Glass`, and that Los Angeles County names
+`Bobcat Fire` where CAL FIRE names `Bobcat`. Check the incident column against the
+county cut in `published/REPORT.md`, then read ADR 0018 before doing anything to the
+names. Pairing two spellings by hand is not a fix available here.
+
 **`the retrieval is missing COUNTY, ...`.** The schema guard, reached through this
 command instead of through a build. Same meaning and same fix as the `SchemaError`
 entry below.
@@ -163,8 +185,9 @@ summed:
   scope. A fire the county inspected outside the state responsibility area was never
   going to be in CAL FIRE's file.
 - An agreement of zero across fires both organisations plainly worked is a defect in the
-  comparison, most likely a name that does not match for a mechanical reason. Investigate
-  it; do not publish it as a result.
+  comparison, most likely a name that does not match for a mechanical reason. You will
+  not see one in a printed block: since 2026-09-05 the command refuses that case outright
+  rather than leaving the reading to whoever meets it.
 
 ## When acquisition refuses
 
