@@ -34,6 +34,31 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   them using the real Napa and CAL FIRE spellings. The refusal needs both sides to have
   named a fire in the county, so the existing case where this project counts no incident
   name there still publishes its share as not measured rather than refusing.
+- **A review packet for the inclusion rule**, `docs/outreach/inclusion-rule-review-packet.md`
+  (issue #52, roadmap item 3.3). The item was blocked twice over: it needs a domain
+  reviewer, and a reviewer arriving had nothing to review. "Read the code and tell us
+  whether the inclusion rule is right" is not an answerable request. The packet is the
+  bounded version: one question asked 24 times, over the 24 indexed outlines that hold
+  records, with each outline's name, its published `Type` value and its source layer.
+  The other 35 are left out because `docs/adr/0010` establishes that they hold 0 of
+  132,520 records and that removing all 35 changes the outcome of 0, so a finding about
+  them cannot move a figure. It carries what the rule does, what each alternative
+  reading was already measured to be worth, a response format, and the term the roadmap
+  sets: a finding lands as a new sensitivity row beside the rule as built, not as an
+  edit to the rule, so a reviewer knows their judgment gets published as a measurement
+  rather than applied silently. Per-outline counts are not restated; the packet points
+  at the report's territory table, and no damage rate for a territory appears in either.
+  Nothing has been sent and nobody has reviewed it, which the document says in its first
+  line. **Item 3.3 stays open. What is missing now is the person, not the question.**
+- **A gate holding the packet to the artifact it quotes**, in `tests/test_published.py`.
+  The 24 names, their types and their layers are derived from
+  `published/measurements.json` and compared against the packet's table row for row, and
+  every figure it quotes is derived rather than written out, the way #34 did for the
+  README's headline figures. A refreshed retrieval that moves an outline in or out of
+  the holding set fails the gate instead of leaving a reviewer working from the wrong
+  list. Separate checks hold the list to name order, refuse any of the 35 by name,
+  refuse a per-outline record count reaching the document, and refuse the loss of the
+  sentence saying nobody has reviewed it.
 
 ### Fixed
 

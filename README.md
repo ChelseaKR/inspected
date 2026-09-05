@@ -222,7 +222,12 @@ docs/adr/        the decisions, with their reasoning
   outlines hold no record at all, 0 records fall inside any of them, and removing all 35
   at once changes the outcome of 0 records, so a disagreement about any of those 35 moves
   nothing published here. The other 24 are where the question would matter, and it is
-  still open there. See `docs/adr/0010`.
+  still open there. See `docs/adr/0010`. The question those 24 raise is now written out
+  as a packet a reviewer could answer in an afternoon,
+  `docs/outreach/inclusion-rule-review-packet.md`, carrying each outline's published
+  `Type` value, what the alternatives were measured to be worth, and the term that any
+  finding lands as a new sensitivity row rather than as an edit to the rule. Nobody has
+  read it. What is missing is the person, not the question.
 - **The publisher documents none of the six `Type` values.** As retrieved, the layer
   metadata carries no field description and no coded-value domain, the FGDC record has no
   entity and attribute section, and no data dictionary is attached. The rule reads a field
