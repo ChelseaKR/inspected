@@ -318,6 +318,82 @@ def test_a_comparison_naming_more_fires_than_the_record_set_does_is_refused() ->
         compare("Test County", records, external)
 
 
+def test_a_comparison_where_no_name_is_shared_is_refused() -> None:
+    """ADR 0015's "defect, not a finding", driven until it fires.
+
+    The third record sits in another county so the record set names three fires and the
+    cap above is not what refuses this. A statewide file naming more fires than any one
+    county's is the ordinary case, not a contrivance.
+    """
+    records = (
+        placed(object_id=1, county="Test County", incident="FIRE A"),
+        placed(object_id=2, county="Test County", incident="FIRE B"),
+        placed(object_id=3, county="Other County", incident="FIRE C"),
+    )
+    external = read_external(
+        [{"county": "Test County", "incident": "FIRE A 2020"}], county="Test County"
+    )
+    with pytest.raises(CrossCheckRefused, match="not one name is shared"):
+        compare("Test County", records, external)
+
+
+def test_the_real_county_set_and_this_project_do_not_share_a_fire_name() -> None:
+    """The retrieval that closed the search, held as the case the refusal was built for.
+
+    Napa County's own ATC damage assessments carry two incident names, read from the
+    county's layer on 2026-09-05 and recorded in `docs/adr/0018`. CAL FIRE's file
+    names the same two ground events its own way and carries neither county spelling
+    anywhere in California. Every fire lands in a disagreement bucket and the
+    comparison measures nothing, so it is refused rather than printed.
+
+    The names are written out here because the whole finding is that they differ. A
+    future edit that makes this test pass by pairing them is the fuzzy match ADR 0003
+    and ADR 0013 refuse, and it would be this project deciding that two names are one
+    fire.
+    """
+    napa = tuple(
+        placed(object_id=index, county="Napa", incident=name)
+        for index, name in enumerate(("Glass", "LNU Lightning Cmplx", "Atlas"), start=1)
+    )
+    # Two fires from elsewhere in the state, because the cap this comparison runs under
+    # is the whole record set's count of distinct fires and CAL FIRE's file is statewide.
+    records = (
+        *napa,
+        placed(object_id=4, county="Butte", incident="Camp"),
+        placed(object_id=5, county="Shasta", incident="Carr"),
+    )
+    external = read_external(
+        [
+            {"county": "Napa", "incident": "GLASS COMPLEX 2020"},
+            {"county": "Napa", "incident": "NAPA LIGHTNING COMPLEX 2020"},
+        ],
+        county="Napa",
+    )
+    with pytest.raises(CrossCheckRefused, match="ADR 0015 reads that as a fault"):
+        compare("Napa", records, external)
+
+
+def test_a_zero_agreement_is_not_refused_when_one_side_names_nothing_here() -> None:
+    """The boundary of the refusal, from the side that must still be allowed through.
+
+    A county this project counts no incident name in publishes its second share as not
+    measured, and a zero agreement there is a join nobody attempted rather than a join
+    that failed. `test_a_county_with_no_incident_names_reports_not_measured_never_zero`
+    reads the block that case produces; this states why the new refusal leaves it
+    alone.
+    """
+    records = (
+        placed(object_id=1, county="Quiet County", incident=None),
+        placed(object_id=2, county="Other County", incident="SOME FIRE"),
+    )
+    external = read_external(
+        [{"county": "Quiet County", "incident": "SOME FIRE"}], county="Quiet County"
+    )
+    result = compare("Quiet County", records, external)
+    assert result.outcomes[IN_BOTH] == 0
+    assert result.outcomes[HERE_UNDER_ANOTHER_COUNTY] == 1
+
+
 def test_the_cap_admits_a_comparison_that_exactly_reaches_it() -> None:
     """The boundary, from the other side, so the refusal is not off by one."""
     records = (placed(incident="FIRE A"), placed(object_id=2, incident="FIRE B"))
@@ -466,3 +542,34 @@ def test_no_county_inspection_source_is_pinned_and_the_documents_say_so() -> Non
         "else_other",
         "county_boundaries",
     ], "a fifth source appeared without this test being told what it is"
+
+
+def test_the_search_for_a_source_is_recorded_as_finished_and_as_negative() -> None:
+    """The half a reader would otherwise have to take on trust.
+
+    The search ran twice, on 2026-09-04 and again on 2026-09-05, and the second one
+    ended. A set that meets every criterion exists and is named, the reason it is not
+    pinned is stated, and the roadmap no longer offers the guess the first search left
+    behind. This test holds all three together because the failure mode is one of them
+    being quietly improved into a claim that 3.4 shipped.
+    """
+    adr = (
+        ROOT
+        / "docs"
+        / "adr"
+        / "0018-the-one-eligible-county-record-set-names-its-fires-differently.md"
+    ).read_text(encoding="utf-8")
+    roadmap = (ROOT / "docs" / "ROADMAP.md").read_text(encoding="utf-8")
+    for expected in (
+        "2026-09-05",
+        "ATC Damage Assessments 2020 public",
+        "GLASS COMPLEX 2020",
+        "NAPA LIGHTNING COMPLEX 2020",
+        "LNU Lightning Cmplx",
+    ):
+        assert expected in adr, expected
+    assert "not pinned" in adr
+    assert "does not exist in fetchable form" not in roadmap, (
+        "the roadmap still carries the guess the finished search replaced"
+    )
+    assert "docs/adr/0018" in roadmap

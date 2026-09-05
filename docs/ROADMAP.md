@@ -37,12 +37,16 @@ with the open half named and filed:
   assistive-technology pass, issue #49. No screen reader has touched these tables and
   no rule substitutes for one.
 - **3.4** in #41. The comparison is decided in `docs/adr/0015` and built against
-  hand-written fixtures, before the data exists, in the mould of `docs/adr/0012`. Still
-  open: a county inspection record set that can be pinned, issue #53. The search found
-  that the obvious candidate, "Camp Fire Structure Status" on data.ca.gov, is published
-  by CAL FIRE, so a cross-check against it would report CAL FIRE's file agreeing with
-  itself. The honest possibility is that this item's ground truth does not exist in
-  fetchable form.
+  hand-written fixtures, before the data exists, in the mould of `docs/adr/0012`. The
+  search for a source finished on 2026-09-05 and `docs/adr/0018` records it. Its answer
+  is not the one the row used to guess at: a qualifying set does exist, Napa County's own
+  ATC damage assessments for 2020, collected by county building inspectors and carrying
+  no address, parcel number or assessed value. It is not pinned, because the county names
+  its two fires `GLASS COMPLEX 2020` and `NAPA LIGHTNING COMPLEX 2020` where CAL FIRE
+  names them `Glass` and `LNU Lightning Cmplx`, so the comparison joins nothing and now
+  refuses rather than reporting a naming convention as total disagreement. Still open,
+  issue #53: a county set this project can join without deciding that two published names
+  are one fire.
 - **4.2** in #42. Every string the report prints on its own account lives in a catalog,
   and a second edition is a catalog rather than a second renderer. Still open: a Spanish
   catalog reviewed by somebody who reads Spanish, issue #55, and a decision about the

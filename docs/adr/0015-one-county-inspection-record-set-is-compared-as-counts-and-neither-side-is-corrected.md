@@ -7,6 +7,13 @@ Date: 2026-09-04
 Accepted. Extends ADR 0009 and ADR 0013, neither of which is superseded. Decided before
 the data exists, in the manner of ADR 0012.
 
+Extended by `docs/adr/0018` on 2026-09-05, which finishes the search this decision left
+open. Nothing below is withdrawn. What changed is that the search ended: one California
+county record set meets all four criteria stated here, Napa County's own ATC damage
+assessments for 2020, and it is still not pinned, because the two organisations name the
+same fires differently and the comparison decided below joins nothing. The paragraph
+headed "A defect, not a finding" is now enforced in code rather than stated here alone.
+
 ## Context
 
 Every measurement in this repository is drawn from one inspection file. The county cut
@@ -31,7 +38,9 @@ left to argue about and no room to be talked into a friendlier measurement.
 ### What a search on 2026-09-04 found, as prose and not as a pin
 
 Recorded here because the criteria below were written against it, and because the
-negative half is the useful half.
+negative half is the useful half. This is the state of the search on the day this
+decision was taken; the search finished the following day and `docs/adr/0018` carries
+the full record, including which of the counties below fails which criterion and why.
 
 - **Butte County and CAL FIRE ran independent surveys of the same fire.** GISCorps
   records that after the Camp Fire the two "conducted independent damage assessment

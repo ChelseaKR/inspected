@@ -11,13 +11,18 @@ Usage::
     python -m wildfire_service_territory_overlap.cross_check \\
         --county "NAME" --dins data/raw/dins_postfire.json --external COUNTY.json
 
-**No county inspection record set is pinned.** Nothing in this repository has
-downloaded or hashed one, ``sources.py`` carries no entry for one, and this module is
-not called from :mod:`wildfire_service_territory_overlap.cli`. It is a command awaiting
-its retrieval, and the retrieval is a hand-run step for the maintainer described in
-``docs/RUNBOOK.md``. ``docs/adr/0015`` decides the comparison and says why it is a
-command rather than a not-measured block in every build: a section that says nothing on
-every run is a section a reader learns to skip before the run where it says something.
+**No county inspection record set is pinned.** ``sources.py`` carries no entry for one
+and this module is not called from :mod:`wildfire_service_territory_overlap.cli`.
+``docs/adr/0015`` decides the comparison and says why it is a command rather than a
+not-measured block in every build: a section that says nothing on every run is a
+section a reader learns to skip before the run where it says something.
+
+The search for a source is finished and its answer is recorded in ``docs/adr/0018``.
+One county record set in California meets all four of ADR 0015's criteria, Napa
+County's own ATC damage assessments for 2020, and it is deliberately not pinned: the
+two organisations name the same fires differently, so the comparison joins nothing and
+``_refuse_a_comparison_that_did_not_join`` below stops it. The command still runs the
+moment a joinable file exists, and ``docs/RUNBOOK.md`` carries the hand-run steps.
 
 What is compared, and what is not
 ---------------------------------
@@ -300,6 +305,49 @@ def _refuse_an_oversized_union(union: set[str], ceiling: int) -> None:
         )
 
 
+def _refuse_a_comparison_that_did_not_join(rows: tuple[IncidentRow, ...]) -> None:
+    """Refuse a comparison where both sides name fires here and no name is shared.
+
+    ADR 0015 reads an agreement of zero across a set of fires both organisations
+    plainly worked as a fault in the comparison rather than as a result, and until
+    2026-09-05 that reading lived only in prose. The command would print the block and
+    a reader would meet a naming convention rendered as total disagreement.
+
+    The real retrieval is what made this a refusal rather than a note. Napa County's
+    own damage assessments name their two fires ``GLASS COMPLEX 2020`` and ``NAPA
+    LIGHTNING COMPLEX 2020``; CAL FIRE's file names the same two ground events
+    ``Glass`` and ``LNU Lightning Cmplx`` and carries neither county spelling anywhere
+    in the state. Every fire falls into a disagreement bucket, agreement is zero, and
+    nothing about either organisation's inspections has been measured.
+
+    The guard needs both sides to have named something in this county. Where this
+    project counts no incident name here, the share over that denominator is already
+    published as not measured, and a zero agreement carries no claim about a join that
+    was never attempted. ``docs/adr/0018`` records what would have to change for a
+    disjoint pair of record sets to be publishable, and it is a decision rather than a
+    flag on this function.
+    """
+    tally = Counter(row.outcome for row in rows)
+    named_there = (
+        tally[IN_BOTH]
+        + tally[HERE_UNDER_ANOTHER_COUNTY]
+        + tally[ABSENT_FROM_THIS_RECORD_SET]
+    )
+    named_here = tally[IN_BOTH] + tally[NOT_NAMED_BY_THE_COUNTY_RECORD_SET]
+    if tally[IN_BOTH] or not named_here or not named_there:
+        return
+    theirs = [row.incident for row in rows if row.outcome != IN_BOTH][:5]
+    raise CrossCheckRefused(
+        f"the county's record set names {named_there} fires here, this project counts "
+        f"{named_here}, and not one name is shared. ADR 0015 reads that as a fault in "
+        "the comparison and not as a finding: two organisations that inspected the "
+        "same county share no fire name only when the join did not happen, and the "
+        "usual cause is that each publisher spells its incidents its own way. Check "
+        "the incident column against the county cut in published/REPORT.md before "
+        f"anything else. Fires the comparison could not pair: {', '.join(theirs)}."
+    )
+
+
 def _outcome(here: int, elsewhere: int, there: int) -> str:
     if here > 0 and there > 0:
         return IN_BOTH
@@ -368,6 +416,7 @@ def compare(
             key=lambda row: row.incident,
         )
     )
+    _refuse_a_comparison_that_did_not_join(rows)
     return CrossCheck(
         county=label,
         records_here_in_this_county=in_county,

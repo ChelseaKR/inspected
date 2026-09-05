@@ -23,6 +23,32 @@ SHA-256 of each written file:
 - `else_other.geojson` `f6e6880c03c4e062aa6f0b2a69a66b74e7782ff62a2a3ce7e641efc4f0f7ffe3`
 - `county_boundaries.geojson` `52cb40c1db91b1a566683a4a6d39d2fad362df6b654e9d4b602bbbfe29601908`
 
+## The county inspection source search of 2026-09-05, which pinned nothing
+
+Recorded here because a source that was looked for and not taken is part of this
+project's provenance, and because the alternative is a reader wondering whether anybody
+tried. `docs/adr/0018` carries the full record: what was queried, what each California
+county candidate turned out to be, and why the one that qualifies is not in the table
+above.
+
+The short version. No California county publishes on `data.ca.gov` at all, so the county
+sets that exist live in ArcGIS portals rather than in the state catalog. Santa Cruz
+County's CZU inspection layer is a parcel and address join that already carries CAL
+FIRE's own damage call, Sonoma County's 2017 layer is rebuild permit tracking keyed by
+parcel, Los Angeles County's recovery layer describes itself as CAL FIRE's DINS records,
+and Butte County publishes no damage survey. Napa County's own ATC damage assessments
+for 2020 meet every criterion in `docs/adr/0015`, including the one this project cares
+about most: the layer carries no address, no parcel number and no assessed value, so
+reading it fetches no position.
+
+**Nothing was pinned and no number in this repository moved.** The four sources above
+are still four. The Napa layer was retrieved once, on 2026-09-05, as four columns with
+geometry suppressed, to establish that it can be retrieved and read within this
+project's rules; the result is a working file this repository does not carry and
+`sources.py` gains no entry for it. It is not pinned because the two organisations name
+the same fires differently, so the comparison joins nothing, which ADR 0015 already
+reads as a defect rather than as a finding.
+
 ## The re-render of 2026-09-04, which moved prose and no measurement
 
 `published/REPORT.md` was rewritten from `published/measurements.json` without

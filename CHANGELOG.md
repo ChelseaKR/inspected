@@ -5,6 +5,36 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- **`docs/adr/0018`: the search for a county inspection source finished, and the answer
+  is a negative with an address** (issue #53). Roadmap 3.4 has been waiting on a county
+  record set that can be pinned. The supply of published California county data was
+  enumerated rather than sampled: `data.ca.gov` carries 62 organisations and not one is
+  a county, so the sets that exist live in ArcGIS portals, and three keyword sweeps
+  bounded to California returned 477 distinct feature services. One is a county-collected
+  wildfire structure inspection set carrying an incident name. Napa County Emergency
+  Operations publishes "ATC Damage Assessments 2020 public", 1,685 records assessed by
+  Napa County Building Division inspectors on ATC forms, with an incident name, an
+  incident year, a posting and a structure type, and with no address, parcel number or
+  assessed value anywhere in its schema. It meets all four of ADR 0015's criteria and it
+  is **not pinned**: the county names its fires `GLASS COMPLEX 2020` and `NAPA LIGHTNING
+  COMPLEX 2020`, CAL FIRE names the same two ground events `Glass` and `LNU Lightning
+  Cmplx`, and neither county spelling appears anywhere in CAL FIRE's file. Agreement
+  would be zero, which ADR 0015 already reads as a defect in the comparison rather than
+  as a result. The ADR also records that this is not a Napa quirk: Los Angeles County
+  names `Bobcat Fire` where CAL FIRE names `Bobcat`. Every candidate checked, and which
+  of the four criteria each fails, is in the ADR so nobody repeats the search.
+- **The comparison now refuses a pair of record sets that share no fire name**
+  (`cross_check._refuse_a_comparison_that_did_not_join`). ADR 0015 said in prose that an
+  agreement of zero across fires both organisations plainly worked is a fault to
+  investigate and not a result to publish, and nothing enforced it: the command would
+  print the block, and a block a command prints is a block a maintainer can paste into a
+  document. It is the eighth refusal in the module and it is driven by two tests, one of
+  them using the real Napa and CAL FIRE spellings. The refusal needs both sides to have
+  named a fire in the county, so the existing case where this project counts no incident
+  name there still publishes its share as not measured rather than refusing.
+
 ### Fixed
 
 - **`docs/ROADMAP.md` item 4.3 stated a sequence nobody could execute** (issue #57). It
