@@ -42,6 +42,130 @@ Triggers and cadence live in `PROVENANCE.md`. The procedure:
 8. Commit `published/` and the source-record edits together. Never commit
    `data/raw/`.
 
+## The bounded county cross-check
+
+Roadmap item 3.4. One county's own inspection records against this project's counts for
+that county, as agreement and disagreement counts. The comparison is decided in
+`docs/adr/0015`; read it before running any of this, because it settles what agreement
+means and what the result is not allowed to be turned into.
+
+**The source is not pinned.** No county inspection record set exists in this repository.
+`sources.py` carries four sources and none of them is a county's own survey, `data/raw/`
+holds no such file, and `src/wildfire_service_territory_overlap/acquire.py` has no route
+that fetches one. The command below runs the moment a file exists and refuses until then.
+Everything in this section is a hand-run step.
+
+### 1. Choose the county
+
+ADR 0015's four criteria, all of which must hold: the county is named as the collector
+rather than the host; the set is distinct from CAL FIRE's rather than a merge that
+already contains it; it can be retrieved whole and hashed; and it can be read without
+fetching an address, a parcel number, a coordinate, or an assessed value. A county GIS
+hub carrying CAL FIRE's own assessment fails the first two, and comparing against it
+would report a file agreeing with itself.
+
+### 2. Acquire it by hand and pin it
+
+There is no automated route and there should not be one until a stable endpoint is
+known. Download from the county's own publication, then:
+
+- add a `Source` entry to `src/wildfire_service_territory_overlap/sources.py` with the
+  real endpoint, item id, feature count, byte count and SHA-256 of the file you actually
+  downloaded, and at least one quoted publisher caveat with what was measured from it,
+  which `tests/test_provenance_and_standards.py` requires;
+- restate all of it in `PROVENANCE.md`, which the same tests read back;
+- update `tests/test_cross_check.py`, whose last test names the four pinned sources so a
+  fifth cannot appear without somebody saying what it is.
+
+If the only obtainable form of the county's records carries addresses or parcel numbers,
+the item does not ship. Ask the county for counts by fire instead, and record the ask the
+way `docs/outreach/` records the others.
+
+### 3. Reduce it to what is compared
+
+The command reads two fields and only two: `county` and `incident`, as a JSON array of
+objects. Strip every other column, especially anything locating, before the file reaches
+the command. The stripped file is a working file: it is not committed, and it is not
+`data/raw/` either, which is reserved for retrievals `make report` reads.
+
+### 4. Run it
+
+```sh
+python -m wildfire_service_territory_overlap.cross_check \
+  --county "NAME" \
+  --dins data/raw/dins_postfire.json \
+  --external /path/to/county_inspections.json
+```
+
+Exit `0` prints one JSON block. Exit `1` is a refusal, explained below. Exit `2` means an
+input could not be read at all.
+
+The block is not published by running this. It is not written into `published/`, and
+`cli.py` does not call this module. Record the counts in a dated `PROVENANCE.md` section.
+Publishing them is a separate, deliberate change that goes through the refresh procedure
+above and adds `$.county_cross_check.incidents` to `artifacts.ORDERINGS` in the same
+commit, because a published collection with no declared order refuses the artifact.
+
+### What each refusal means
+
+All of these exit `1` with `cross-check refused:` and leave nothing written.
+
+**`the external record set is not a list of rows` / `row N ... is not an object`.** The
+file is not the shape the command reads. Convert it to a JSON array of objects carrying
+`county` and `incident`.
+
+**`the external record set holds no rows`.** An empty file is not a county that
+inspected nothing. Reading it would report every fire as a disagreement, which would
+publish a retrieval fault as a finding. Re-acquire.
+
+**`row N ... carries 'siteaddress'` (or any locating column).** The file carries
+something that could place a structure. This project does not read an address, a parcel
+number, or a coordinate from anybody and a cross-check is not an exception. Strip the
+column, or go back to step 2 and ask the county for counts by fire.
+
+**`row N ... names no county` or `names no fire`.** A row that cannot be compared is
+refused rather than dropped, because dropping it would shrink the external set where
+nobody could see it. Fix the file or ask the publisher what the blank cell means.
+
+**`row N ... names X and the comparison was asked for another county`.** The file covers
+more than the one county. Scope is one county by decision, not by convenience, so the
+file is not silently filtered down to it. Either ask for the single county's extract or
+split the file yourself and say in `PROVENANCE.md` that you did.
+
+**`this project's record set carries no record under the county name X`.** Either the
+name is spelled in a way CAL FIRE's `COUNTY` field does not use, or the county genuinely
+has no records in the file. Check the spelling against the county cut in
+`published/REPORT.md` first.
+
+**`this project measured X as not measured`.** The county has records and none of them
+has a usable coordinate, so the county cut publishes no share for it. A comparison here
+would describe the coordinate filter rather than either record set. Nothing to do except
+record that the county is not cross-checkable.
+
+**`the comparison names N distinct fires and the whole record set names M`.** The
+external file names more distinct fires than CAL FIRE's entire statewide file does. That
+is the wrong file, or the wrong column read as the fire name, not a large disagreement.
+Check which column the county calls the incident.
+
+**`the retrieval is missing COUNTY, ...`.** The schema guard, reached through this
+command instead of through a build. Same meaning and same fix as the `SchemaError`
+entry below.
+
+### Reading the result
+
+Agreement is `in_both`. The three disagreements mean three different things and are not
+summed:
+
+- `here_under_another_county` is the only one that bears on the county cut, and it bears
+  on CAL FIRE's `COUNTY` field rather than on code here. A large count is a published
+  limit on the county cut of ADR 0009.
+- `absent_from_this_record_set` and `not_named_by_the_county_record_set` are inspection
+  scope. A fire the county inspected outside the state responsibility area was never
+  going to be in CAL FIRE's file.
+- An agreement of zero across fires both organisations plainly worked is a defect in the
+  comparison, most likely a name that does not match for a mechanical reason. Investigate
+  it; do not publish it as a result.
+
 ## When acquisition refuses
 
 All of these come from `src/wildfire_service_territory_overlap/acquire.py`, and all of them leave `data/raw/`
@@ -124,3 +248,6 @@ Re-read it on every refresh of the pin, and whenever the conformance table is to
 - The fetched field list never grows without `sources.py`, `PROVENANCE.md`, and the
   schema guard moving together; the provenance test reads all three against each
   other precisely so that collection stays disclosed.
+- The cross-check is never run against a county file carrying an address, a parcel
+  number or a coordinate, and the refusal that stops it is never worked around by
+  renaming a column.

@@ -76,6 +76,29 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **The bounded county cross-check, decided and built; its retrieval is not done**
+  (roadmap 3.4, `docs/adr/0015`). `cross_check.py` holds one county's own inspection
+  records against this project's counts for that county and reports agreement and
+  disagreement per fire, in name order, with Wilson intervals on two shares that each
+  keep their own denominator. Four outcomes, kept apart rather than summed: the fire is
+  in both sets; this project records it under another county; this record set does not
+  name it at all; the county's set does not name it. Nothing is corrected and neither
+  side is treated as the truth, no rate is taken between the two record sets in either
+  direction, and no damage rate is published for the county from either file.
+  **No county inspection record set is pinned.** Nothing was downloaded or hashed,
+  `sources.py` gains no entry, `published/` does not move, and the module is
+  deliberately not wired into `cli.build`: a not-measured block in every build would be
+  a section that says nothing on every run until the run where it says something. It is
+  a command awaiting its retrieval, and `docs/RUNBOOK.md` carries the hand-run
+  procedure and what each of its refusals means. A search on 2026-09-04 for a county
+  publisher is recorded in the ADR as prose, including the negative half: the county
+  datasets that are easiest to find are either CAL FIRE's own assessment hosted by a
+  county, or address-level and parcel-level records this project refuses to fetch.
+  Every refusal has a test that fires it, including the cap, which is computed from the
+  record set rather than written down as a number and is driven past from both sides.
+  `placement._key` became the public `fold_name` so the coordinate-county comparison
+  and this one share one name normalisation instead of two that can drift.
+
 - **The coordinate-county comparison** (`docs/adr/0013`). CAL FIRE's `COUNTY` field is
   now measured, not just trusted: 132,490 records carry both a usable coordinate and a
   label the new CDT county layer carries, 132,459 agree, and 31 (0.023%) sit outside
