@@ -38,14 +38,14 @@ negative half is the useful half.
   surveys of structures within the affected area" and that the teams "collected
   different data using different equipment and, in some cases, evolving methodologies",
   consolidating over 30,000 survey points covering over 19,000 structures
-  (<https://www.giscorps.org/butteco_252/>). That is the case this item wants and it is
+  ([the GISCorps account of the Butte County survey](https://www.giscorps.org/butteco_252/)). That is the case this item wants and it is
   documented rather than assumed. The product that reached a public portal, "Camp Fire
   Structure Status" on data.ca.gov, is published by CAL FIRE
-  (<https://data.ca.gov/dataset/camp-fire-structure-status>), so downloading it would
+  ([the Camp Fire Structure Status dataset on data.ca.gov](https://data.ca.gov/dataset/camp-fire-structure-status)), so downloading it would
   compare CAL FIRE's file against a set that already contains CAL FIRE's file.
 - **Santa Cruz County is named as the collector of its own set.** The county's fire
   recovery pages offer "Santa Cruz County CZU Lightning Fire Damage Inspection Data"
-  (<https://www.santacruzcountyca.gov/FireRecovery/AdditionalResources/MapsData.aspx>),
+  ([Santa Cruz County's fire recovery maps and data page](https://www.santacruzcountyca.gov/FireRecovery/AdditionalResources/MapsData.aspx)),
   presented as a county product rather than as a republication. It is offered as a map
   application; no download endpoint was verified, so nothing about how it could be
   retrieved is claimed here.

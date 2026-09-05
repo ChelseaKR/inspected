@@ -70,9 +70,28 @@ running the new rules over them.
   refuse `docs/METRICS_LEDGER.md`, whose "Next deliberate refresh" row carries two
   cells under a five-column header and reads as two sentences run together where three
   cells went missing, and `docs/adr/0007-the-two-repairs-are-run-against-each-other.md`,
-  whose comparison table leaves its corner cell and four share cells empty. Neither is
-  generated output and neither is gated here. Both are recorded rather than quietly
-  fixed in a review of something else.
+  whose comparison table leaves its corner cell and four share cells empty. Neither was
+  generated output and neither was gated here, so both were recorded rather than
+  quietly fixed in a review of something else.
+
+## What the fix for that last finding found in turn
+
+Dated 2026-09-04, after the review above.
+
+Both documents were repaired, and the gated set was widened from the three documents
+this review names to every Markdown document in the repository. Reading three of
+thirty-three is a sample, and the two defects the review had just recorded were both
+outside the three.
+
+Widening it immediately refused a third document nobody had looked at:
+`docs/adr/0015-one-county-inspection-record-set-is-compared-as-counts-and-neither-side-is-corrected.md`,
+merged hours earlier, carried three bare URLs written as autolinks. A bare URL is read
+out character by character, and one of these is 66 characters of county website path.
+All three now say what is at the other end of them.
+
+That is the argument for a gate over a reading, made by the gate: the review of
+2026-09-04 read the documents it knew to name, and a defect landed in a document it did
+not name, on the same day, from the same session.
 
 ## What was not done
 

@@ -217,6 +217,58 @@ def test_the_standards_conformance_table_has_no_blank_state() -> None:
         assert cells[1].startswith(("Applies", "N/A")), row
 
 
+def _conformance_section() -> str:
+    """The conformance heading down to the next one, preamble and table together."""
+    return README.split("## Standards conformance")[1].split("\n## ")[0]
+
+
+def _refuse_a_table_older_than_the_rows_it_carries(section: str) -> None:
+    """Raise if the table dates itself earlier than a date one of its rows records.
+
+    Kept out of the test so the test that watches it refuse can call the same code the
+    test that guards the README calls, rather than a re-implementation of it.
+    """
+    head, marker, body = section.partition("| Standard |")
+    assert marker, "the conformance table's header row moved"
+    stamp = re.search(r"as of (\d{4}-\d{2}-\d{2})", head)
+    assert stamp, "the conformance table does not say what it is current as of"
+    as_of = stamp.group(1)
+    recorded = re.findall(r"\d{4}-\d{2}-\d{2}", body)
+    assert recorded, "no row in the conformance table records a date"
+    latest = max(recorded)
+    if latest > as_of:
+        raise AssertionError(
+            f"the conformance table says it is current as of {as_of}, and a row "
+            f"records {latest}"
+        )
+
+
+def test_the_conformance_table_is_not_older_than_the_rows_it_carries() -> None:
+    """The line that says how to read every other claim was itself unread.
+
+    The preamble said 2026-08-17 while the CI/CD row recorded a ruleset read back on
+    2026-08-28, and later rows described gates added in September. That is the same
+    shape of defect the CI/CD row was written to correct: a claim about the repository
+    that stopped being true and went on being asserted.
+    """
+    _refuse_a_table_older_than_the_rows_it_carries(_conformance_section())
+
+
+def test_the_conformance_date_check_can_actually_fire() -> None:
+    """A gate nobody has watched refuse is not a gate.
+
+    The check compares two dates that both come out of the same document, so it is
+    exactly the kind that can be written in a way nothing can trip. This drives it.
+    """
+    stale = (
+        "\n\nEvery row states what is true, as of 2026-08-17.\n\n"
+        "| Standard | State |\n|---|---|\n"
+        "| CI/CD | Applies: the ruleset was read back on 2026-08-28 |\n"
+    )
+    with pytest.raises(AssertionError, match="current as of 2026-08-17"):
+        _refuse_a_table_older_than_the_rows_it_carries(stale)
+
+
 def test_the_standards_version_is_pinned_and_read() -> None:
     pin = (ROOT / ".standards-version").read_text(encoding="utf-8").strip()
     assert re.fullmatch(r"v\d+\.\d+\.\d+", pin)
@@ -775,11 +827,29 @@ def test_the_walkthrough_does_not_claim_a_fixture_edit_trips_determinism() -> No
 
 ACR = (ROOT / "docs" / "ACR.md").read_text(encoding="utf-8")
 
-# The documents `docs/ACR.md` makes its structural claims about. The generated report
-# goes through `artifacts.write_report` on every build and is checked again as
-# committed in tests/test_published.py; these three are repository prose, and the
-# review names them, so the same rules read them here.
-DOCUMENTS_THE_REVIEW_CLAIMS = ("README.md", "PROVENANCE.md", "docs/ACR.md")
+# Every Markdown document in the repository. The generated report goes through
+# `artifacts.write_report` on every build and is checked again as committed in
+# tests/test_published.py; these are repository prose, held to the same rules.
+#
+# This started as the three documents `docs/ACR.md` names, and the three were not
+# enough. The review of 2026-09-04 recorded two documents outside the gated set that
+# the rules refuse, `docs/METRICS_LEDGER.md` and `docs/adr/0007`, and while those were
+# being fixed a third turned up in `docs/adr/0015`, merged four hours earlier, carrying
+# three bare URLs. A gate that reads three of thirty-three documents is a sample, and
+# the documents it does not read are where the defects were.
+DOCUMENTS_THE_REVIEW_CLAIMS = tuple(
+    sorted(
+        str(path.relative_to(ROOT))
+        for path in [*ROOT.glob("*.md"), *(ROOT / "docs").rglob("*.md")]
+    )
+)
+
+
+def test_the_sweep_of_documents_did_not_collapse() -> None:
+    """The list is globbed, so an empty glob would pass every document silently."""
+    assert len(DOCUMENTS_THE_REVIEW_CLAIMS) > 25
+    for name in ("README.md", "PROVENANCE.md", "docs/ACR.md", "docs/METRICS_LEDGER.md"):
+        assert name in DOCUMENTS_THE_REVIEW_CLAIMS
 
 
 @pytest.mark.parametrize("name", DOCUMENTS_THE_REVIEW_CLAIMS)
