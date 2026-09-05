@@ -11,10 +11,13 @@ import pytest
 
 from wildfire_service_territory_overlap import measure, report
 from wildfire_service_territory_overlap.artifacts import PublicationRefused, check_all
+from wildfire_service_territory_overlap.catalog import ENGLISH
 from wildfire_service_territory_overlap.cli import build
 from wildfire_service_territory_overlap.geometry import Territory
 from wildfire_service_territory_overlap.placement import Placement, Record, classify
-from wildfire_service_territory_overlap.report import NOT_MEASURED, pct
+from wildfire_service_territory_overlap.report import pct
+
+NOT_MEASURED = ENGLISH["words.not_measured"]
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -270,18 +273,35 @@ def test_no_trend_is_drawn_through_the_years(placement: Placement) -> None:
 
 def test_an_interval_never_prints_its_two_ends_as_the_same_number() -> None:
     """`0.7% to 0.7%` reads as certainty. The precision rises until the ends differ."""
-    assert report.span(0.006555, 0.007464) == "0.66% to 0.75%"
-    assert report.span(0.619, 0.624) == "61.9% to 62.4%"
-    assert report.span(0.0, 0.000029) == "0.000% to 0.003%"
-    assert report.span(0.0, 0.0000041) == "0.0000% to 0.0004%"
+    assert report.span(0.006555, 0.007464) == ("0.66%", "0.75%")
+    assert report.span(0.619, 0.624) == ("61.9%", "62.4%")
+    assert report.span(0.0, 0.000029) == ("0.000%", "0.003%")
+    assert report.span(0.0, 0.0000041) == ("0.0000%", "0.0004%")
 
 
 def test_two_ends_that_really_are_the_same_still_print() -> None:
-    assert report.span(1.0, 1.0) == "100.0% to 100.0%"
+    assert report.span(1.0, 1.0) == ("100.0%", "100.0%")
+
+
+def test_the_word_between_an_interval_two_ends_comes_from_the_catalog() -> None:
+    """`span` hands back two numbers. The word joining them is language, not a number."""
+    node = {
+        "state": "measured",
+        "interval_low": 0.006555,
+        "interval_high": 0.007464,
+    }
+    assert report.interval(node, ENGLISH) == "0.66% to 0.75%"
 
 
 def test_a_measurement_that_could_not_be_made_never_prints_as_a_percentage() -> None:
-    assert pct(None) == NOT_MEASURED
+    assert (
+        report.share({"state": "not_measured", "rate": None}, ENGLISH) == NOT_MEASURED
+    )
+    assert (
+        report.difference({"state": "not_measured", "difference": None}, ENGLISH)
+        == NOT_MEASURED
+    )
+    assert report.interval({"state": "not_measured"}, ENGLISH) == NOT_MEASURED
 
 
 def test_a_tiny_but_real_share_does_not_print_as_flat_zero() -> None:
@@ -292,7 +312,7 @@ def test_a_tiny_but_real_share_does_not_print_as_flat_zero() -> None:
 
 def test_a_not_measured_rate_renders_as_words_in_a_table_row() -> None:
     node = {"label": "x", "state": "not_measured", "numerator": 0}
-    assert NOT_MEASURED in report.rate_line(node)
+    assert NOT_MEASURED in report.rate_line(node, ENGLISH)
 
 
 @pytest.mark.parametrize(
