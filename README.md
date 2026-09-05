@@ -186,6 +186,12 @@ question, about geography rather than about fields, and consumes `perimeter` as 
 dependency rather than re-implementing its acquisition. Nothing here repeats a
 measurement published there.
 
+The rule is consume, do not re-implement, and where it cannot be kept the reason is
+written down rather than left as a local workaround nobody revisits. `docs/UPSTREAM.md`
+holds the audit of 2026-09-05, read against the commit this project pins: four gaps in
+the acquisition, the code here that compensates for each, and the upstream change that
+would let the compensation go. None of the four has been sent upstream.
+
 ## Layout
 
 ```

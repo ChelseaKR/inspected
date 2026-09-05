@@ -58,7 +58,12 @@ documents to all thirty-three, which immediately refused a fourth nobody had rea
 Still open: 3.1 and 3.2 wait for a human to send the letter drafts under
 `docs/outreach/` (issues #50 and #51); 3.3 waits for a reviewer (issue #52); 4.1 waits
 for an archive deposit (issue #54); 4.3 is corrected below rather than waiting; and 4.4
-has no acquisition gap to contribute yet (issue #58).
+was audited on 2026-09-05 rather than left waiting for a gap to announce itself. The
+audit found four, wrote them down in `docs/UPSTREAM.md` with the code here that
+compensates for each, and sent none of them upstream (issue #58). One of the four had
+already reached a document: this repository claimed every request carried a User-Agent
+naming it, and the DINS walk, the largest of the four layers, names the pinned dependency
+instead.
 
 ## What constrains every item below
 
@@ -137,7 +142,7 @@ The findings are locatable in the publisher's data; the publishers have not hear
 | 4.1 | **Archive and DOI** (e.g. Zenodo) for tagged releases; `CITATION.cff` already exists and should gain the DOI | Makes the negative result citable |
 | 4.2 | **Spanish edition of `REPORT.md`**, generated from `measurements.json` with a reviewed string catalog; figures render identically in both languages | California's other language; requires an ADR amending the English-only declaration in `docs/I18N.md`. Numbers are never re-formatted per locale inside one artifact, and the determinism gate must hold across both editions |
 | 4.3 | **PyPI distribution**: this project's own name is clear after the rename to `wildfire-service-territory-overlap`. The dependency's is not. **Corrected 2026-09-04**: the sequence this row used to state, publish `perimeter` first and then drop the URL, cannot be executed. The name `perimeter` on PyPI is held by an unrelated Django package from YunoJuno, checked against the PyPI API on 2026-09-04, so `perimeter` cannot publish under the name this project pins. This is `docs/adr/0014` one level down | The real sequence: `perimeter` picks a distribution name that is free, publishes under it, and then the pin here changes to that name. Two of those three steps are the other repository's call. Until then the direct reference stays, and the `allow-direct-references` comment in `pyproject.toml` keeps its reasoning. Issue #57 |
-| 4.4 | **Upstream contributions to `perimeter`** where acquisition gaps surface here | The relationship is already "consume, don't re-implement"; contributing fixes keeps it that way |
+| 4.4 | **Upstream contributions to `perimeter`** where acquisition gaps surface here. **Audited 2026-09-05** at the pinned commit rather than waiting for a gap to surface on its own: four found, all in the acquisition, recorded in `docs/UPSTREAM.md` with the compensating code here and the upstream change for each | The relationship is already "consume, don't re-implement"; contributing fixes keeps it that way. Nothing has been sent upstream, so the item stays open. The audit is dated and names the commit it read, and a test refuses a `docs/UPSTREAM.md` that outlives the pin it was taken against. Issue #58 |
 
 ## Explicit non-goals
 

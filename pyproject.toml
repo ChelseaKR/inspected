@@ -66,15 +66,21 @@ warn_return_any = true
 disallow_untyped_defs = true
 
 [[tool.mypy.overrides]]
-# None of the three ships type information that mypy --strict accepts wholesale.
-module = ["shapely.*", "pyproj.*", "perimeter.*"]
+# Neither ships a py.typed marker, so mypy reads both as untyped. `pyproj` was listed
+# here too and had stopped earning it: pyproj 3.7.2 does ship the marker, and
+# mypy --strict passes without the entry, measured 2026-09-05. An override that cannot
+# fail is a rule nobody is following, so tests/test_provenance_and_standards.py now
+# refuses an entry naming a package that carries the marker. `perimeter` is checked with
+# mypy --strict upstream and still ships none; see docs/UPSTREAM.md.
+module = ["shapely.*", "perimeter.*"]
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 # `perimeter` is untyped, so its exception classes resolve to Any and mypy refuses the
 # subclass. IncompleteAcquisition is deliberately a kind of AcquisitionFailed: a caller
 # that already handles a failed acquisition should handle an incomplete one the same way.
-# Narrowed to this one module and this one rule rather than relaxed globally.
+# Narrowed to this one module and this one rule rather than relaxed globally. Both
+# overrides go the day `perimeter` ships py.typed; docs/UPSTREAM.md records the measure.
 module = ["wildfire_service_territory_overlap.acquire"]
 disallow_subclassing_any = false
 

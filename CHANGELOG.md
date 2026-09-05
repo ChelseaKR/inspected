@@ -54,7 +54,23 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   list is now the published names, in the artifact's own order, as a list rather than a
   paragraph, and it states in words that the combinations are all of them rather than
   the largest few. The counts did not move.
-
+- **`PROVENANCE.md` said every request carried a User-Agent naming this project**
+  (issue #58). Three of the four layers do. The DINS walk is `perimeter`'s, and
+  `perimeter` reads its own name from a module constant no caller can pass, so those
+  requests, the walk over the largest layer at 132,522 records, identify as
+  `perimeter-coverage/0.1`. Measured on 2026-09-05 with the socket substituted. The
+  document now says which requests carry which identity, two tests in
+  `tests/test_acquire.py` hold both halves against the code, and the gap is recorded
+  upstream-side in `docs/UPSTREAM.md` rather than worked around by reaching into the
+  dependency's module constant.
+- **A mypy override that could not fail** (issue #58). `pyproj.*` sat in
+  `ignore_missing_imports` under a comment saying none of the three dependencies shipped
+  type information. pyproj 3.7.2 ships `py.typed`, so the entry silenced nothing;
+  `mypy --strict src` passes without it, measured 2026-09-05. The entry is gone, the
+  comment says what is now true, and a test reads the list back against the installed
+  packages so the next inert entry fails instead of accumulating. The two `perimeter`
+  overrides stay, and were measured rather than assumed: dropping either one produces a
+  real error at the pinned commit.
 - **`docs/ROADMAP.md` item 4.3 stated a sequence nobody could execute** (issue #57). It
   read as though PyPI distribution waited only on `perimeter` cutting a release. The
   name `perimeter` on PyPI is held by an unrelated Django package from YunoJuno,
@@ -150,7 +166,16 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   A sixth holds the drafts to being drafts, because a suite that guarded the figures
   while the status line quietly flipped to sent would be guarding the wrong thing.
   Every one of them has been watched refuse against a mutated letter.
-
+- **`docs/UPSTREAM.md`, the audit behind roadmap item 4.4** (issue #58). The item was
+  open as a place to record an acquisition gap when one appeared and nobody had looked.
+  Read on 2026-09-05 against `perimeter` at the commit `pyproject.toml` pins, not
+  against its `main`: four gaps, all in the acquisition, each written down with the code
+  here that compensates for it and the upstream change that would let the compensation
+  go. A fifth section records what was checked and found not to be a gap, so the next
+  audit does not re-open it. Nothing has been sent upstream and the issue stays open;
+  naming a gap is not fixing one. A test refuses a `docs/UPSTREAM.md` that names a
+  different commit than the pin, because a dated audit against a moved pin is a dated
+  audit of something else.
 - **`assert_every_table_is_introduced`** (issue #44), refusing a table whose nearest
   non-blank line above it is another table's row, and a table that opens a document.
   Added **after** the fix above rather than before it: the rule refused exactly one of
