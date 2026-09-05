@@ -7,6 +7,24 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- **Both unsent CEC letters quoted a retrieval date this project no longer publishes**
+  (adjacent to issues #50 and #51). `docs/outreach/cec-overlap-letter.md` and
+  `docs/outreach/cec-type-field-request.md` were drafted in #14 against the 2026-08-17
+  pins, and #15 moved the pins to 2026-08-23 in the very next merge. Both letters kept
+  the old date through a rename, a catalog refactor and a re-render, because nothing
+  read them. They are addressed to the California Energy Commission over the
+  maintainer's name, so the number they carry is the publisher's own retrieval and it
+  was wrong. Every other figure in both letters was checked by hand against
+  `published/measurements.json` and held: the leaf-by-leaf diff of #15 recorded that no
+  measured figure moved, and none had.
+- **The overlap letter named entities the publisher's layer does not name.** Eleven of
+  the twelve overlap combinations carried at least one shortened name (`Los Angeles
+  DWP`, `SDG&E`, `Pasadena`, `Riverside`), which is not a string the recipient can look
+  up in the layer the letter is about, and is not a string any gate can derive. The
+  list is now the published names, in the artifact's own order, as a list rather than a
+  paragraph, and it states in words that the combinations are all of them rather than
+  the largest few. The counts did not move.
+
 - **`docs/ROADMAP.md` item 4.3 stated a sequence nobody could execute** (issue #57). It
   read as though PyPI distribution waited only on `perimeter` cutting a release. The
   name `perimeter` on PyPI is held by an unrelated Django package from YunoJuno,
@@ -90,6 +108,18 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   reads that document on every run.
 
 ### Added
+
+- **Five tests holding `docs/outreach/` to `published/measurements.json`**, in
+  `tests/test_published.py`, following the pattern #34 established for the README.
+  Every expected string is derived from the artifact rather than written down, so a
+  deliberate refresh that moves a figure fails the build instead of silently
+  invalidating an unsent letter: the retrieval dates, the record total, both headline
+  shares, the inclusion rule restated in the publisher's own `Type` values, all twelve
+  overlap combinations with their counts and their published order, the repaired
+  outline count, the repair delta, the six published `Type` values and the exclusions.
+  A sixth holds the drafts to being drafts, because a suite that guarded the figures
+  while the status line quietly flipped to sent would be guarding the wrong thing.
+  Every one of them has been watched refuse against a mutated letter.
 
 - **`assert_every_table_is_introduced`** (issue #44), refusing a table whose nearest
   non-blank line above it is another table's row, and a table that opens a document.

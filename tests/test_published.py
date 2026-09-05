@@ -19,7 +19,7 @@ from wildfire_service_territory_overlap.artifacts import (
     table_cells,
 )
 from wildfire_service_territory_overlap.report import render
-from wildfire_service_territory_overlap.sources import DINS
+from wildfire_service_territory_overlap.sources import DINS, ELSE_IOU_POU, ELSE_OTHER
 
 PUBLISHED = Path(__file__).resolve().parents[1] / "published"
 
@@ -570,3 +570,237 @@ def test_every_headline_figure_in_the_readme_is_the_published_measurement(
         "README figures that are not the published measurement (stale prose, or a "
         f"refreshed artifact the README was not updated for): {missing}"
     )
+
+
+# --- The unsent CEC letters quote the artifact's numbers ----------------------------
+#
+# `docs/outreach/` holds two drafts addressed to the California Energy Commission over
+# the maintainer's name. They quote counts, shares, retrieval dates, the overlap
+# combinations and the `Type` values, and until now nothing held any of it to
+# `published/measurements.json`. That gap was not hypothetical: the letters were
+# drafted in #14 and the very next merge, #15, moved the pin from 2026-08-17 to
+# 2026-08-23. Both letters kept quoting a retrieval date this project no longer
+# publishes, through a rename, a catalog refactor and a re-render, because no gate read
+# them.
+#
+# A letter to a publisher containing a number the project does not publish is the worst
+# version of the failure mode this repository exists to prevent, and it is worse than
+# the README's because it leaves the repository over somebody's signature. These tests
+# give the letters the property #34 gave the README: every expected string is *derived*
+# from the artifact (or from `sources.py` for the item ids and the endpoint, which are
+# provenance rather than measurement), never hard-coded, so a deliberate refresh that
+# moves a figure turns the build red instead of silently invalidating an unsent letter.
+#
+# Sentences of argument are left alone. Nothing below tests prose.
+
+_OUTREACH = Path(__file__).resolve().parents[1] / "docs" / "outreach"
+
+
+def _flat(name: str) -> str:
+    """One letter, whitespace-normalized, because the drafts hard-wrap their prose."""
+    return " ".join((_OUTREACH / name).read_text(encoding="utf-8").split())
+
+
+def _bullets(name: str) -> list[str]:
+    """The list items of one letter, unwrapped, in the order they are written."""
+    items: list[str] = []
+    for line in (_OUTREACH / name).read_text(encoding="utf-8").splitlines():
+        if line.startswith("- "):
+            items.append(line[2:].strip())
+        elif items and line.startswith("  ") and line.strip():
+            items[-1] = f"{items[-1]} {line.strip()}"
+    return items
+
+
+_OVERLAP_LETTER = _flat("cec-overlap-letter.md")
+_TYPE_LETTER = _flat("cec-type-field-request.md")
+_OUTREACH_README = _flat("README.md")
+
+
+def _records(n: int) -> str:
+    return f"{_count(n)} record{'' if n == 1 else 's'}"
+
+
+def _series(names: list[str], conjunction: str) -> str:
+    """A published set of values written out the way both letters write it.
+
+    Four values come back as "A, B, C or D". The letters name the publisher's own
+    `Type` values in full rather than counting them, because a spelled-out count is a
+    figure no gate can derive from the artifact and both letters carried one.
+    """
+    return f"{', '.join(names[:-1])} {conjunction} {names[-1]}"
+
+
+def test_every_figure_in_the_overlap_letter_is_the_published_measurement(
+    published_artifact: dict[str, Any],
+) -> None:
+    a = published_artifact
+    coverage = a["placement_coverage"]
+    counts = coverage["counts"]
+    placed = _rate_row(coverage, counts["placed_in_exactly_one_territory"])
+    contested = _rate_row(coverage, counts["contested_between_two_or_more"])
+    geometry = a["geometry_ledger"]
+    repair = a["sensitivity"]["repair_strategy"]
+    rule = a["sensitivity"]["type_inclusion"]["rule_as_built"]
+
+    service = DINS.endpoint.split("/services/")[1].split("/FeatureServer/")[0]
+    layer = DINS.endpoint.split("/FeatureServer/")[1].split("/")[0]
+
+    expected = [
+        # Which retrieval the letter is speaking for, and whose layer it is about.
+        f"{service} layer {layer}",
+        f"retrieved {a['provenance']['dins_retrieved']}",
+        ELSE_IOU_POU.item_id,
+        ELSE_OTHER.item_id,
+        f"last modified by you {a['provenance']['territories_item_modified']}",
+        # The headline.
+        f"Of {_count(coverage['fire_records'])} wildfire records",
+        f"{_count(counts['placed_in_exactly_one_territory'])} ({_pct1(placed['rate'])})",
+        f"{_count(counts['contested_between_two_or_more'])} "
+        f"({_pct1(contested['rate'])})",
+        # The rule that defines the headline, in the publisher's own field values.
+        f"a `Type` of {_series(rule, 'or')}",
+        # The overlap list, and the claim that it is the whole of it.
+        f"All {len(a['contested_groups'])} overlapping combinations",
+        f"sum to the {_count(counts['contested_between_two_or_more'])} above",
+        # The geometry aside.
+        f"{geometry['territories_repaired']} of the "
+        f"{geometry['territories_indexed']} outlines",
+        f"{_count(repair['records_with_a_different_outcome']['numerator'])} records "
+        "come out differently",
+    ]
+
+    if counts["covered_by_no_published_territory"] == 0:
+        expected.append("none falls outside all of them")
+    else:
+        assert "none falls outside all of them" not in _OVERLAP_LETTER, (
+            "records now fall outside every published outline and the letter says none "
+            "does"
+        )
+
+    for group in a["contested_groups"]:
+        expected.append(
+            f"{' with '.join(group['territories'])}: {_records(group['records'])}"
+        )
+
+    assert len(expected) > 20, "the expectation list collapsed"
+    missing = [fragment for fragment in expected if fragment not in _OVERLAP_LETTER]
+    assert not missing, (
+        "figures in docs/outreach/cec-overlap-letter.md that are not the published "
+        f"measurement. This letter is addressed to the publisher: {missing}"
+    )
+
+
+def test_the_overlap_letter_lists_the_combinations_in_the_published_order(
+    published_artifact: dict[str, Any],
+) -> None:
+    """The order is the artifact's declared order, not an ordering invented here.
+
+    `ORDERINGS` publishes `contested_groups` by size and records why: a row is a
+    combination of outlines rather than an entity, so this is not a ranking of
+    companies and the letter is not making one. It does have to be the same sequence
+    the report prints, or the letter and the artifact describe different things.
+    """
+    positions = [
+        _OVERLAP_LETTER.index(f"{' with '.join(group['territories'])}: ")
+        for group in published_artifact["contested_groups"]
+    ]
+    assert positions == sorted(positions), (
+        "the letter lists the overlap combinations in an order the artifact does not"
+    )
+
+
+def test_the_overlap_letter_names_every_combination_and_no_others(
+    published_artifact: dict[str, Any],
+) -> None:
+    """The letter says these are all of them, so it may not carry one more or one less.
+
+    The fragment check above reads the artifact's combinations and looks for each one.
+    It is satisfied by a letter that also names a thirteenth nobody measured, and by a
+    letter naming so few that the order check has nothing to order. Counting the list
+    items closes both, and the completeness the letter claims in words is the property
+    `assert_contested_groups_are_whole` enforces on the artifact behind it.
+    """
+    groups = published_artifact["contested_groups"]
+    assert len(groups) > 1, "the artifact publishes no overlap to check the letter on"
+    assert (
+        sum(group["records"] for group in groups)
+        == (
+            published_artifact["placement_coverage"]["counts"][
+                "contested_between_two_or_more"
+            ]
+        )
+    ), "the letter says the combinations sum to the contested total and they do not"
+    assert len(_bullets("cec-overlap-letter.md")) == len(groups), (
+        "the letter lists a different number of overlap combinations than the artifact "
+        "publishes"
+    )
+
+
+def test_every_figure_in_the_type_field_request_is_the_published_measurement(
+    published_artifact: dict[str, Any],
+) -> None:
+    block = published_artifact["sensitivity"]["type_inclusion"]
+    present = block["published_types_present_in_this_retrieval"]
+    excluded = sorted(
+        row["published_type"] for row in published_artifact["excluded_types"]
+    )
+
+    expected = [
+        ELSE_IOU_POU.item_id,
+        ELSE_OTHER.item_id,
+        f"as retrieved {published_artifact['provenance']['territories_retrieved']}",
+        f"in name order:** {', '.join(present)}.",
+        f"reads {_series(block['rule_as_built'], 'and')} as retail service territories",
+        f"excludes {_series(excluded, 'and')}",
+    ]
+
+    assert present == sorted(present), "the published values are not in name order"
+    assert sorted(block["rule_as_built"] + excluded) == present, (
+        "the letter accounts for every published value, so the rule and the exclusions "
+        "have to be every published value"
+    )
+    missing = [fragment for fragment in expected if fragment not in _TYPE_LETTER]
+    assert not missing, (
+        "figures in docs/outreach/cec-type-field-request.md that are not the published "
+        f"measurement. This letter is addressed to the publisher: {missing}"
+    )
+
+
+def test_the_type_field_request_is_only_worth_sending_while_the_field_is_undocumented(
+    published_artifact: dict[str, Any],
+) -> None:
+    """The letter's premise, held to the artifact that states it.
+
+    Every claim in the letter's checklist rests on one fact: the publisher documents
+    none of the `Type` values in the retrieval this project pins. If a future retrieval
+    carried a coded-value domain, the pipeline would stop saying so and the letter
+    would be asking for something that already exists.
+    """
+    statement = published_artifact["sensitivity"]["type_inclusion"][
+        "the_published_type_field_is_undocumented"
+    ]
+    for claim in (
+        "no coded-value domain",
+        "no entity and attribute section",
+        "data dictionary",
+    ):
+        assert claim in statement, (
+            f"the artifact no longer says {claim!r}, so the letter's request may be "
+            "stale"
+        )
+    assert "coded-value domain" in _TYPE_LETTER
+
+
+def test_both_letters_are_still_drafts_and_every_document_says_so() -> None:
+    """Sending is a person's job, and nothing in this repository may imply it happened.
+
+    Issues #50 and #51 ask a person to send these. The status line is the one sentence
+    a reader uses to tell a draft from a record of correspondence, and a test that held
+    the figures while letting the status quietly flip would be holding the wrong thing.
+    """
+    for letter in (_OVERLAP_LETTER, _TYPE_LETTER):
+        assert "Status: **draft, not sent**." in letter
+        assert "[sending address]" in letter
+    assert "not yet sent" in _OUTREACH_README
+    assert "Nothing here has gone to the publisher." in _OUTREACH_README
