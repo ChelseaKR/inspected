@@ -13,6 +13,7 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
+from wildfire_service_territory_overlap.artifact_diff import diff_trees
 from wildfire_service_territory_overlap.artifacts import (
     _table_blocks,
     check_all,
@@ -333,6 +334,31 @@ def test_the_published_artifact_actually_contains_rates(
 ) -> None:
     """Guard the guard: the rule tests above pass trivially over an artifact with none."""
     assert len(_rate_nodes(published_artifact)) > 50
+
+
+def test_the_metrics_ledger_leaf_count_is_the_one_the_tool_reports(
+    published_artifact: dict[str, Any],
+) -> None:
+    """The ledger row that exists so the size of "nothing changed" is known.
+
+    It carried 5,120 while the tool reported 6,582, from a pin two refreshes back, and
+    the number is quoted nowhere else, so nothing contradicted it. That row exists to be
+    the reference a refresh is diffed against, which makes a stale value there worse
+    than a stale value in ordinary prose: it is the figure somebody checks a refresh
+    against when they want to be careful.
+
+    This is the third instance of one failure mode in this repository. The CEC letters
+    quoted a retrieval date the artifact had stopped publishing. `docs/ACR.md` asserted
+    a table rule its own table broke. Prose that quotes a measurement drifts unless
+    something reads both.
+    """
+    ledger = (PUBLISHED.parent / "docs" / "METRICS_LEDGER.md").read_text(
+        encoding="utf-8"
+    )
+    total = diff_trees(published_artifact, published_artifact).total
+    assert f"{total:,} leaves in `published/measurements.json`" in ledger, (
+        f"the artifact has {total:,} comparable leaves and the ledger does not say so"
+    )
 
 
 def test_the_report_matches_the_artifact_it_was_rendered_from(

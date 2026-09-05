@@ -50,7 +50,9 @@ with the open half named and filed:
 - **4.2** in #42. Every string the report prints on its own account lives in a catalog,
   and a second edition is a catalog rather than a second renderer. Still open: a Spanish
   catalog reviewed by somebody who reads Spanish, issue #55, and a decision about the
-  row labels that live inside `measurements.json`, issue #56.
+  row labels that live inside `measurements.json`, issue #56. That second one now has
+  its analysis and a recommendation in `docs/adr/0017`, which is proposed and not
+  accepted; the census it rests on shipped with it and no published figure moved.
 
 #60 then fixed four document defects and widened the document rules from three
 documents to all thirty-three, which immediately refused a fourth nobody had read.

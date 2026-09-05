@@ -20,12 +20,20 @@ trusted:
    what it means. The English catalog is the reviewed one because it is the text this
    repository has published and corrected. A generated translation is not a reviewed
    catalog, and `docs/adr/0016` records that as a rule rather than a preference.
+
+Not every word a reader of this project meets is in a catalog. The artifact carries
+sentences of its own, written into ``measurements.json`` by the modules that measure,
+and no edition reaches them. :func:`artifact_prose` is the census of those sentences and
+:func:`unclassified_string_fields` is the gate that keeps the census from going quietly
+out of date. Neither decides anything: `docs/adr/0017` is the proposal, it is not
+accepted, and until it is these two functions only measure the size of the question.
 """
 
 from __future__ import annotations
 
 from collections.abc import Iterator, Mapping
 from string import Formatter
+from typing import Any, Final
 
 
 class CatalogRefused(ValueError):
@@ -90,6 +98,107 @@ def translation(edition: str, entries: Mapping[str, str]) -> Catalog:
                 "placeholder drops a measured number out of the document"
             )
     return Catalog(edition, entries)
+
+
+ARTIFACT_PROSE_FIELDS: Final[tuple[str, ...]] = (
+    "affiliation",
+    "county_note",
+    "geometry_note",
+    "label",
+    "no_trend_is_published",
+    "note",
+    "question",
+    "reason",
+    "the_published_type_field_is_undocumented",
+    "variant",
+)
+"""Artifact fields whose value is a sentence somebody in this repository wrote.
+
+These are the row labels, the measurement notes, the county note and the type-field
+note that `docs/adr/0016` named and did not decide. They are written in
+``measure.py``, ``sensitivity.py``, ``sources.py``, ``intervals.py``, ``geometry.py``
+and ``cli.py``, they land inside ``measurements.json``, and no catalog reaches them.
+"""
+
+ARTIFACT_DATA_FIELDS: Final[tuple[str, ...]] = (
+    "alternative",
+    "between",
+    "chosen",
+    "contested_with",
+    "county",
+    "dins_landing_page",
+    "dins_retrieved",
+    "geometry_state",
+    "interval_method",
+    "largest_incident",
+    "outlines_no_record_falls_inside",
+    "published_type",
+    "published_types_present_in_this_retrieval",
+    "repaired",
+    "rule_as_built",
+    "source_layer",
+    "state",
+    "strategies_compared",
+    "structure_category",
+    "territories",
+    "territories_item_modified",
+    "territories_landing_page",
+    "territories_retrieved",
+    "territory",
+    "types_read_as_territories",
+    "under_the_alternative",
+    "under_the_chosen_repair",
+)
+"""Artifact fields whose value is a string and is not this repository's prose.
+
+A name CAL FIRE or the California Energy Commission published, a machine token such as
+``measured`` or ``wilson-score-95``, a retrieval date, or a landing page. None of it is
+translated in any edition: a name is reported as published, and a token names a method
+rather than describing one.
+"""
+
+
+def _string_leaves(node: Any, path: str, field: str) -> Iterator[tuple[str, str, str]]:
+    """Every string in the tree, with the path to it and the field it sits under."""
+    if isinstance(node, dict):
+        for key, value in node.items():
+            yield from _string_leaves(value, f"{path}.{key}", key)
+        return
+    if isinstance(node, list):
+        for index, value in enumerate(node):
+            yield from _string_leaves(value, f"{path}[{index}]", field)
+        return
+    if isinstance(node, str):
+        yield path, field, node
+
+
+def artifact_prose(tree: Any) -> list[tuple[str, str]]:
+    """Every sentence this repository publishes inside the artifact, by path.
+
+    Empty strings are returned rather than dropped. An empty ``note`` is a published
+    leaf like any other, it is compared by
+    :mod:`wildfire_service_territory_overlap.artifact_diff` like any other, and a census
+    that skipped it would understate what a keyed artifact would have to move.
+    """
+    return [
+        (path, text)
+        for path, field, text in _string_leaves(tree, "$", "")
+        if field in ARTIFACT_PROSE_FIELDS
+    ]
+
+
+def unclassified_string_fields(tree: Any) -> set[str]:
+    """String-valued fields that are in neither declared list.
+
+    A new field carrying a sentence is a decision: either an edition will one day have
+    to reach it or it never will. This returns the fields nobody has said which, so the
+    question is asked when the field is added rather than when somebody tries to
+    translate the document.
+    """
+    known = {*ARTIFACT_PROSE_FIELDS, *ARTIFACT_DATA_FIELDS}
+    return {
+        field for _, field, _ in _string_leaves(tree, "$", "") if field not in known
+    }
 
 
 # The reference edition. Key order below is the declared order of the catalog, and it

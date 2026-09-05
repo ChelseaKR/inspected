@@ -20,10 +20,14 @@ import pytest
 
 from wildfire_service_territory_overlap import report
 from wildfire_service_territory_overlap.catalog import (
+    ARTIFACT_DATA_FIELDS,
+    ARTIFACT_PROSE_FIELDS,
     ENGLISH,
     Catalog,
     CatalogRefused,
+    artifact_prose,
     translation,
+    unclassified_string_fields,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -371,3 +375,129 @@ def test_no_command_line_flag_offers_a_choice_of_one_language() -> None:
     )
     for flag in ("--lang", "--language", "--locale"):
         assert flag not in cli, f"{flag} accepts one value and means nothing yet"
+
+
+# --- The artifact's own English, which no edition reaches (`docs/adr/0017`) ---------
+
+
+def artifact_prose_fields_the_renderer_reads(source: str) -> set[str]:
+    """Every artifact prose field `report.py` subscripts, read out of the renderer.
+
+    Read from the syntax rather than listed, so a renderer that starts printing a new
+    one, or stops printing an old one, moves this set instead of leaving a hand-copied
+    list behind.
+    """
+    found: set[str] = set()
+    for node in ast.walk(ast.parse(source)):
+        if not isinstance(node, ast.Subscript):
+            continue
+        for inner in ast.walk(node.slice):
+            if isinstance(inner, ast.Constant) and inner.value in ARTIFACT_PROSE_FIELDS:
+                found.add(inner.value)
+    return found
+
+
+def _field_of(path: str) -> str:
+    return path.rsplit(".", 1)[-1]
+
+
+def _printed_by_the_document(
+    document: str, prose: list[tuple[str, str]], fields: set[str]
+) -> set[str]:
+    """The artifact strings the document puts in front of a reader.
+
+    Two shapes, because the renderer emits these two ways and no other: a row label is
+    the whole first cell of a table row, and every other one ends a line, either alone
+    or after a bullet's bold lead-in.
+    """
+    first_cells = {
+        line.split("|")[1].strip()
+        for line in document.splitlines()
+        if line.startswith("| ")
+    }
+    lines = document.splitlines()
+    return {
+        text
+        for path, text in prose
+        if text
+        and _field_of(path) in fields
+        and (text in first_cells or any(line.endswith(text) for line in lines))
+    }
+
+
+def test_every_string_field_in_the_published_artifact_is_classified(
+    published_artifact: dict[str, Any],
+) -> None:
+    """A field carrying a new sentence is a decision, taken when the field is added.
+
+    The two declared lists cover the 37 string-valued fields the published artifact
+    carries. A thirty-eighth arriving unclassified is the question `docs/adr/0017`
+    asks, turning up again in a place nobody was looking.
+    """
+    assert unclassified_string_fields(published_artifact) == set()
+    fields = {_field_of(path) for path, _ in artifact_prose(published_artifact)}
+    assert fields == set(ARTIFACT_PROSE_FIELDS)
+    assert not set(ARTIFACT_PROSE_FIELDS) & set(ARTIFACT_DATA_FIELDS)
+
+
+def test_the_unclassified_field_check_can_actually_fire() -> None:
+    """Guard the guard: a sentence under a name nobody has classified comes back."""
+    invented = {"territories": [{"territory": "A", "footnote": "a new sentence"}]}
+    assert unclassified_string_fields(invented) == {"footnote"}
+    assert artifact_prose(invented) == []
+    assert artifact_prose({"note": "", "rows": [{"label": "a"}]}) == [
+        ("$.note", ""),
+        ("$.rows[0].label", "a"),
+    ]
+
+
+def test_the_artifact_carries_prose_that_no_edition_reaches(
+    published_artifact: dict[str, Any],
+) -> None:
+    """The census `docs/adr/0017` quotes, held so the ADR cannot go stale quietly.
+
+    A refresh that moves these counts moves the numbers in that document too, and this
+    test is where that is noticed.
+    """
+    prose = artifact_prose(published_artifact)
+    written = [text for _, text in prose if text]
+    assert len(prose) == 1205
+    assert len(written) == 960
+    assert len(set(written)) == 102
+
+
+def test_the_renderer_reads_six_of_the_ten_prose_fields_out_of_the_artifact() -> None:
+    """Which of the artifact's sentences a reader of the document actually meets."""
+    read = artifact_prose_fields_the_renderer_reads(RENDERER_SOURCE)
+    assert read == {
+        "county_note",
+        "label",
+        "note",
+        "reason",
+        "the_published_type_field_is_undocumented",
+        "variant",
+    }
+    assert set(ARTIFACT_PROSE_FIELDS) - read == {
+        "affiliation",
+        "geometry_note",
+        "no_trend_is_published",
+        "question",
+    }
+
+
+def test_the_document_prints_twenty_eight_of_the_artifacts_own_strings(
+    published_artifact: dict[str, Any], published_report: str
+) -> None:
+    """The size of the gap a second edition would print around, measured not guessed.
+
+    `docs/I18N.md` says a second edition would print translated prose around English
+    row labels. This is how much English: 28 strings of the artifact's 102, carried by
+    65 of its 1,205 prose leaves. The other 74 never leave `measurements.json`.
+    """
+    prose = artifact_prose(published_artifact)
+    fields = artifact_prose_fields_the_renderer_reads(RENDERER_SOURCE)
+    printed = _printed_by_the_document(published_report, prose, fields)
+    assert len(printed) == 28
+    assert sum(1 for _, text in prose if text in printed) == 65
+    assert "inside two or more published territories" in printed
+    assert "no records are placed in this territory" not in printed

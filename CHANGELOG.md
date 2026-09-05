@@ -106,6 +106,11 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **The roadmap's status paragraph stopped at 2026-08-23** (issue #59) while the merges
   since went past it. A second dated paragraph records what moved, and records 1.6, 3.4
   and 4.2 as partway with the open half of each named and filed rather than as done.
+- **`docs/METRICS_LEDGER.md` recorded 5,120 published leaves in the current pin.**
+  `wildfire_service_territory_overlap.artifact_diff` compares 6,582 in the committed
+  artifact, and has since the pin of 2026-08-23. The row is the one that says how big
+  "nothing changed" is before a refresh needs to claim it, so a stale count there is
+  worse than none. Corrected against the tool, with the prose share named beside it.
 
 - **A table in `published/REPORT.md` that no sentence introduced** (issue #43). In
   "What the repair is worth", the placed-share table followed the transitions table
@@ -201,6 +206,25 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   naming a gap is not fixing one. A test refuses a `docs/UPSTREAM.md` that names a
   different commit than the pin, because a dated audit against a moved pin is a dated
   audit of something else.
+- **`docs/adr/0017`, proposed rather than accepted** (issue #56), on how the artifact's
+  own row labels get an edition. The half of roadmap 4.2 that `docs/adr/0016` named and
+  did not decide, measured instead of argued: 1,205 of the artifact's 6,582 leaves carry
+  a string this repository wrote, 102 of them distinct, and 28 of those reach
+  `published/REPORT.md`. Each option in the issue was built in a scratch directory and
+  run through `wildfire_service_territory_overlap.artifact_diff`. Replacing the labels
+  with keys removes 1,205 values and is refused with exit 1, which `--allow-removals`
+  can carry; it also costs the diff its keyed pairing on 72 lists, which nothing carries,
+  and a reordered `rates` list then reports 624 values changed where the published
+  artifact reports none. Keys beside the words pass clean and add 1,521 leaves. The ADR
+  recommends neither, and proposes that the renderer name the row from the edition while
+  the artifact keeps its English. No published figure moved and nothing under
+  `published/` was touched.
+- **`catalog.artifact_prose` and `catalog.unclassified_string_fields`**, the census that
+  proposal rests on. `ARTIFACT_PROSE_FIELDS` and `ARTIFACT_DATA_FIELDS` classify all 37
+  string-valued fields the artifact carries, and a thirty-eighth arriving unclassified
+  is refused, so the question of whether an edition will ever have to reach a field is
+  asked when the field is added. Five tests, one of them watching the refusal fire, and
+  the counts the ADR quotes are held against the pin rather than remembered.
 - **`assert_every_table_is_introduced`** (issue #44), refusing a table whose nearest
   non-blank line above it is another table's row, and a table that opens a document.
   Added **after** the fix above rather than before it: the rule refused exactly one of
