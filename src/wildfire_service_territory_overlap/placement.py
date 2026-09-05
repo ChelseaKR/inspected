@@ -515,7 +515,7 @@ def classify_county_agreement(
         return result
     layer_names: dict[str, str] = {}
     for county in counties:
-        layer_names[_key(county.name)] = county.name
+        layer_names[fold_name(county.name)] = county.name
     usable, lons, lats = _usable_positions(records)
     if not usable:
         return result
@@ -525,7 +525,7 @@ def classify_county_agreement(
         record = records[record_index]
         if not record.county:
             continue
-        key = _key(record.county)
+        key = fold_name(record.county)
         if key not in layer_names:
             result.unmatchable_label += 1
             continue
@@ -537,7 +537,7 @@ def classify_county_agreement(
         if not matched_names:
             result.matched_no_county += 1
             tally.matched_no_county += 1
-        elif any(_key(name) == key for name in matched_names):
+        elif any(fold_name(name) == key for name in matched_names):
             result.agreed += 1
             tally.agreed += 1
         else:
@@ -546,5 +546,13 @@ def classify_county_agreement(
     return result
 
 
-def _key(name: str) -> str:
+def fold_name(name: str) -> str:
+    """A published name reduced to what two publishers can be expected to share.
+
+    Case and inner whitespace, and nothing else. Two organisations writing the same
+    county or the same fire will differ on those and this project will not treat that
+    as a disagreement. Anything beyond them would be this project deciding that two
+    different names are one thing, which is the adjudication ADR 0013 refuses for
+    counties and ADR 0015 refuses for incident names.
+    """
     return " ".join(name.split()).casefold()
