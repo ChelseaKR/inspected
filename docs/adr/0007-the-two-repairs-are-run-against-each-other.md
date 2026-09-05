@@ -17,13 +17,17 @@ that every rate carries its denominator was citing a number it could not reprodu
 The repair strategy is now a parameter rather than a constant, so both can be run over
 the same records in the same build. Over the 132,520 wildfire records:
 
-| | Records | Share of the record set |
+The first row is the census total. The four rows under it decompose that total, and
+say so in words rather than by sitting underneath it, because position is not something
+a reader working through the table linearly can see.
+
+| Outcome under the two repairs | Records | Share of the record set |
 |---|---:|---:|
 | Outcome differs between the two repairs | 927 | 0.70%, interval 0.66% to 0.75% |
-| Placed under `make_valid`, contested under `buffer(0)` | 770 | |
-| Contested under both, between a different pair | 157 | |
-| Placed under both, in a different territory | 0 | |
-| Uncovered under either | 0 | |
+| Placed under `make_valid`, contested under `buffer(0)` | 770 | part of the 927 above |
+| Contested under both, between a different pair | 157 | part of the 927 above |
+| Placed under both, in a different territory | 0 | part of the 927 above |
+| Uncovered under either | 0 | part of the 927 above |
 
 The placed share is 62.14% under `make_valid` and 61.56% under `buffer(0)`, a difference
 of 0.58 percentage points with a Newcombe interval of 0.21 to 0.95 points. The interval

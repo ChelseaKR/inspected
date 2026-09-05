@@ -7,6 +7,28 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- **The conformance table dated itself 2026-08-17 while its own rows recorded later**
+  (issue #47). The CI/CD row records a ruleset read back on 2026-08-28 and later rows
+  describe gates added in September, under a line saying every row states what is true
+  on 2026-08-17. It is the one line in the table that tells a reader how to read every
+  other claim in it, and it was the claim nobody was checking. The line now carries an
+  as-of date and
+  `test_the_conformance_table_is_not_older_than_the_rows_it_carries` refuses an as-of
+  date earlier than any date the table records. The check has been watched refuse.
+- **`docs/METRICS_LEDGER.md` had a row missing three of its five cells** (issue #45).
+  The "Next deliberate refresh" row read `superseded by the row above The refresh
+  procedure in ...`: two sentences run together where the cell boundaries went missing
+  in an edit. It has its five cells back, and its outcome is recorded as not measured
+  because the stream has not run, rather than left blank.
+- **`docs/adr/0007` left its corner cell and four share cells empty** (issue #46). The
+  four empty cells meant "these rows decompose the 927 above", carried entirely by
+  position, which is the one thing the accessibility review says this output does not
+  do. They now say it in words. No measurement was added to a merged ADR: the shares
+  were not computed and inserted, because a number appearing in a decision record
+  today, dated to a census taken then, is a different kind of claim.
+- **`docs/adr/0015` carried three bare URLs** and was merged that way hours earlier. A
+  bare URL is read out character by character, and one of these was 66 characters of
+  county website path. Found by widening the gated set below, not by reading.
 - **`artifact_diff` no longer prints `Nothing was removed.` on a run that removed
   values.** With `--allow-removals` the verdict line fell through to the wrong branch
   and contradicted the `REMOVED` lines printed directly above it. The tool exists so a
@@ -91,7 +113,14 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   open; none of this is a screen reader and the review does not claim otherwise.
 
 ### Changed
-
+- **The document rules read every Markdown document in the repository**, where they read
+  three. `docs/ACR.md` named `README.md`, `PROVENANCE.md` and itself, and the two
+  defects the review of 2026-09-04 recorded were both outside that set, as was the
+  third found while fixing them. Reading three of thirty-three documents is a sample,
+  and the documents it did not read were where the defects were. The list is globbed
+  and a test refuses a glob that collapses.
+- **`.claude/` is gitignored** (issue #48). Claude Code puts agent worktrees there, and
+  a `git add -A` would have staged them.
 - Renamed the project to `wildfire-service-territory-overlap` across the distribution, the package, and every
   command reference. The old PyPI name is held by an unrelated tool, which blocked the
   roadmap's distribution item independently of the `perimeter` pin; see

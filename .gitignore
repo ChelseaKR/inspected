@@ -10,3 +10,8 @@ coverage.xml
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+
+# Claude Code's working directory, including the git worktrees it creates for
+# agents. A tool's scratch space is not the repository, which is why build/ and the
+# cache directories above are here too.
+.claude/
