@@ -9,6 +9,7 @@ rate lost its denominator, or a coordinate appeared, these tests fail.
 from __future__ import annotations
 
 import re
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
@@ -803,4 +804,280 @@ def test_both_letters_are_still_drafts_and_every_document_says_so() -> None:
         assert "Status: **draft, not sent**." in letter
         assert "[sending address]" in letter
     assert "not yet sent" in _OUTREACH_README
-    assert "Nothing here has gone to the publisher." in _OUTREACH_README
+    # The sentence widened when the reviewer packet joined this directory: it used
+    # to cover only the publisher, and now covers everybody, which is strictly the
+    # stronger claim to hold.
+    assert "Nothing here has gone to anybody" in _OUTREACH_README
+    assert "nobody outside this project has read any of it" in _OUTREACH_README
+
+
+# --- The review packet's list and its figures are the artifact's --------------------
+#
+# `docs/outreach/inclusion-rule-review-packet.md` exists so that roadmap item 3.3 can be
+# handed to a domain reviewer as an answerable question rather than as an invitation to
+# read the source. It names the 24 outlines that hold records with the publisher's own
+# `Type` value for each, and it quotes what the measured alternatives to the inclusion
+# rule are worth. Every one of those moves when the pins are deliberately refreshed.
+#
+# The README's headline figures got this property in #34 for the same reason. A
+# document that quotes a number which can drift is a document that will eventually lie,
+# and this one would lie to the person it exists to ask a question of: a packet listing
+# the wrong 24 names costs a reviewer an afternoon on outlines that cannot move a
+# figure. Every expected string below is derived from published/measurements.json or
+# from sources.py, never written out here.
+
+PACKET_PATH = (
+    Path(__file__).resolve().parents[1]
+    / "docs"
+    / "outreach"
+    / "inclusion-rule-review-packet.md"
+)
+PACKET = PACKET_PATH.read_text(encoding="utf-8")
+_PACKET_FLAT = " ".join(PACKET.split())
+
+_LAYER_TITLE = {ELSE_IOU_POU.key: ELSE_IOU_POU.title, ELSE_OTHER.key: ELSE_OTHER.title}
+
+
+def _pp1(delta: float) -> str:
+    """Percentage points, one decimal, magnitude only; the direction is prose."""
+    return f"{abs(delta) * 100:.1f}"
+
+
+def _pp3(delta: float) -> str:
+    return f"{abs(delta) * 100:.3f}"
+
+
+def _outlines_that_hold_records(artifact: dict[str, Any]) -> list[dict[str, Any]]:
+    """The 24, derived as ADR 0010 defines them: the indexed set minus the empty ones."""
+    hold_nothing = set(
+        artifact["sensitivity"]["untouched_outlines"]["outlines_no_record_falls_inside"]
+    )
+    return [
+        row for row in artifact["territories"] if row["territory"] not in hold_nothing
+    ]
+
+
+def _packet_table() -> list[list[tuple[int, str]]]:
+    blocks = _table_blocks(PACKET)
+    assert len(blocks) == 1, (
+        "the packet carries exactly one table, the list of outlines to review. A "
+        "second one is a second claim and needs a gate of its own."
+    )
+    return blocks
+
+
+def _packet_rows() -> list[list[str]]:
+    return [table_cells(row) for _, row in _packet_table()[0][2:]]
+
+
+def _variant(artifact: dict[str, Any], name: str) -> dict[str, Any]:
+    matches = [
+        row
+        for row in artifact["sensitivity"]["type_inclusion"]["variants"]
+        if row["variant"] == name
+    ]
+    assert len(matches) == 1, f"no published inclusion-rule variant named {name!r}"
+    return matches[0]
+
+
+def test_the_review_packet_lists_exactly_the_outlines_that_hold_records(
+    published_artifact: dict[str, Any],
+) -> None:
+    """The bound is the point of the request, so the list is held to the measurement.
+
+    A refreshed retrieval in which one more outline starts holding a record, or one
+    stops, leaves the packet asking about the wrong set. That is not cosmetic drift: it
+    is a reviewer spending an afternoon on a name that cannot move a figure, or never
+    being asked about one that can.
+    """
+    expected = [
+        [row["territory"], row["published_type"], _LAYER_TITLE[row["source_layer"]]]
+        for row in _outlines_that_hold_records(published_artifact)
+    ]
+    assert _packet_rows() == expected
+
+
+def test_the_review_packet_list_is_in_name_order_and_ranks_nothing() -> None:
+    """Name order, like every list here. Nothing is ordered by how much it holds."""
+    names = [row[0] for row in _packet_rows()]
+    assert names == sorted(names)
+    lowered = _PACKET_FLAT.lower()
+    for phrase in (
+        "most contested",
+        "worst",
+        "ranked",
+        "league table",
+        "in order of size",
+        "more exposed than",
+        "less exposed than",
+    ):
+        assert phrase not in lowered, f"the packet says {phrase!r}"
+
+
+def test_the_review_packet_names_no_outline_that_holds_nothing(
+    published_artifact: dict[str, Any],
+) -> None:
+    """Guard the bound from the other side.
+
+    ADR 0010 establishes that a finding about any of the 35 cannot move a figure here.
+    Naming one in the packet puts it back in front of the reviewer as though it could.
+    """
+    for name in published_artifact["sensitivity"]["untouched_outlines"][
+        "outlines_no_record_falls_inside"
+    ]:
+        assert name not in PACKET, f"the packet asks about {name}, which holds nothing"
+
+
+def test_the_review_packet_carries_no_count_or_rate_for_a_named_outline(
+    published_artifact: dict[str, Any],
+) -> None:
+    """ADR 0004, held against a document that names 24 companies in one table.
+
+    The table carries name, published type and source layer, and nothing a reader could
+    take as how much burned where. The per-outline counts that this project does
+    publish stay in the report, which the packet points at instead of copying.
+    """
+    header = table_cells(_packet_table()[0][0][1])
+    assert header == [
+        "Outline, as the publisher names it",
+        "Published `Type`",
+        "Published layer",
+    ]
+    for row in _outlines_that_hold_records(published_artifact):
+        for count in (row["records_placed_here"], row["records_contested_here"]):
+            if count >= 1000:
+                assert f"{count:,}" not in _PACKET_FLAT, (
+                    f"a per-outline record count for {row['territory']} reached the "
+                    "packet"
+                )
+
+
+def test_every_figure_in_the_review_packet_is_the_published_measurement(
+    published_artifact: dict[str, Any],
+) -> None:
+    a = published_artifact
+    total = a["placement_coverage"]["fire_records"]
+    untouched = a["sensitivity"]["untouched_outlines"]
+    six = a["sensitivity"]["type_inclusion"][
+        "published_types_present_in_this_retrieval"
+    ]
+    built = _variant(a, "the rule as built")
+    indexed = built["territories_indexed"]
+    empty = untouched["outlines_no_record_falls_inside_count"]
+    holding = indexed - empty
+    counts = Counter(row["published_type"] for row in _outlines_that_hold_records(a))
+    without_coop = _variant(a, "without CO-OP")
+    with_cca = _variant(a, "with CCA read as a territory")
+    with_admin = _variant(a, "with ADMIN read as a territory")
+    with_all = _variant(a, "every published type read as a territory")
+
+    def difference(variant: dict[str, Any]) -> float:
+        delta: float = variant["contested_difference_from_the_rule_as_built"][
+            "difference"
+        ]
+        return delta
+
+    assert len(six) == 6 and len(built["types_read_as_territories"]) == 4, (
+        "the packet says four of six values are read as territories, in prose"
+    )
+    expected = [
+        # What the publisher publishes, and what the rule reads.
+        ", ".join(f"`{value}`" for value in six[:-1]) + f" and `{six[-1]}`",
+        "Four of the six values are read",
+        # The bound: the indexed set, the ones holding nothing, the ones left.
+        f"{indexed} outlines are indexed under the rule as built",
+        f"{empty} of them hold no record at all: "
+        f"{untouched['records_inside_at_least_one_of_them']['numerator']} of "
+        f"{_count(total)} records fall inside any of the {empty}",
+        f"all {empty} removed at once changes the outcome of "
+        f"{untouched['records_with_a_different_outcome_without_them']['numerator']} "
+        "records",
+        f"That leaves {holding},",
+        f"The {holding} outlines that hold records",
+        f"every one of the {indexed} outlines",
+        # What the alternatives were measured to be worth.
+        f"the same {_count(total)} records placed again under each variant",
+        f"{_count(built['contested']['numerator'])} records, "
+        f"{_pct1(built['contested']['rate'])} of the set",
+        f"Dropping `CO-OP` moves the headline by {_pp3(difference(without_coop))} "
+        f"percentage points, and pushes {_count(without_coop['uncovered']['numerator'])}"
+        " records",
+        f"Reading `CCA` as a territory moves the headline by "
+        f"{_pp1(difference(with_cca))} percentage points",
+        f"Reading `ADMIN` as a territory moves it by {_pp1(difference(with_admin))} "
+        "percentage points",
+        f"Reading every published type as a territory moves it by "
+        f"{_pp1(difference(with_all))} percentage points",
+        # The shape of the list the reviewer is handed.
+        f"{counts['IOU']} `IOU`, {counts['POU']} `POU` and {counts['CO-OP']} `CO-OP`",
+        # The record set the finding would be re-measured over.
+        f"the difference between them measured over all {_count(total)} records",
+    ]
+    expected.extend(f"- `{value}`" for value in built["types_read_as_territories"])
+
+    missing = [fragment for fragment in expected if fragment not in _PACKET_FLAT]
+    assert not missing, (
+        "review-packet figures that are not the published measurement (stale prose, or "
+        f"a refreshed artifact the packet was not updated for): {missing}"
+    )
+
+
+def test_the_review_packet_leaves_out_the_type_that_holds_nothing(
+    published_artifact: dict[str, Any],
+) -> None:
+    """`Tribal` is inside the rule and outside the review, because it holds nothing.
+
+    The packet says so in words. This is the arithmetic under the sentence, so the
+    sentence cannot outlive the measurement that makes it true.
+    """
+    rows = _outlines_that_hold_records(published_artifact)
+    assert "Tribal" not in {row["published_type"] for row in rows}
+    assert "No outline typed `Tribal` holds a record" in _PACKET_FLAT
+
+
+def test_the_review_packet_states_what_a_finding_becomes() -> None:
+    """The roadmap's non-negotiable term, told to the reviewer before they start.
+
+    A review whose answer could be applied as a silent edit to the rule is a different
+    request from the one being made, and a reviewer has to know which one they are
+    answering.
+    """
+    assert "A finding does not edit the inclusion rule" in _PACKET_FLAT
+    assert "lands as a new sensitivity row" in _PACKET_FLAT
+    assert "The rule as built is the reference row" in _PACKET_FLAT
+
+
+def test_the_review_packet_still_says_nobody_has_reviewed_it() -> None:
+    """The sentence in this document that must never be quietly improved.
+
+    `docs/outreach/README.md` sets the convention that a draft says it is one. Roadmap
+    item 3.3 is open because it needs a person, and the day this document stops saying
+    so is the day it starts implying a review that did not happen.
+    """
+    assert "draft, not sent, and reviewed by nobody" in _PACKET_FLAT
+    assert "No reviewer has been found" in _PACKET_FLAT
+    lowered = _PACKET_FLAT.lower()
+    for overstatement in (
+        "the reviewer found",
+        "the review concluded",
+        "has been reviewed by",
+        "reviewed and confirmed",
+    ):
+        assert overstatement not in lowered, f"the packet claims {overstatement!r}"
+
+
+def test_the_review_packet_passes_every_document_rule() -> None:
+    """The same gate the report and every other document in the tree is held to."""
+    check_document(PACKET)
+
+
+def test_the_document_rules_have_something_to_read_in_the_review_packet() -> None:
+    """Guard the guard: the rules above pass over a document carrying no table."""
+    rows = _packet_rows()
+    assert len(rows) > 20, "the packet's list of outlines has collapsed"
+    assert all(len(row) == 3 for row in rows)
+
+
+def test_no_dash_character_appears_in_the_review_packet() -> None:
+    for dash in ("\u2014", "\u2013"):
+        assert dash not in PACKET
