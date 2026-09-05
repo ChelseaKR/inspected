@@ -1,7 +1,11 @@
 """The gate every published number passes through, and the deterministic writer.
 
-Four rules are enforced here rather than reviewed by eye, because a rule that lives in a
-style guide gets broken by the next contributor and a rule that raises does not.
+The rules here are enforced rather than reviewed by eye, because a rule that lives in a
+style guide gets broken by the next contributor and a rule that raises does not. The
+first group reads the measurement tree and is called from ``write_json``. The second
+group reads the rendered Markdown and is called from ``write_report``; those rules are
+listed under their own heading further down, beside the reasoning for moving them out
+of a dated review and into the build.
 
 ``assert_rates_are_denominated``
     Nothing shaped like a rate leaves this project without its numerator, its
@@ -415,4 +419,276 @@ def write_json(tree: dict[str, Any], path: Path, *, max_rows: int) -> Path:
     check_all(tree, max_rows=max_rows)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(serialise(tree), encoding="utf-8")
+    return path
+
+
+# --- The rendered document, held to the same refusal as the artifact ---------------
+#
+# `docs/ACR.md` asserted the structure of the generated report as a static review of
+# one build of one version, dated 2026-08-22. A reviewed-once claim about generated
+# output goes stale the moment the renderer changes, and nothing here would have said
+# so: a published territory name arriving with a `|` in it shifts every cell after it
+# under the wrong column name, a published type arriving empty leaves a cell that is
+# announced as its column heading and then silence, and a section added at the wrong
+# depth puts a heading in the outline with no parent. Each of those breaks a claim in
+# that document, none of them is visible by eye over a 500-line table, and every one
+# of them is a question about text that can be asked on every build.
+#
+# So the mechanically checkable claims are asked on every build now, through the same
+# refusal the artifact rules use. The claims that are a human reading stay a human
+# reading, and `docs/ACR.md` says which is which.
+
+NON_DESCRIPTIVE_LINK_TEXT: frozenset[str] = frozenset(
+    {
+        "click",
+        "click here",
+        "download",
+        "follow this",
+        "found here",
+        "go",
+        "here",
+        "link",
+        "more",
+        "read more",
+        "see here",
+        "this",
+        "this link",
+        "this page",
+    }
+)
+
+_FENCE = re.compile(r"^\s*(?:```|~~~)")
+_HEADING = re.compile(r"^(#{1,6})\s+\S")
+_DELIMITER_CELL = re.compile(r"^:?-+:?$")
+_HTML_TAG = re.compile(r"</?[a-zA-Z][a-zA-Z0-9-]*(?:\s[^<>]*)?/?>")
+_MARKDOWN_LINK = re.compile(r"\[([^\]]*)\]\(")
+_AUTOLINK = re.compile(r"<(https?://[^>\s]+)>")
+_URL_AS_TEXT = re.compile(r"^(?:https?://|www\.)", re.IGNORECASE)
+
+
+def _prose_lines(document: str) -> list[tuple[int, str]]:
+    """Every line outside a fenced code block, with its one-based line number.
+
+    A fence holds a shell transcript or a directory listing. Neither is a table and
+    neither is a heading, and reading them as one would refuse a document for the shape
+    of its own example output.
+    """
+    lines: list[tuple[int, str]] = []
+    fenced = False
+    for number, line in enumerate(document.splitlines(), start=1):
+        if _FENCE.match(line):
+            fenced = not fenced
+            continue
+        if not fenced:
+            lines.append((number, line))
+    return lines
+
+
+def table_cells(row: str) -> list[str]:
+    """The cells of one pipe-table row, splitting on unescaped pipes only.
+
+    Markdown ends a cell at every `|` that is not backslash-escaped, including one
+    inside a code span. A literal pipe in a value therefore adds a column rather than
+    printing, which is how a row can look right in an editor and reach a reader with
+    every cell after it announced under the wrong column name.
+    """
+    parts: list[str] = []
+    current: list[str] = []
+    escaped = False
+    for character in row.strip():
+        if escaped:
+            current.append(character)
+            escaped = False
+        elif character == "\\":
+            current.append(character)
+            escaped = True
+        elif character == "|":
+            parts.append("".join(current))
+            current = []
+        else:
+            current.append(character)
+    parts.append("".join(current))
+    # A row is written with a leading and a trailing pipe, so the first and last pieces
+    # are the empty strings outside the table rather than cells of it.
+    if parts and not parts[0].strip():
+        parts = parts[1:]
+    if parts and not parts[-1].strip():
+        parts = parts[:-1]
+    return [part.strip() for part in parts]
+
+
+def _is_delimiter_row(row: str) -> bool:
+    cells = table_cells(row)
+    return bool(cells) and all(_DELIMITER_CELL.match(cell) for cell in cells)
+
+
+def _table_blocks(document: str) -> list[list[tuple[int, str]]]:
+    """Every run of consecutive pipe-table rows, each row with its line number."""
+    blocks: list[list[tuple[int, str]]] = []
+    current: list[tuple[int, str]] = []
+    for number, line in _prose_lines(document):
+        if line.lstrip().startswith("|"):
+            current.append((number, line))
+        elif current:
+            blocks.append(current)
+            current = []
+    if current:
+        blocks.append(current)
+    return blocks
+
+
+def assert_tables_have_a_header_row(document: str) -> None:
+    """Refuse a table whose first row is not a header sitting over a delimiter row.
+
+    The delimiter row is the whole of what makes a row a header in Markdown. Without
+    it the block is not a table at all, and what reaches a reader is a run of cells
+    with nothing anywhere saying what any of them is.
+    """
+    for block in _table_blocks(document):
+        line, row = block[0]
+        header_is_real = not _is_delimiter_row(row)
+        has_delimiter = len(block) > 1 and _is_delimiter_row(block[1][1])
+        if not (header_is_real and has_delimiter):
+            raise PublicationRefused(
+                f"line {line}: a table with no header row. A row is a header only "
+                "because the delimiter row sits under it, and a table without one is "
+                "announced as a run of cells with nothing saying what any of them "
+                f"is: {row.strip()}"
+            )
+
+
+def assert_tables_are_rectangular(document: str) -> None:
+    """Refuse a row that does not carry the column count its own header declares."""
+    for block in _table_blocks(document):
+        header_line, header = block[0]
+        columns = len(table_cells(header))
+        for line, row in block[1:]:
+            found = len(table_cells(row))
+            if found != columns:
+                raise PublicationRefused(
+                    f"line {line}: a table row carries {found} cells under a header "
+                    f"of {columns}, declared on line {header_line}. Every cell past "
+                    "the mismatch is read under the wrong column name, which is worse "
+                    "than no header at all. An unescaped `|` inside a published value "
+                    f"is the usual cause: {row.strip()}"
+                )
+
+
+def assert_no_table_cell_is_empty(document: str) -> None:
+    """Refuse an empty cell, which carries no context and is announced as nothing.
+
+    A sighted reader takes an empty cell from the column above it or the row beside
+    it. A reader hearing the row announced gets the column name and then silence, and
+    silence is not a measurement. This project already has a word for a number it does
+    not have.
+    """
+    for block in _table_blocks(document):
+        for line, row in block:
+            if _is_delimiter_row(row):
+                continue
+            for index, cell in enumerate(table_cells(row)):
+                if not cell:
+                    raise PublicationRefused(
+                        f"line {line}: column {index + 1} of this row is empty. An "
+                        "empty cell is announced as its column name followed by "
+                        "nothing. Print the value, or print `not measured`: "
+                        f"{row.strip()}"
+                    )
+
+
+def assert_headings_do_not_skip_a_level(document: str) -> None:
+    """Refuse a document that opens below level one or skips a level on the way down.
+
+    The heading list is how a document is navigated without being read in order. A
+    level three under a level one puts a section in that list with no parent, and the
+    reader cannot tell whether they have arrived inside something or beside it.
+    """
+    previous = 0
+    for line, text in _prose_lines(document):
+        match = _HEADING.match(text)
+        if match is None:
+            continue
+        level = len(match.group(1))
+        if previous == 0 and level != 1:
+            raise PublicationRefused(
+                f"line {line}: the document opens at heading level {level}. Its "
+                f"first heading is its title and belongs at level one: {text.strip()}"
+            )
+        if previous and level > previous + 1:
+            raise PublicationRefused(
+                f"line {line}: a level {level} heading under a level {previous} one. "
+                "A skipped level is a section that appears in the heading list with "
+                f"no parent: {text.strip()}"
+            )
+        previous = level
+
+
+def _is_descriptive(label: str) -> bool:
+    stripped = label.strip().strip("`*_ ").strip()
+    if not stripped or _URL_AS_TEXT.match(stripped):
+        return False
+    return stripped.lower().rstrip(".") not in NON_DESCRIPTIVE_LINK_TEXT
+
+
+def assert_links_are_descriptive(document: str) -> None:
+    """Refuse a link labelled with a URL, or with a word that names nothing.
+
+    Link text is pulled out of its sentence and read in a list of links, where "here"
+    is indistinguishable from every other "here" on the page and a URL is announced
+    character by character.
+    """
+    for line, text in _prose_lines(document):
+        autolink = _AUTOLINK.search(text)
+        if autolink is not None:
+            raise PublicationRefused(
+                f"line {line}: {autolink.group(1)} is published as a link with no "
+                "text of its own. A bare URL is read out character by character. Say "
+                "what is at the other end of it."
+            )
+        for match in _MARKDOWN_LINK.finditer(text):
+            if not _is_descriptive(match.group(1)):
+                raise PublicationRefused(
+                    f"line {line}: a link labelled {match.group(1).strip()!r}. Link "
+                    "text is read in a list of links, out of the sentence that gave "
+                    "it its meaning. Say where it goes."
+                )
+
+
+def assert_nothing_is_carried_by_styling(document: str) -> None:
+    """Refuse an escape sequence or a markup tag in a published document.
+
+    The claim this replaces was that the artifacts hold no ANSI codes and no styling,
+    so nothing in them is said by colour. It was true when it was written and nothing
+    was reading it. Colour is not announced; the escape sequence that produces it is.
+    """
+    if "\x1b" in document:
+        raise PublicationRefused(
+            "an ANSI escape sequence reached a published document. Nothing here may "
+            "say anything by colour, and the escape itself is what gets read out."
+        )
+    for line, text in _prose_lines(document):
+        tag = _HTML_TAG.search(text)
+        if tag is not None:
+            raise PublicationRefused(
+                f"line {line}: the markup {tag.group(0)!r} reached a published "
+                "document. This project publishes Markdown and JSON, with no styling "
+                "layer for anything to be said in."
+            )
+
+
+def check_document(document: str) -> None:
+    """Every rule the rendered document passes, in one call, before it is written."""
+    assert_tables_have_a_header_row(document)
+    assert_tables_are_rectangular(document)
+    assert_no_table_cell_is_empty(document)
+    assert_headings_do_not_skip_a_level(document)
+    assert_links_are_descriptive(document)
+    assert_nothing_is_carried_by_styling(document)
+
+
+def write_report(document: str, path: Path) -> Path:
+    """Check, then write. A document that fails a rule is not written at all."""
+    check_document(document)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(document, encoding="utf-8")
     return path
