@@ -42,6 +42,7 @@ permissions:
 jobs:
   authorize:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
     outputs:
@@ -103,6 +104,7 @@ jobs:
   build:
     needs: authorize
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
     steps:
@@ -195,6 +197,7 @@ jobs:
   publish:
     needs: [authorize, build]
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: write # create the release and attach the artifacts
       id-token: write # keyless signing for the provenance attestation
